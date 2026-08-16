@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (STLink)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "stlink",
+      "executable": "${workspaceFolder}/build/main.elf",
+      /* cau hinh openocd (ko xem duoc live watch) */
+      // "configFiles": [
+      //   "D:/Embedded_Vscode_Toolchain/xpack-openocd-0.12.0-6-win32-x64/xpack-openocd-0.12.0-6/openocd/scripts/interface/stlink.cfg",
+      //   "D:/Embedded_Vscode_Toolchain/xpack-openocd-0.12.0-6-win32-x64/xpack-openocd-0.12.0-6/openocd/scripts/target/stm32f1x.cfg"
+      // ],
+      "runToEntryPoint": "main",
+      "cwd": "${workspaceFolder}",
+      "device": "STM32F103C8",
+      "svdFile": "${workspaceFolder}/STM32F103xx.svd",
+      /* cau hinh cho phep xem live watch debug (OpenOCD khong support) */
+      "serverpath": "C:/STM32CubeIDE_1.12.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.0.500.202301161003/tools/bin/ST-LINK_gdbserver.exe",
+      "gdbPath": "D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/arm-none-eabi-gdb.exe",
+      "stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
+      "showDevDebugOutput": "raw",
+      "liveWatch": {
+        "enabled": true,
+        "samplesPerSecond": 5
+      },
+      "postRestartCommands": [
+        "monitor reset halt"
+      ]
+    }
+  ]
+}
