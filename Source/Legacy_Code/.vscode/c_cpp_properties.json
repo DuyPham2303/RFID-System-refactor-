@@ -1,53 +1,31 @@
-// {
-//   "configurations": [
-//     {
-//       "name": "STM32F103",
-//       "includePath": [
-//         "${workspaceFolder}/include",
-//         "${workspaceFolder}/App",
-//         "${workspaceFolder}/Mcal",
-//         "${workspaceFolder}/Bsw/Cfg",
-//         "${workspaceFolder}/Bsw/lcd",
-//         "${workspaceFolder}/Bsw/rc522",
-//         "${workspaceFolder}/Bsw/usbttl",
-//         "${workspaceFolder}/Bsw/servo",
-//         "${workspaceFolder}/Bsw/Systick",
-//         "${workspaceFolder}/lib/CMSIS",
-//         "${workspaceFolder}/lib/SPL/inc",
-//         "D:/KeilC_folder/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/Core/Include",
-//         "D:/KeilC_folder/Arm/Packs/Keil/STM32F1xx_DFP/2.4.1/Device/Include",
-//         "D:/arm-gnu-toolchain/arm-gnu-toolchain_/arm-none-eabi/include",
-//         "D:/KeilC_folder/Arm/Packs/Keil/STM32F1xx_DFP/2.4.1/Device/StdPeriph_Driver/inc"
-//       ],
-//       "defines": [
-//         "STM32F103xB",
-//         "STM32F10X_MD",
-//         "USE_STDPERIPH_DRIVER"
-//       ],
-//       "compilerPath": "D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/arm-none-eabi-gcc.exe",
-//       "cStandard": "c11",
-//       "intelliSenseMode": "gcc-arm"
-//     }
-//   ],
-//   "version": 4
-// }
 {
   "configurations": [
     {
-      "name": "Win32",
+      "name": "STM32F103",
       "includePath": [
-        "${workspaceFolder}/**"
+        "${workspaceFolder}/include",
+        "${workspaceFolder}/App",
+        "${workspaceFolder}/platform/Board",
+        "${workspaceFolder}/platform/common",
+        "${workspaceFolder}/Bsw/CDD",
+        "${workspaceFolder}/Bsw/IoHwAb",
+        "${workspaceFolder}/Bsw/Mcal",
+        "${workspaceFolder}/Bsw/Services",
+        "${workspaceFolder}/lib/CMSIS",
+        "${workspaceFolder}/lib/SPL/inc",
+        "D:/KeilC_folder/Arm/Packs/ARM/CMSIS/5.7.0/CMSIS/Core/Include",
+        "D:/KeilC_folder/Arm/Packs/Keil/STM32F1xx_DFP/2.4.1/Device/Include",
+        "D:/arm-gnu-toolchain/arm-gnu-toolchain_/arm-none-eabi/include",
+        "D:/KeilC_folder/Arm/Packs/Keil/STM32F1xx_DFP/2.4.1/Device/StdPeriph_Driver/inc"
       ],
       "defines": [
-        "_DEBUG",
-        "UNICODE",
-        "_UNICODE"
+        "STM32F103xB",
+        "STM32F10X_MD",
+        "USE_STDPERIPH_DRIVER"
       ],
-      "windowsSdkVersion": "10.0.19041.0",
-      "compilerPath": "C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe",
-      "cStandard": "c17",
-      "cppStandard": "c++23",
-      "intelliSenseMode": "windows-gcc-x64"
+      "compilerPath": "D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/arm-none-eabi-gcc.exe",
+      "cStandard": "c11",
+      "intelliSenseMode": "gcc-arm"
     }
   ],
   "version": 4
