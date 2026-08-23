@@ -1,0 +1,6 @@
+- Outline diagram callback API --> Main 
+- Demo test call CallBack API in main --> print steps by steps 
+- Tạo các module cfg --> cmt chức năng chính 
+- Triển khai kết hợp cfg và mcal 
+- Demo test init trong main
+- Triển khai EcuM_Init 
