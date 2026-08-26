@@ -1,30 +1,12 @@
-## NỘI DUNG MAKEFILE
-
-__Compiler Flags__
-
-**-mcpu=cortex-m3**	Kiến trúc CPU (STM32F103 là Cortex-M3)
-**-mthumb**	        Bật chế độ Thumb (16-bit instruction set)
-**-std=c11**	    Chuẩn C11
-**-Wall**	        Bật tất cả cảnh báo
-**-g**              Gắn debug info cho GDB
-**-O0**	            Tắt tối ưu hoá (hữu ích khi debug)
-**-Iinclude -Ilib**	Thư mục chứa header
-**-DSTM32F10X_MD**	Macro cho phân loại chip (Medium Density)
-
-__Linker FLags__
-
-**-T linker.ld**	Dùng file linker do người dùng viết
-**-nostartfiles**	Bỏ qua startup mặc định của GCC
-**--gc-sections**	Dọn bỏ section không dùng để giảm size
-**-lm**	            Link thư viện toán học
-**-lc**	            Link thư viện C chuẩn
-
-## NỘI DUNG LINKER
-
-**MEMORY**	Khai báo vùng FLASH và RAM của STM32F103C8T6
-**.text**	Nơi chứa code chương trình và bảng vector ngắt
-**.data**	Biến toàn cục được khởi tạo (từ flash copy vào RAM)
-**.bss**	Biến toàn cục chưa khởi tạo (sẽ được zero hóa khi khởi động)
-**_estack**	Điểm bắt đầu của stack – thường là cuối RAM
-**_sidata, _sdata, _edata, ...** Các biến đặc biệt phục vụ khởi tạo dữ liệu trong startup code
-
+task chính 
+- code mcal
+    + xây dựng sơ lược các module cần triển khai 
+    + module pwm,dio,port (V1.3)
+    + module timer, spi,i2c,usart (V1.4)
+- test callback function
+- ánh xạ toàn bộ kiến trúc hiện tại autosar layer 
+    + vẽ ra các diagram của 1 chức năng đại diện
+    + nhờ AI phần tích để ánh xạ theo các layer tiêu chuẩn
+- triển khai phần architecture design
+    + vẽ diagram
+    + xây dựng folder project 

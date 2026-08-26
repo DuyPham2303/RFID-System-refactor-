@@ -1,5 +1,5 @@
 /**
- * @file Callback_Mgr.h
+ * @file CallbackM.h
  * @brief Application callback manager interface.
  * @details Initializes application callback registrations without exposing
  *          the underlying hardware or CDD implementation.
