@@ -7,23 +7,23 @@
 #define PORT_C_RCC RCC_APB2Periph_GPIOC
 
 /* macro defined for Peripherals */
-#define APB2_PERIPHERAL_RCC (RCC_APB2Periph_SPI1 | RCC_APB2Periph_USART1 | RCC_APB2Periph_TIM1)
-#define APB1_PERIPHERAL_RCC (RCC_APB1Periph_I2C1 | RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3)
+// #define APB2_PERIPHERAL_RCC (RCC_APB2Periph_SPI1 | RCC_APB2Periph_USART1)
+#define APB1_PERIPHERAL_RCC (RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3)
 /**
  * @brief  Khởi tạo hệ thống xung nhịp cơ bản (RCC, PLL, Flash Latency, Bus Clocks).
  * @note   Chạy đầu tiên trong EcuM_Init() để đảm bảo chip chạy đúng tần số mong muốn.
  */
-void Board_InitClock(void)
+void Board_Clock_Init(void)
 {
-    SystemCoreClockUpdate();
+    // SystemCoreClockUpdate();
 }
 
 /**
  * @brief  Cấp clock cho các ngoại vi phần cứng trên bus (GPIO, SPI, I2C, UART, TIM,...).
  */
-void Board_InitPeripheralsClock(void)
+void Board_PeripheralsClock_Init(void)
 {
     RCC_APB2PeriphClockCmd(PORT_A_RCC | PORT_B_RCC | PORT_C_RCC, ENABLE);
-    RCC_APB2PeriphClockCmd(APB2_PERIPHERAL_RCC, ENABLE);
+    // RCC_APB2PeriphClockCmd(APB2_PERIPHERAL_RCC, ENABLE);
     RCC_APB1PeriphClockCmd(APB1_PERIPHERAL_RCC, ENABLE);
 }

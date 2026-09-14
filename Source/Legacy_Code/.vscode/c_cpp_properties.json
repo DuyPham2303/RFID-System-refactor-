@@ -3,12 +3,10 @@
     {
       "name": "STM32F103",
       "includePath": [
+        "${workspaceFolder}",
         "${workspaceFolder}/include",
         "${workspaceFolder}/App",
-        "${workspaceFolder}/platform/Board",
-        "${workspaceFolder}/platform/common",
-        "${workspaceFolder}/Bsw/CDD",
-        "${workspaceFolder}/Bsw/IoHwAb",
+        "${workspaceFolder}/platform",
         "${workspaceFolder}/Bsw/Mcal",
         "${workspaceFolder}/Bsw/Services",
         "${workspaceFolder}/lib/CMSIS",

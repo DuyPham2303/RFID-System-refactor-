@@ -13,7 +13,11 @@
 #ifndef __STD_TYPES_H
 #define __STD_TYPES_H
 /* #include "stm32f10x.h" */ // Device header
-#include "stdbool.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 /********************************************************
  * @brief dinh nghia cac kieu du lieu doc lap voi Autosar platform
  * @detail dinh nghia ve kich thuoc va dau cua moi loai du lieu

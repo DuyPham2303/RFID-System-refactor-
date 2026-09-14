@@ -25,7 +25,8 @@
         "-std=c17",
         "${file}",
         "-o",
-        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+        //"${fileDirname}\\${fileBasenameNoExtension}.exe"
+        "${workspaceFolder}/build/demo.exe"
       ],
       "options": {
         "cwd": "${fileDirname}"

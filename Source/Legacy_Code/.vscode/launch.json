@@ -7,11 +7,6 @@
       "request": "launch",
       "servertype": "stlink",
       "executable": "${workspaceFolder}/build/main.elf",
-      /* cau hinh openocd (ko xem duoc live watch) */
-      // "configFiles": [
-      //   "D:/Embedded_Vscode_Toolchain/xpack-openocd-0.12.0-6-win32-x64/xpack-openocd-0.12.0-6/openocd/scripts/interface/stlink.cfg",
-      //   "D:/Embedded_Vscode_Toolchain/xpack-openocd-0.12.0-6-win32-x64/xpack-openocd-0.12.0-6/openocd/scripts/target/stm32f1x.cfg"
-      // ],
       "runToEntryPoint": "main",
       "cwd": "${workspaceFolder}",
       "device": "STM32F103C8",
@@ -27,6 +22,31 @@
       },
       "postRestartCommands": [
         "monitor reset halt"
+      ]
+    },
+    {
+      "name": "Debug with GDB",
+      "type": "cppdbg",
+      "request": "launch",
+      //debug file có tên main.exe dựa trên vị trí thư mục của file bất kỳ đang mở, nếu muốn đổi tên file debug thì sửa lại phần này
+      "program": "${workspaceFolder}/build/demo.exe",
+      "stopAtEntry": true,
+      "preLaunchTask": "Build-C-program",
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:\\MinGW\\msys64\\mingw64\\bin\\gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Sửa lỗi mã hóa ký tự UTF-8",
+          "text": "set charset UTF-8",
+          "ignoreFailures": true
+        }
       ]
     }
   ]
