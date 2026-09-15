@@ -9,6 +9,7 @@
 #define GPT_CFG_H
 #include "Std_Types.h"
 #include "Gpt_dtypes.h"
+#include "Mcu_IrqCfg.h"
 
 #define PERIOD_UPDATE_250MS 2500 /*tick count every 0.1 ms*/
 
@@ -19,24 +20,22 @@
  */
 typedef enum
 {
-    // GPT_CFG_LED_ID = 0U,
-    // GPT_CFG_SERVO_ID,
+    // GPT_CFG_PWM_ID,
     GPT_CFG_DELAY_ID = 0U,
-    GPT_CFG_PWM_ID,
     GPT_CFG_COUNT
 } Gpt_ConfigIdType;
 
 /* Cấu trúc cấu hình tĩnh cho một kênh TIM */
 typedef struct
 {
-    Gpt_Cmd Cmd;             /* enable/disable ngay khi khởi tạo timer */
-    Gpt_GroupType HwTimerId; /* Số hiệu Timer vật lý của MCU (Ví dụ: TIM2, TIM3) */
-    Gpt_PrescalerValue PresVal;
-    Gpt_ClockDivType ClkDiv;
-    Gpt_CounterModeType ModeCntType;
-    Gpt_PeriodValue PeriodVal;
-    Gpt_RepetitionCnt RepCntVal;       /* Advanced Timer only (TIM1 cho dòng c8t6) */
-    Gpt_NotificationType Notification; /* Hàm callback gọi khi tràn timer */
+    Gpt_Cmd Cmd;                        /* enable/disable ngay khi khởi tạo timer */
+    Gpt_GroupType HwTimerId;            /* Số hiệu Timer vật lý của MCU (Ví dụ: TIM2, TIM3) */
+    Gpt_PrescalerValue PresVal;         /* Tần số chia xác định số tick count trong 1a */
+    Gpt_ClockDivType ClkDiv;            /* hệ số chia clock dùng khi cần so sánh với clock ban đầu, không làm thay đổi clock thực tế */
+    Gpt_CounterModeType ModeCntType;    /* chế độ đếm up/down */
+    Gpt_PeriodValue PeriodVal;          /* chu kỳ đếm tràn (thời gian để thanh ghi ARR reset) */
+    Gpt_RepetitionCnt RepCntVal;        /* Advanced Timer only (TIM1 cho dòng c8t6) */
+    const Mcu_IrqConfigType *IrqCfgPtr; /* con trỏ đến cấu hình NVIC */
 } Gpt_ChannelConfigType_s;
 
 /* Cấu trúc cấu hình tổng thể của module Gpt */

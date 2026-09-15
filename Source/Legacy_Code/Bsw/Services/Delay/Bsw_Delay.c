@@ -1,6 +1,6 @@
 #include "Bsw_Delay.h"
-#include "../Mcal/Gpt/Gpt.h"
-#include "../Mcal/Gpt/Gpt_Cfg.h"
+#include "Gpt/inc/Gpt.h"
+#include "Gpt/inc/Gpt_Cfg.h"
 
 /** @brief Number of GPT ticks per millisecond */
 #define GPT_DELAY_TICKS_PER_MS 10U

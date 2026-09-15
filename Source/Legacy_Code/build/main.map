@@ -22,18 +22,17 @@ LOAD Object/App/main.o
 LOAD Object/platform/Board_Clock.o
 LOAD Object/platform/syscalls.o
 LOAD Object/platform/system_stm32f10x.o
-LOAD Object/platform/Testcase_Types.o
-LOAD Object/Bsw/Mcal/Dio/Dio.o
-LOAD Object/Bsw/Mcal/Gpt/Gpt.o
-LOAD Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
-LOAD Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
-LOAD Object/Bsw/Mcal/Port/Port.o
-LOAD Object/Bsw/Mcal/Port/Port_Cfg.o
-LOAD Object/Bsw/Mcal/Port/Port_Mapping.o
-LOAD Object/Bsw/Mcal/Pwm/Pwm.o
-LOAD Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
-LOAD Object/Bsw/Mcal/Pwm/Pwm_mapping.o
-LOAD Object/Bsw/Services/Delay/Bsw_Delay.o
+LOAD Object/Bsw/Mcal/Dio/src/Dio.o
+LOAD Object/Bsw/Mcal/Gpt/src/Gpt.o
+LOAD Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+LOAD Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+LOAD Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+LOAD Object/Bsw/Mcal/Port/src/Port.o
+LOAD Object/Bsw/Mcal/Port/src/Port_Cfg.o
+LOAD Object/Bsw/Mcal/Port/src/Port_Mapping.o
+LOAD Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+LOAD Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+LOAD Object/Bsw/Services/Callback/CallbackM.o
 LOAD Object/lib/SPL/src/misc.o
 LOAD Object/lib/SPL/src/stm32f10x_adc.o
 LOAD Object/lib/SPL/src/stm32f10x_can.o
@@ -59,666 +58,645 @@ LOAD D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1
 LOAD D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libc_nano.a
 END GROUP
 
-.text           0x08000000     0x8a84
+.text           0x08000000     0x8430
  *(.isr_vector)
  .isr_vector    0x08000000      0x10c Object/startup/startup_stm32f103c8tx.o
                 0x08000000                g_pfnVectors
  *(.text*)
- .text          0x0800010c       0xcc Object/App/main.o
+ .text          0x0800010c       0x24 Object/App/main.o
                 0x0800010c                main
- .text          0x080001d8       0x24 Object/platform/Board_Clock.o
-                0x080001d8                Board_Clock_Init
-                0x080001e4                Board_PeripheralsClock_Init
- .text          0x080001fc      0x140 Object/platform/syscalls.o
-                0x080001fc                _sbrk
-                0x08000238                _open
-                0x0800025a                _close
-                0x08000270                _fstat
-                0x0800028e                _lseek
-                0x080002a6                _read
-                0x080002be                _write
-                0x080002d6                _isatty
-                0x080002ea                _exit
-                0x080002f6                _getpid
-                0x08000304                _kill
-                0x08000324                _init
-                0x08000330                _fini
- .text          0x0800033c      0x258 Object/platform/system_stm32f10x.o
-                0x0800033c                SystemInit
-                0x080003a4                SystemCoreClockUpdate
- .text          0x08000594       0xb8 Object/platform/Testcase_Types.o
-                0x08000594                TestCaseTotalCount
-                0x080005e4                TC_TableInitParam
- .text          0x0800064c      0x214 Object/Bsw/Mcal/Dio/Dio.o
-                0x08000694                Dio_ReadChannel
-                0x080006da                Dio_WriteChannel
-                0x0800072a                Dio_ReadPort
-                0x08000752                Dio_WritePort
-                0x0800077e                Dio_ReadChannelGroup
-                0x080007a6                Dio_WriteChannelGroup
-                0x08000804                Dio_FlipChannel
- .text          0x08000860      0x144 Object/Bsw/Mcal/Gpt/Gpt.o
-                0x08000860                Gpt_Init
-                0x08000904                Gpt_StartTimer
-                0x08000948                Gpt_GetTimeElapsed
-                0x08000976                Gpt_StopTimer
- .text          0x080009a4        0xc Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .text          0x080009b0       0xa4 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
-                0x080009b0                GetTimerGroup
-                0x080009f0                GetCounterMode
-                0x08000a1a                GetClockDivider
- .text          0x08000a54       0x94 Object/Bsw/Mcal/Port/Port.o
-                0x08000a54                Port_Init
- .text          0x08000ae8        0x0 Object/Bsw/Mcal/Port/Port_Cfg.o
- .text          0x08000ae8       0xf0 Object/Bsw/Mcal/Port/Port_Mapping.o
-                0x08000ae8                GetPortGroup
-                0x08000b3c                Port_GetPinMode
-                0x08000ba0                Port_GetPinSpeed
- .text          0x08000bd8      0x32c Object/Bsw/Mcal/Pwm/Pwm.o
-                0x08000bf8                Pwm_GetLastError
-                0x08000c0c                Pwm_ValidateConfig
-                0x08000d10                Pwm_Init
-                0x08000e4c                Pwm_SetDutyCycle
- .text          0x08000f04        0x0 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .text          0x08000f04      0x16c Object/Bsw/Mcal/Pwm/Pwm_mapping.o
-                0x08000f04                GetPwmOcMode
-                0x08000f58                GetPwmOutputState
-                0x08000f82                GetPwmPulseValue
-                0x08000f98                GetPwmOcPolarity
-                0x08000fc2                GetPwmOutputNState
-                0x08000fec                GetPwmOcNPolarity
-                0x08001016                GetPwmOcIdleState
-                0x08001042                GetPwmOcNIdleState
- .text          0x08001070       0x60 Object/Bsw/Services/Delay/Bsw_Delay.o
-                0x08001070                Bsw_DelayMs
- .text          0x080010d0      0x18c Object/lib/SPL/src/misc.o
-                0x080010d0                NVIC_PriorityGroupConfig
-                0x080010f4                NVIC_Init
-                0x080011b8                NVIC_SetVectorTable
-                0x080011e4                NVIC_SystemLPConfig
-                0x08001224                SysTick_CLKSourceConfig
- .text          0x0800125c      0xa00 Object/lib/SPL/src/stm32f10x_adc.o
-                0x0800125c                ADC_DeInit
-                0x080012d0                ADC_Init
-                0x08001374                ADC_StructInit
-                0x080013aa                ADC_Cmd
-                0x080013e0                ADC_DMACmd
-                0x08001416                ADC_ITConfig
-                0x0800145a                ADC_ResetCalibration
-                0x08001478                ADC_GetResetCalibrationStatus
-                0x080014a6                ADC_StartCalibration
-                0x080014c4                ADC_GetCalibrationStatus
-                0x080014f2                ADC_SoftwareStartConvCmd
-                0x08001528                ADC_GetSoftwareStartConvStatus
-                0x08001556                ADC_DiscModeChannelCountConfig
-                0x08001598                ADC_DiscModeCmd
-                0x080015ce                ADC_RegularChannelConfig
-                0x08001760                ADC_ExternalTrigConvCmd
-                0x08001796                ADC_GetConversionValue
-                0x080017ae                ADC_GetDualModeConversionValue
-                0x080017c4                ADC_AutoInjectedConvCmd
-                0x080017fa                ADC_InjectedDiscModeCmd
-                0x08001830                ADC_ExternalTrigInjectedConvConfig
-                0x08001864                ADC_ExternalTrigInjectedConvCmd
-                0x0800189a                ADC_SoftwareStartInjectedConvCmd
-                0x080018d0                ADC_GetSoftwareStartInjectedConvCmdStatus
-                0x080018fe                ADC_InjectedChannelConfig
-                0x08001a1e                ADC_InjectedSequencerLengthConfig
-                0x08001a60                ADC_SetInjectedOffset
-                0x08001a92                ADC_GetInjectedConversionValue
-                0x08001ac0                ADC_AnalogWatchdogCmd
-                0x08001af8                ADC_AnalogWatchdogThresholdsConfig
-                0x08001b1e                ADC_AnalogWatchdogSingleChannelConfig
-                0x08001b54                ADC_TempSensorVrefintCmd
-                0x08001b8c                ADC_GetFlagStatus
-                0x08001bbe                ADC_ClearFlag
-                0x08001bdc                ADC_GetITStatus
-                0x08001c30                ADC_ClearITPendingBit
- .text          0x08001c5c     0x1188 Object/lib/SPL/src/stm32f10x_can.o
-                0x08001c5c                CAN_DeInit
-                0x08001ca4                CAN_Init
-                0x08001e44                CAN_FilterInit
-                0x08001fc8                CAN_StructInit
-                0x0800201c                CAN_SlaveStartBank
-                0x0800207c                CAN_DBGFreeze
-                0x080020b2                CAN_TTComModeCmd
-                0x08002148                CAN_Transmit
-                0x080022e8                CAN_TransmitStatus
-                0x080023ec                CAN_CancelTransmit
-                0x08002442                CAN_Receive
-                0x080025bc                CAN_FIFORelease
-                0x080025f2                CAN_MessagePending
-                0x0800263a                CAN_OperatingModeRequest
-                0x08002734                CAN_Sleep
-                0x0800276c                CAN_WakeUp
-                0x080027c0                CAN_GetLastErrorCode
-                0x080027e4                CAN_GetReceiveErrorCounter
-                0x08002804                CAN_GetLSBTransmitErrorCounter
-                0x08002824                CAN_ITConfig
-                0x0800285e                CAN_GetFlagStatus
-                0x0800292a                CAN_ClearFlag
-                0x0800299c                CAN_GetITStatus
-                0x08002c00                CAN_ClearITPendingBit
- .text          0x08002de4      0x3f8 Object/lib/SPL/src/stm32f10x_dma.o
-                0x08002de4                DMA_DeInit
-                0x08002f5c                DMA_Init
-                0x08002fd8                DMA_StructInit
-                0x0800302c                DMA_Cmd
-                0x08003064                DMA_ITConfig
-                0x0800309e                DMA_SetCurrDataCounter
-                0x080030ba                DMA_GetCurrDataCounter
-                0x080030d2                DMA_GetFlagStatus
-                0x08003124                DMA_ClearFlag
-                0x08003158                DMA_GetITStatus
-                0x080031a8                DMA_ClearITPendingBit
- .text          0x080031dc      0x218 Object/lib/SPL/src/stm32f10x_exti.o
-                0x080031dc                EXTI_DeInit
-                0x08003210                EXTI_Init
-                0x080032f4                EXTI_StructInit
-                0x0800331e                EXTI_GenerateSWInterrupt
-                0x08003340                EXTI_GetFlagStatus
-                0x08003374                EXTI_ClearFlag
-                0x08003390                EXTI_GetITStatus
-                0x080033d8                EXTI_ClearITPendingBit
- .text          0x080033f4      0x954 Object/lib/SPL/src/stm32f10x_flash.o
-                0x080033f4                FLASH_SetLatency
-                0x0800342c                FLASH_HalfCycleAccessCmd
-                0x0800345c                FLASH_PrefetchBufferCmd
-                0x0800348c                FLASH_Unlock
-                0x080034b0                FLASH_UnlockBank1
-                0x080034d4                FLASH_Lock
-                0x080034f0                FLASH_LockBank1
-                0x0800350c                FLASH_ErasePage
-                0x08003570                FLASH_EraseAllPages
-                0x080035cc                FLASH_EraseAllBank1Pages
-                0x08003628                FLASH_EraseOptionBytes
-                0x080036fc                FLASH_ProgramWord
-                0x08003790                FLASH_ProgramHalfWord
-                0x080037ec                FLASH_ProgramOptionByteData
-                0x08003864                FLASH_EnableWriteProtection
-                0x0800397c                FLASH_ReadOutProtection
-                0x08003a50                FLASH_UserOptionByteConfig
-                0x08003ae4                FLASH_GetUserOptionByte
-                0x08003afc                FLASH_GetWriteProtectionOptionByte
-                0x08003b10                FLASH_GetReadOutProtectionStatus
-                0x08003b40                FLASH_GetPrefetchBufferStatus
-                0x08003b70                FLASH_ITConfig
-                0x08003bac                FLASH_GetFlagStatus
-                0x08003bfc                FLASH_ClearFlag
-                0x08003c18                FLASH_GetStatus
-                0x08003c6c                FLASH_GetBank1Status
-                0x08003cc0                FLASH_WaitForLastOperation
-                0x08003d04                FLASH_WaitForLastBank1Operation
- .text          0x08003d48      0x5d8 Object/lib/SPL/src/stm32f10x_gpio.o
-                0x08003d48                GPIO_DeInit
-                0x08003e2c                GPIO_AFIODeInit
-                0x08003e44                GPIO_Init
-                0x08003fbc                GPIO_StructInit
-                0x08003fe2                GPIO_ReadInputDataBit
-                0x08004014                GPIO_ReadInputData
-                0x0800402c                GPIO_ReadOutputDataBit
-                0x0800405e                GPIO_ReadOutputData
-                0x08004076                GPIO_SetBits
-                0x08004092                GPIO_ResetBits
-                0x080040ae                GPIO_WriteBit
-                0x080040dc                GPIO_Write
-                0x080040f8                GPIO_PinLockConfig
-                0x0800413a                GPIO_EventOutputConfig
-                0x08004184                GPIO_EventOutputCmd
-                0x080041a4                GPIO_PinRemapConfig
-                0x08004284                GPIO_EXTILineConfig
-                0x08004304                GPIO_ETH_MediaInterfaceConfig
- .text          0x08004320      0x92c Object/lib/SPL/src/stm32f10x_i2c.o
-                0x08004320                I2C_DeInit
-                0x08004368                I2C_Init
-                0x080044ec                I2C_StructInit
-                0x08004528                I2C_Cmd
-                0x08004566                I2C_DMACmd
-                0x080045a4                I2C_DMALastTransferCmd
-                0x080045e2                I2C_GenerateSTART
-                0x08004620                I2C_GenerateSTOP
-                0x0800465e                I2C_AcknowledgeConfig
-                0x0800469c                I2C_OwnAddress2Config
-                0x080046de                I2C_DualAddressCmd
-                0x0800471c                I2C_GeneralCallCmd
-                0x0800475a                I2C_ITConfig
-                0x080047a0                I2C_SendData
-                0x080047be                I2C_ReceiveData
-                0x080047d8                I2C_Send7bitAddress
-                0x08004812                I2C_ReadRegister
-                0x0800483e                I2C_SoftwareResetCmd
-                0x08004880                I2C_NACKPositionConfig
-                0x080048c0                I2C_SMBusAlertConfig
-                0x08004900                I2C_TransmitPEC
-                0x0800493e                I2C_PECPositionConfig
-                0x0800497e                I2C_CalculatePEC
-                0x080049bc                I2C_GetPEC
-                0x080049da                I2C_ARPCmd
-                0x08004a18                I2C_StretchClockCmd
-                0x08004a56                I2C_FastModeDutyCycleConfig
-                0x08004a96                I2C_CheckEvent
-                0x08004af4                I2C_GetLastEvent
-                0x08004b36                I2C_GetFlagStatus
-                0x08004b9a                I2C_ClearFlag
-                0x08004bc6                I2C_GetITStatus
-                0x08004c1e                I2C_ClearITPendingBit
- .text          0x08004c4c      0x1a0 Object/lib/SPL/src/stm32f10x_pwr.o
-                0x08004c4c                PWR_DeInit
-                0x08004c68                PWR_BackupAccessCmd
-                0x08004c88                PWR_PVDCmd
-                0x08004ca8                PWR_PVDLevelConfig
-                0x08004ce0                PWR_WakeUpPinCmd
-                0x08004d00                PWR_EnterSTOPMode
-                0x08004d64                PWR_EnterSTANDBYMode
-                0x08004d94                PWR_GetFlagStatus
-                0x08004dc8                PWR_ClearFlag
- .text          0x08004dec      0x7dc Object/lib/SPL/src/stm32f10x_rcc.o
-                0x08004dec                RCC_DeInit
-                0x08004e48                RCC_HSEConfig
-                0x08004ea4                RCC_WaitForHSEStartUp
-                0x08004ef4                RCC_AdjustHSICalibrationValue
-                0x08004f30                RCC_HSICmd
-                0x08004f50                RCC_PLLConfig
-                0x08004f8c                RCC_PLLCmd
-                0x08004fac                RCC_SYSCLKConfig
-                0x08004fe4                RCC_GetSYSCLKSource
-                0x08005000                RCC_HCLKConfig
-                0x08005038                RCC_PCLK1Config
-                0x08005070                RCC_PCLK2Config
-                0x080050a8                RCC_ITConfig
-                0x080050f4                RCC_USBCLKConfig
-                0x08005110                RCC_ADCCLKConfig
-                0x08005148                RCC_LSEConfig
-                0x08005188                RCC_LSICmd
-                0x080051a8                RCC_RTCCLKConfig
-                0x080051cc                RCC_RTCCLKCmd
-                0x080051ec                RCC_GetClocksFreq
-                0x08005358                RCC_AHBPeriphClockCmd
-                0x08005394                RCC_APB2PeriphClockCmd
-                0x080053d0                RCC_APB1PeriphClockCmd
-                0x0800540c                RCC_APB2PeriphResetCmd
-                0x08005448                RCC_APB1PeriphResetCmd
-                0x08005484                RCC_BackupResetCmd
-                0x080054a4                RCC_ClockSecuritySystemCmd
-                0x080054c4                RCC_MCOConfig
-                0x080054e4                RCC_GetFlagStatus
-                0x08005558                RCC_ClearFlag
-                0x08005574                RCC_GetITStatus
-                0x080055a8                RCC_ClearITPendingBit
- .text          0x080055c8      0x4f0 Object/lib/SPL/src/stm32f10x_sdio.o
-                0x080055c8                SDIO_DeInit
-                0x08005614                SDIO_Init
-                0x08005670                SDIO_StructInit
-                0x080056a6                SDIO_ClockCmd
-                0x080056c4                SDIO_SetPowerState
-                0x080056e0                SDIO_GetPowerState
-                0x080056f8                SDIO_ITConfig
-                0x08005734                SDIO_DMACmd
-                0x08005754                SDIO_SendCommand
-                0x080057ac                SDIO_CmdStructInit
-                0x080057dc                SDIO_GetCommandResponse
-                0x080057f4                SDIO_GetResponse
-                0x0800581c                SDIO_DataConfig
-                0x08005878                SDIO_DataStructInit
-                0x080058b0                SDIO_GetDataCounter
-                0x080058c4                SDIO_ReadData
-                0x080058dc                SDIO_WriteData
-                0x080058fc                SDIO_GetFIFOCount
-                0x08005910                SDIO_StartSDIOReadWait
-                0x08005930                SDIO_StopSDIOReadWait
-                0x08005950                SDIO_SetSDIOReadWaitMode
-                0x0800596c                SDIO_SetSDIOOperation
-                0x0800598c                SDIO_SendSDIOSuspendCmd
-                0x080059ac                SDIO_CommandCompletionCmd
-                0x080059cc                SDIO_CEATAITCmd
-                0x080059f8                SDIO_SendCEATACmd
-                0x08005a18                SDIO_GetFlagStatus
-                0x08005a4c                SDIO_ClearFlag
-                0x08005a68                SDIO_GetITStatus
-                0x08005a9c                SDIO_ClearITPendingBit
- .text          0x08005ab8      0x6d0 Object/lib/SPL/src/stm32f10x_spi.o
-                0x08005ab8                SPI_I2S_DeInit
-                0x08005b2c                SPI_Init
-                0x08005bb2                I2S_Init
-                0x08005d18                SPI_StructInit
-                0x08005d60                I2S_StructInit
-                0x08005d96                SPI_Cmd
-                0x08005dd4                I2S_Cmd
-                0x08005e12                SPI_I2S_ITConfig
-                0x08005e72                SPI_I2S_DMACmd
-                0x08005eb8                SPI_I2S_SendData
-                0x08005ed4                SPI_I2S_ReceiveData
-                0x08005eec                SPI_NSSInternalSoftwareConfig
-                0x08005f2e                SPI_SSOutputCmd
-                0x08005f6c                SPI_DataSizeConfig
-                0x08005fa2                SPI_TransmitCRC
-                0x08005fc4                SPI_CalculateCRC
-                0x08006002                SPI_GetCRC
-                0x08006032                SPI_GetCRCPolynomial
-                0x0800604a                SPI_BiDirectionalLineConfig
-                0x0800608a                SPI_I2S_GetFlagStatus
-                0x080060c0                SPI_I2S_ClearFlag
-                0x080060e0                SPI_I2S_GetITStatus
-                0x08006154                SPI_I2S_ClearITPendingBit
- .text          0x08006188     0x1d94 Object/lib/SPL/src/stm32f10x_tim.o
-                0x08006188                TIM_DeInit
-                0x080063b4                TIM_TimeBaseInit
-                0x080064ac                TIM_OC1Init
-                0x080065c4                TIM_OC2Init
-                0x080066d4                TIM_OC3Init
-                0x080067e0                TIM_OC4Init
-                0x080068b0                TIM_ICInit
-                0x08006958                TIM_PWMIConfig
-                0x08006a10                TIM_BDTRConfig
-                0x08006a5e                TIM_TimeBaseStructInit
-                0x08006a90                TIM_OCStructInit
-                0x08006ad2                TIM_ICStructInit
-                0x08006b02                TIM_BDTRStructInit
-                0x08006b3e                TIM_Cmd
-                0x08006b7c                TIM_CtrlPWMOutputs
-                0x08006bc6                TIM_ITConfig
-                0x08006c0c                TIM_GenerateEvent
-                0x08006c28                TIM_DMAConfig
-                0x08006c50                TIM_DMACmd
-                0x08006c96                TIM_InternalClockConfig
-                0x08006cb8                TIM_ITRxExternalClockConfig
-                0x08006ce6                TIM_TIxExternalClockConfig
-                0x08006d42                TIM_ETRClockMode1Config
-                0x08006da0                TIM_ETRClockMode2Config
-                0x08006dde                TIM_ETRConfig
-                0x08006e30                TIM_PrescalerConfig
-                0x08006e56                TIM_CounterModeConfig
-                0x08006e8c                TIM_SelectInputTrigger
-                0x08006ec2                TIM_EncoderInterfaceConfig
-                0x08006f58                TIM_ForcedOC1Config
-                0x08006f8e                TIM_ForcedOC2Config
-                0x08006fc8                TIM_ForcedOC3Config
-                0x08006ffe                TIM_ForcedOC4Config
-                0x08007038                TIM_ARRPreloadConfig
-                0x08007076                TIM_SelectCOM
-                0x080070b4                TIM_SelectCCDMA
-                0x080070f2                TIM_CCPreloadControl
-                0x08007130                TIM_OC1PreloadConfig
-                0x08007166                TIM_OC2PreloadConfig
-                0x080071a0                TIM_OC3PreloadConfig
-                0x080071d6                TIM_OC4PreloadConfig
-                0x08007210                TIM_OC1FastConfig
-                0x08007246                TIM_OC2FastConfig
-                0x08007280                TIM_OC3FastConfig
-                0x080072b6                TIM_OC4FastConfig
-                0x080072f0                TIM_ClearOC1Ref
-                0x08007326                TIM_ClearOC2Ref
-                0x08007360                TIM_ClearOC3Ref
-                0x08007396                TIM_ClearOC4Ref
-                0x080073d0                TIM_OC1PolarityConfig
-                0x08007406                TIM_OC1NPolarityConfig
-                0x0800743c                TIM_OC2PolarityConfig
-                0x08007476                TIM_OC2NPolarityConfig
-                0x080074b0                TIM_OC3PolarityConfig
-                0x080074ea                TIM_OC3NPolarityConfig
-                0x08007524                TIM_OC4PolarityConfig
-                0x0800755e                TIM_CCxCmd
-                0x080075b2                TIM_CCxNCmd
-                0x08007606                TIM_SelectOCxM
-                0x080076b6                TIM_UpdateDisableConfig
-                0x080076f4                TIM_UpdateRequestConfig
-                0x08007732                TIM_SelectHallSensor
-                0x08007770                TIM_SelectOnePulseMode
-                0x080077a6                TIM_SelectOutputTrigger
-                0x080077dc                TIM_SelectSlaveMode
-                0x08007812                TIM_SelectMasterSlaveMode
-                0x08007848                TIM_SetCounter
-                0x08007864                TIM_SetAutoreload
-                0x08007880                TIM_SetCompare1
-                0x0800789c                TIM_SetCompare2
-                0x080078b8                TIM_SetCompare3
-                0x080078d4                TIM_SetCompare4
-                0x080078f2                TIM_SetIC1Prescaler
-                0x08007928                TIM_SetIC2Prescaler
-                0x08007962                TIM_SetIC3Prescaler
-                0x08007998                TIM_SetIC4Prescaler
-                0x080079d2                TIM_SetClockDivision
-                0x08007a08                TIM_GetCapture1
-                0x08007a20                TIM_GetCapture2
-                0x08007a38                TIM_GetCapture3
-                0x08007a50                TIM_GetCapture4
-                0x08007a6a                TIM_GetCounter
-                0x08007a82                TIM_GetPrescaler
-                0x08007a9a                TIM_GetFlagStatus
-                0x08007ad0                TIM_ClearFlag
-                0x08007af0                TIM_GetITStatus
-                0x08007b42                TIM_ClearITPendingBit
- .text          0x08007f1c      0x8dc Object/lib/SPL/src/stm32f10x_usart.o
-                0x08007f1c                USART_DeInit
-                0x08007fd4                USART_Init
-                0x08008148                USART_StructInit
-                0x08008180                USART_ClockInit
-                0x080081d6                USART_ClockStructInit
-                0x08008200                USART_Cmd
-                0x0800823e                USART_ITConfig
-                0x080082cc                USART_DMACmd
-                0x08008312                USART_SetAddress
-                0x0800834a                USART_WakeUpConfig
-                0x08008380                USART_ReceiverWakeUpCmd
-                0x080083be                USART_LINBreakDetectLengthConfig
-                0x080083f4                USART_LINCmd
-                0x08008432                USART_SendData
-                0x08008454                USART_ReceiveData
-                0x08008472                USART_SendBreak
-                0x08008494                USART_SetGuardTime
-                0x080084ce                USART_SetPrescaler
-                0x08008506                USART_SmartCardCmd
-                0x08008544                USART_SmartCardNACKCmd
-                0x08008582                USART_HalfDuplexCmd
-                0x080085c0                USART_OverSampling8Cmd
-                0x08008602                USART_OneBitMethodCmd
-                0x08008640                USART_IrDAConfig
-                0x08008676                USART_IrDACmd
-                0x080086b4                USART_GetFlagStatus
-                0x080086ea                USART_ClearFlag
-                0x0800870a                USART_GetITStatus
-                0x080087be                USART_ClearITPendingBit
- .text          0x080087f8       0x14 Object/startup/startup_stm32f103c8tx.o
+ .text          0x08000130       0x2c Object/platform/Board_Clock.o
+                0x08000130                Board_Clock_Init
+                0x0800013c                Board_PeripheralsClock_Init
+ .text          0x0800015c      0x140 Object/platform/syscalls.o
+                0x0800015c                _sbrk
+                0x08000198                _open
+                0x080001ba                _close
+                0x080001d0                _fstat
+                0x080001ee                _lseek
+                0x08000206                _read
+                0x0800021e                _write
+                0x08000236                _isatty
+                0x0800024a                _exit
+                0x08000256                _getpid
+                0x08000264                _kill
+                0x08000284                _init
+                0x08000290                _fini
+ .text          0x0800029c      0x258 Object/platform/system_stm32f10x.o
+                0x0800029c                SystemInit
+                0x08000304                SystemCoreClockUpdate
+ .text          0x080004f4      0x214 Object/Bsw/Mcal/Dio/src/Dio.o
+                0x0800053c                Dio_ReadChannel
+                0x08000582                Dio_WriteChannel
+                0x080005d2                Dio_ReadPort
+                0x080005fa                Dio_WritePort
+                0x08000626                Dio_ReadChannelGroup
+                0x0800064e                Dio_WriteChannelGroup
+                0x080006ac                Dio_FlipChannel
+ .text          0x08000708      0x174 Object/Bsw/Mcal/Gpt/src/Gpt.o
+                0x08000708                Gpt_Init
+                0x080007dc                Gpt_StartTimer
+                0x08000820                Gpt_GetTimeElapsed
+                0x0800084e                Gpt_StopTimer
+ .text          0x0800087c        0x0 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .text          0x0800087c       0x64 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+                0x0800087c                Gpt_RegisterApiCallback
+                0x080008ac                TIM2_IRQHandler
+ .text          0x080008e0       0xa4 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+                0x080008e0                GetTimerGroup
+                0x08000920                GetCounterMode
+                0x0800094a                GetClockDivider
+ .text          0x08000984       0x94 Object/Bsw/Mcal/Port/src/Port.o
+                0x08000984                Port_Init
+ .text          0x08000a18        0x0 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .text          0x08000a18       0xf0 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+                0x08000a18                GetPortGroup
+                0x08000a6c                Port_GetPinMode
+                0x08000ad0                Port_GetPinSpeed
+ .text          0x08000b08       0x84 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+                0x08000b08                Mcu_IrqInit
+ .text          0x08000b8c       0x50 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+                0x08000b8c                Mcu_MapPriorityGroup
+ .text          0x08000bdc       0x24 Object/Bsw/Services/Callback/CallbackM.o
+                0x08000bea                CallbackM_Init
+ .text          0x08000c00      0x18c Object/lib/SPL/src/misc.o
+                0x08000c00                NVIC_PriorityGroupConfig
+                0x08000c24                NVIC_Init
+                0x08000ce8                NVIC_SetVectorTable
+                0x08000d14                NVIC_SystemLPConfig
+                0x08000d54                SysTick_CLKSourceConfig
+ .text          0x08000d8c      0xa00 Object/lib/SPL/src/stm32f10x_adc.o
+                0x08000d8c                ADC_DeInit
+                0x08000e00                ADC_Init
+                0x08000ea4                ADC_StructInit
+                0x08000eda                ADC_Cmd
+                0x08000f10                ADC_DMACmd
+                0x08000f46                ADC_ITConfig
+                0x08000f8a                ADC_ResetCalibration
+                0x08000fa8                ADC_GetResetCalibrationStatus
+                0x08000fd6                ADC_StartCalibration
+                0x08000ff4                ADC_GetCalibrationStatus
+                0x08001022                ADC_SoftwareStartConvCmd
+                0x08001058                ADC_GetSoftwareStartConvStatus
+                0x08001086                ADC_DiscModeChannelCountConfig
+                0x080010c8                ADC_DiscModeCmd
+                0x080010fe                ADC_RegularChannelConfig
+                0x08001290                ADC_ExternalTrigConvCmd
+                0x080012c6                ADC_GetConversionValue
+                0x080012de                ADC_GetDualModeConversionValue
+                0x080012f4                ADC_AutoInjectedConvCmd
+                0x0800132a                ADC_InjectedDiscModeCmd
+                0x08001360                ADC_ExternalTrigInjectedConvConfig
+                0x08001394                ADC_ExternalTrigInjectedConvCmd
+                0x080013ca                ADC_SoftwareStartInjectedConvCmd
+                0x08001400                ADC_GetSoftwareStartInjectedConvCmdStatus
+                0x0800142e                ADC_InjectedChannelConfig
+                0x0800154e                ADC_InjectedSequencerLengthConfig
+                0x08001590                ADC_SetInjectedOffset
+                0x080015c2                ADC_GetInjectedConversionValue
+                0x080015f0                ADC_AnalogWatchdogCmd
+                0x08001628                ADC_AnalogWatchdogThresholdsConfig
+                0x0800164e                ADC_AnalogWatchdogSingleChannelConfig
+                0x08001684                ADC_TempSensorVrefintCmd
+                0x080016bc                ADC_GetFlagStatus
+                0x080016ee                ADC_ClearFlag
+                0x0800170c                ADC_GetITStatus
+                0x08001760                ADC_ClearITPendingBit
+ .text          0x0800178c     0x1188 Object/lib/SPL/src/stm32f10x_can.o
+                0x0800178c                CAN_DeInit
+                0x080017d4                CAN_Init
+                0x08001974                CAN_FilterInit
+                0x08001af8                CAN_StructInit
+                0x08001b4c                CAN_SlaveStartBank
+                0x08001bac                CAN_DBGFreeze
+                0x08001be2                CAN_TTComModeCmd
+                0x08001c78                CAN_Transmit
+                0x08001e18                CAN_TransmitStatus
+                0x08001f1c                CAN_CancelTransmit
+                0x08001f72                CAN_Receive
+                0x080020ec                CAN_FIFORelease
+                0x08002122                CAN_MessagePending
+                0x0800216a                CAN_OperatingModeRequest
+                0x08002264                CAN_Sleep
+                0x0800229c                CAN_WakeUp
+                0x080022f0                CAN_GetLastErrorCode
+                0x08002314                CAN_GetReceiveErrorCounter
+                0x08002334                CAN_GetLSBTransmitErrorCounter
+                0x08002354                CAN_ITConfig
+                0x0800238e                CAN_GetFlagStatus
+                0x0800245a                CAN_ClearFlag
+                0x080024cc                CAN_GetITStatus
+                0x08002730                CAN_ClearITPendingBit
+ .text          0x08002914      0x3f8 Object/lib/SPL/src/stm32f10x_dma.o
+                0x08002914                DMA_DeInit
+                0x08002a8c                DMA_Init
+                0x08002b08                DMA_StructInit
+                0x08002b5c                DMA_Cmd
+                0x08002b94                DMA_ITConfig
+                0x08002bce                DMA_SetCurrDataCounter
+                0x08002bea                DMA_GetCurrDataCounter
+                0x08002c02                DMA_GetFlagStatus
+                0x08002c54                DMA_ClearFlag
+                0x08002c88                DMA_GetITStatus
+                0x08002cd8                DMA_ClearITPendingBit
+ .text          0x08002d0c      0x218 Object/lib/SPL/src/stm32f10x_exti.o
+                0x08002d0c                EXTI_DeInit
+                0x08002d40                EXTI_Init
+                0x08002e24                EXTI_StructInit
+                0x08002e4e                EXTI_GenerateSWInterrupt
+                0x08002e70                EXTI_GetFlagStatus
+                0x08002ea4                EXTI_ClearFlag
+                0x08002ec0                EXTI_GetITStatus
+                0x08002f08                EXTI_ClearITPendingBit
+ .text          0x08002f24      0x954 Object/lib/SPL/src/stm32f10x_flash.o
+                0x08002f24                FLASH_SetLatency
+                0x08002f5c                FLASH_HalfCycleAccessCmd
+                0x08002f8c                FLASH_PrefetchBufferCmd
+                0x08002fbc                FLASH_Unlock
+                0x08002fe0                FLASH_UnlockBank1
+                0x08003004                FLASH_Lock
+                0x08003020                FLASH_LockBank1
+                0x0800303c                FLASH_ErasePage
+                0x080030a0                FLASH_EraseAllPages
+                0x080030fc                FLASH_EraseAllBank1Pages
+                0x08003158                FLASH_EraseOptionBytes
+                0x0800322c                FLASH_ProgramWord
+                0x080032c0                FLASH_ProgramHalfWord
+                0x0800331c                FLASH_ProgramOptionByteData
+                0x08003394                FLASH_EnableWriteProtection
+                0x080034ac                FLASH_ReadOutProtection
+                0x08003580                FLASH_UserOptionByteConfig
+                0x08003614                FLASH_GetUserOptionByte
+                0x0800362c                FLASH_GetWriteProtectionOptionByte
+                0x08003640                FLASH_GetReadOutProtectionStatus
+                0x08003670                FLASH_GetPrefetchBufferStatus
+                0x080036a0                FLASH_ITConfig
+                0x080036dc                FLASH_GetFlagStatus
+                0x0800372c                FLASH_ClearFlag
+                0x08003748                FLASH_GetStatus
+                0x0800379c                FLASH_GetBank1Status
+                0x080037f0                FLASH_WaitForLastOperation
+                0x08003834                FLASH_WaitForLastBank1Operation
+ .text          0x08003878      0x5d8 Object/lib/SPL/src/stm32f10x_gpio.o
+                0x08003878                GPIO_DeInit
+                0x0800395c                GPIO_AFIODeInit
+                0x08003974                GPIO_Init
+                0x08003aec                GPIO_StructInit
+                0x08003b12                GPIO_ReadInputDataBit
+                0x08003b44                GPIO_ReadInputData
+                0x08003b5c                GPIO_ReadOutputDataBit
+                0x08003b8e                GPIO_ReadOutputData
+                0x08003ba6                GPIO_SetBits
+                0x08003bc2                GPIO_ResetBits
+                0x08003bde                GPIO_WriteBit
+                0x08003c0c                GPIO_Write
+                0x08003c28                GPIO_PinLockConfig
+                0x08003c6a                GPIO_EventOutputConfig
+                0x08003cb4                GPIO_EventOutputCmd
+                0x08003cd4                GPIO_PinRemapConfig
+                0x08003db4                GPIO_EXTILineConfig
+                0x08003e34                GPIO_ETH_MediaInterfaceConfig
+ .text          0x08003e50      0x92c Object/lib/SPL/src/stm32f10x_i2c.o
+                0x08003e50                I2C_DeInit
+                0x08003e98                I2C_Init
+                0x0800401c                I2C_StructInit
+                0x08004058                I2C_Cmd
+                0x08004096                I2C_DMACmd
+                0x080040d4                I2C_DMALastTransferCmd
+                0x08004112                I2C_GenerateSTART
+                0x08004150                I2C_GenerateSTOP
+                0x0800418e                I2C_AcknowledgeConfig
+                0x080041cc                I2C_OwnAddress2Config
+                0x0800420e                I2C_DualAddressCmd
+                0x0800424c                I2C_GeneralCallCmd
+                0x0800428a                I2C_ITConfig
+                0x080042d0                I2C_SendData
+                0x080042ee                I2C_ReceiveData
+                0x08004308                I2C_Send7bitAddress
+                0x08004342                I2C_ReadRegister
+                0x0800436e                I2C_SoftwareResetCmd
+                0x080043b0                I2C_NACKPositionConfig
+                0x080043f0                I2C_SMBusAlertConfig
+                0x08004430                I2C_TransmitPEC
+                0x0800446e                I2C_PECPositionConfig
+                0x080044ae                I2C_CalculatePEC
+                0x080044ec                I2C_GetPEC
+                0x0800450a                I2C_ARPCmd
+                0x08004548                I2C_StretchClockCmd
+                0x08004586                I2C_FastModeDutyCycleConfig
+                0x080045c6                I2C_CheckEvent
+                0x08004624                I2C_GetLastEvent
+                0x08004666                I2C_GetFlagStatus
+                0x080046ca                I2C_ClearFlag
+                0x080046f6                I2C_GetITStatus
+                0x0800474e                I2C_ClearITPendingBit
+ .text          0x0800477c      0x1a0 Object/lib/SPL/src/stm32f10x_pwr.o
+                0x0800477c                PWR_DeInit
+                0x08004798                PWR_BackupAccessCmd
+                0x080047b8                PWR_PVDCmd
+                0x080047d8                PWR_PVDLevelConfig
+                0x08004810                PWR_WakeUpPinCmd
+                0x08004830                PWR_EnterSTOPMode
+                0x08004894                PWR_EnterSTANDBYMode
+                0x080048c4                PWR_GetFlagStatus
+                0x080048f8                PWR_ClearFlag
+ .text          0x0800491c      0x7dc Object/lib/SPL/src/stm32f10x_rcc.o
+                0x0800491c                RCC_DeInit
+                0x08004978                RCC_HSEConfig
+                0x080049d4                RCC_WaitForHSEStartUp
+                0x08004a24                RCC_AdjustHSICalibrationValue
+                0x08004a60                RCC_HSICmd
+                0x08004a80                RCC_PLLConfig
+                0x08004abc                RCC_PLLCmd
+                0x08004adc                RCC_SYSCLKConfig
+                0x08004b14                RCC_GetSYSCLKSource
+                0x08004b30                RCC_HCLKConfig
+                0x08004b68                RCC_PCLK1Config
+                0x08004ba0                RCC_PCLK2Config
+                0x08004bd8                RCC_ITConfig
+                0x08004c24                RCC_USBCLKConfig
+                0x08004c40                RCC_ADCCLKConfig
+                0x08004c78                RCC_LSEConfig
+                0x08004cb8                RCC_LSICmd
+                0x08004cd8                RCC_RTCCLKConfig
+                0x08004cfc                RCC_RTCCLKCmd
+                0x08004d1c                RCC_GetClocksFreq
+                0x08004e88                RCC_AHBPeriphClockCmd
+                0x08004ec4                RCC_APB2PeriphClockCmd
+                0x08004f00                RCC_APB1PeriphClockCmd
+                0x08004f3c                RCC_APB2PeriphResetCmd
+                0x08004f78                RCC_APB1PeriphResetCmd
+                0x08004fb4                RCC_BackupResetCmd
+                0x08004fd4                RCC_ClockSecuritySystemCmd
+                0x08004ff4                RCC_MCOConfig
+                0x08005014                RCC_GetFlagStatus
+                0x08005088                RCC_ClearFlag
+                0x080050a4                RCC_GetITStatus
+                0x080050d8                RCC_ClearITPendingBit
+ .text          0x080050f8      0x4f0 Object/lib/SPL/src/stm32f10x_sdio.o
+                0x080050f8                SDIO_DeInit
+                0x08005144                SDIO_Init
+                0x080051a0                SDIO_StructInit
+                0x080051d6                SDIO_ClockCmd
+                0x080051f4                SDIO_SetPowerState
+                0x08005210                SDIO_GetPowerState
+                0x08005228                SDIO_ITConfig
+                0x08005264                SDIO_DMACmd
+                0x08005284                SDIO_SendCommand
+                0x080052dc                SDIO_CmdStructInit
+                0x0800530c                SDIO_GetCommandResponse
+                0x08005324                SDIO_GetResponse
+                0x0800534c                SDIO_DataConfig
+                0x080053a8                SDIO_DataStructInit
+                0x080053e0                SDIO_GetDataCounter
+                0x080053f4                SDIO_ReadData
+                0x0800540c                SDIO_WriteData
+                0x0800542c                SDIO_GetFIFOCount
+                0x08005440                SDIO_StartSDIOReadWait
+                0x08005460                SDIO_StopSDIOReadWait
+                0x08005480                SDIO_SetSDIOReadWaitMode
+                0x0800549c                SDIO_SetSDIOOperation
+                0x080054bc                SDIO_SendSDIOSuspendCmd
+                0x080054dc                SDIO_CommandCompletionCmd
+                0x080054fc                SDIO_CEATAITCmd
+                0x08005528                SDIO_SendCEATACmd
+                0x08005548                SDIO_GetFlagStatus
+                0x0800557c                SDIO_ClearFlag
+                0x08005598                SDIO_GetITStatus
+                0x080055cc                SDIO_ClearITPendingBit
+ .text          0x080055e8      0x6d0 Object/lib/SPL/src/stm32f10x_spi.o
+                0x080055e8                SPI_I2S_DeInit
+                0x0800565c                SPI_Init
+                0x080056e2                I2S_Init
+                0x08005848                SPI_StructInit
+                0x08005890                I2S_StructInit
+                0x080058c6                SPI_Cmd
+                0x08005904                I2S_Cmd
+                0x08005942                SPI_I2S_ITConfig
+                0x080059a2                SPI_I2S_DMACmd
+                0x080059e8                SPI_I2S_SendData
+                0x08005a04                SPI_I2S_ReceiveData
+                0x08005a1c                SPI_NSSInternalSoftwareConfig
+                0x08005a5e                SPI_SSOutputCmd
+                0x08005a9c                SPI_DataSizeConfig
+                0x08005ad2                SPI_TransmitCRC
+                0x08005af4                SPI_CalculateCRC
+                0x08005b32                SPI_GetCRC
+                0x08005b62                SPI_GetCRCPolynomial
+                0x08005b7a                SPI_BiDirectionalLineConfig
+                0x08005bba                SPI_I2S_GetFlagStatus
+                0x08005bf0                SPI_I2S_ClearFlag
+                0x08005c10                SPI_I2S_GetITStatus
+                0x08005c84                SPI_I2S_ClearITPendingBit
+ .text          0x08005cb8     0x1d94 Object/lib/SPL/src/stm32f10x_tim.o
+                0x08005cb8                TIM_DeInit
+                0x08005ee4                TIM_TimeBaseInit
+                0x08005fdc                TIM_OC1Init
+                0x080060f4                TIM_OC2Init
+                0x08006204                TIM_OC3Init
+                0x08006310                TIM_OC4Init
+                0x080063e0                TIM_ICInit
+                0x08006488                TIM_PWMIConfig
+                0x08006540                TIM_BDTRConfig
+                0x0800658e                TIM_TimeBaseStructInit
+                0x080065c0                TIM_OCStructInit
+                0x08006602                TIM_ICStructInit
+                0x08006632                TIM_BDTRStructInit
+                0x0800666e                TIM_Cmd
+                0x080066ac                TIM_CtrlPWMOutputs
+                0x080066f6                TIM_ITConfig
+                0x0800673c                TIM_GenerateEvent
+                0x08006758                TIM_DMAConfig
+                0x08006780                TIM_DMACmd
+                0x080067c6                TIM_InternalClockConfig
+                0x080067e8                TIM_ITRxExternalClockConfig
+                0x08006816                TIM_TIxExternalClockConfig
+                0x08006872                TIM_ETRClockMode1Config
+                0x080068d0                TIM_ETRClockMode2Config
+                0x0800690e                TIM_ETRConfig
+                0x08006960                TIM_PrescalerConfig
+                0x08006986                TIM_CounterModeConfig
+                0x080069bc                TIM_SelectInputTrigger
+                0x080069f2                TIM_EncoderInterfaceConfig
+                0x08006a88                TIM_ForcedOC1Config
+                0x08006abe                TIM_ForcedOC2Config
+                0x08006af8                TIM_ForcedOC3Config
+                0x08006b2e                TIM_ForcedOC4Config
+                0x08006b68                TIM_ARRPreloadConfig
+                0x08006ba6                TIM_SelectCOM
+                0x08006be4                TIM_SelectCCDMA
+                0x08006c22                TIM_CCPreloadControl
+                0x08006c60                TIM_OC1PreloadConfig
+                0x08006c96                TIM_OC2PreloadConfig
+                0x08006cd0                TIM_OC3PreloadConfig
+                0x08006d06                TIM_OC4PreloadConfig
+                0x08006d40                TIM_OC1FastConfig
+                0x08006d76                TIM_OC2FastConfig
+                0x08006db0                TIM_OC3FastConfig
+                0x08006de6                TIM_OC4FastConfig
+                0x08006e20                TIM_ClearOC1Ref
+                0x08006e56                TIM_ClearOC2Ref
+                0x08006e90                TIM_ClearOC3Ref
+                0x08006ec6                TIM_ClearOC4Ref
+                0x08006f00                TIM_OC1PolarityConfig
+                0x08006f36                TIM_OC1NPolarityConfig
+                0x08006f6c                TIM_OC2PolarityConfig
+                0x08006fa6                TIM_OC2NPolarityConfig
+                0x08006fe0                TIM_OC3PolarityConfig
+                0x0800701a                TIM_OC3NPolarityConfig
+                0x08007054                TIM_OC4PolarityConfig
+                0x0800708e                TIM_CCxCmd
+                0x080070e2                TIM_CCxNCmd
+                0x08007136                TIM_SelectOCxM
+                0x080071e6                TIM_UpdateDisableConfig
+                0x08007224                TIM_UpdateRequestConfig
+                0x08007262                TIM_SelectHallSensor
+                0x080072a0                TIM_SelectOnePulseMode
+                0x080072d6                TIM_SelectOutputTrigger
+                0x0800730c                TIM_SelectSlaveMode
+                0x08007342                TIM_SelectMasterSlaveMode
+                0x08007378                TIM_SetCounter
+                0x08007394                TIM_SetAutoreload
+                0x080073b0                TIM_SetCompare1
+                0x080073cc                TIM_SetCompare2
+                0x080073e8                TIM_SetCompare3
+                0x08007404                TIM_SetCompare4
+                0x08007422                TIM_SetIC1Prescaler
+                0x08007458                TIM_SetIC2Prescaler
+                0x08007492                TIM_SetIC3Prescaler
+                0x080074c8                TIM_SetIC4Prescaler
+                0x08007502                TIM_SetClockDivision
+                0x08007538                TIM_GetCapture1
+                0x08007550                TIM_GetCapture2
+                0x08007568                TIM_GetCapture3
+                0x08007580                TIM_GetCapture4
+                0x0800759a                TIM_GetCounter
+                0x080075b2                TIM_GetPrescaler
+                0x080075ca                TIM_GetFlagStatus
+                0x08007600                TIM_ClearFlag
+                0x08007620                TIM_GetITStatus
+                0x08007672                TIM_ClearITPendingBit
+ .text          0x08007a4c      0x8dc Object/lib/SPL/src/stm32f10x_usart.o
+                0x08007a4c                USART_DeInit
+                0x08007b04                USART_Init
+                0x08007c78                USART_StructInit
+                0x08007cb0                USART_ClockInit
+                0x08007d06                USART_ClockStructInit
+                0x08007d30                USART_Cmd
+                0x08007d6e                USART_ITConfig
+                0x08007dfc                USART_DMACmd
+                0x08007e42                USART_SetAddress
+                0x08007e7a                USART_WakeUpConfig
+                0x08007eb0                USART_ReceiverWakeUpCmd
+                0x08007eee                USART_LINBreakDetectLengthConfig
+                0x08007f24                USART_LINCmd
+                0x08007f62                USART_SendData
+                0x08007f84                USART_ReceiveData
+                0x08007fa2                USART_SendBreak
+                0x08007fc4                USART_SetGuardTime
+                0x08007ffe                USART_SetPrescaler
+                0x08008036                USART_SmartCardCmd
+                0x08008074                USART_SmartCardNACKCmd
+                0x080080b2                USART_HalfDuplexCmd
+                0x080080f0                USART_OverSampling8Cmd
+                0x08008132                USART_OneBitMethodCmd
+                0x08008170                USART_IrDAConfig
+                0x080081a6                USART_IrDACmd
+                0x080081e4                USART_GetFlagStatus
+                0x0800821a                USART_ClearFlag
+                0x0800823a                USART_GetITStatus
+                0x080082ee                USART_ClearITPendingBit
+ .text          0x08008328       0x14 Object/startup/startup_stm32f103c8tx.o
  .text.Reset_Handler
-                0x0800880c       0x48 Object/startup/startup_stm32f103c8tx.o
-                0x0800880c                Reset_Handler
+                0x0800833c       0x48 Object/startup/startup_stm32f103c8tx.o
+                0x0800833c                Reset_Handler
  .text.Default_Handler
-                0x08008854        0x2 Object/startup/startup_stm32f103c8tx.o
-                0x08008854                RTC_Alarm_IRQHandler
-                0x08008854                EXTI2_IRQHandler
-                0x08008854                DebugMon_Handler
-                0x08008854                TIM1_CC_IRQHandler
-                0x08008854                HardFault_Handler
-                0x08008854                SysTick_Handler
-                0x08008854                PVD_IRQHandler
-                0x08008854                PendSV_Handler
-                0x08008854                NMI_Handler
-                0x08008854                EXTI3_IRQHandler
-                0x08008854                EXTI0_IRQHandler
-                0x08008854                I2C2_EV_IRQHandler
-                0x08008854                UsageFault_Handler
-                0x08008854                ADC1_2_IRQHandler
-                0x08008854                SPI1_IRQHandler
-                0x08008854                TAMPER_IRQHandler
-                0x08008854                DMA1_Channel4_IRQHandler
-                0x08008854                USART3_IRQHandler
-                0x08008854                RTC_IRQHandler
-                0x08008854                DMA1_Channel7_IRQHandler
-                0x08008854                CAN1_RX1_IRQHandler
-                0x08008854                TIM4_IRQHandler
-                0x08008854                I2C1_EV_IRQHandler
-                0x08008854                DMA1_Channel6_IRQHandler
-                0x08008854                TIM3_IRQHandler
-                0x08008854                RCC_IRQHandler
-                0x08008854                TIM1_TRG_COM_IRQHandler
-                0x08008854                DMA1_Channel1_IRQHandler
-                0x08008854                Default_Handler
-                0x08008854                EXTI15_10_IRQHandler
-                0x08008854                EXTI9_5_IRQHandler
-                0x08008854                SPI2_IRQHandler
-                0x08008854                MemManage_Handler
-                0x08008854                SVC_Handler
-                0x08008854                DMA1_Channel5_IRQHandler
-                0x08008854                EXTI4_IRQHandler
-                0x08008854                USB_LP_CAN1_RX0_IRQHandler
-                0x08008854                USB_HP_CAN1_TX_IRQHandler
-                0x08008854                DMA1_Channel3_IRQHandler
-                0x08008854                TIM1_UP_IRQHandler
-                0x08008854                WWDG_IRQHandler
-                0x08008854                TIM2_IRQHandler
-                0x08008854                TIM1_BRK_IRQHandler
-                0x08008854                EXTI1_IRQHandler
-                0x08008854                USART2_IRQHandler
-                0x08008854                I2C2_ER_IRQHandler
-                0x08008854                DMA1_Channel2_IRQHandler
-                0x08008854                CAN1_SCE_IRQHandler
-                0x08008854                FLASH_IRQHandler
-                0x08008854                BusFault_Handler
-                0x08008854                USART1_IRQHandler
-                0x08008854                I2C1_ER_IRQHandler
-                0x08008854                USBWakeUp_IRQHandler
- .text          0x08008856        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
- *fill*         0x08008856        0x2 
- .text.__errno  0x08008858        0xc D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
-                0x08008858                __errno
- .text          0x08008864        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x08008384        0x2 Object/startup/startup_stm32f103c8tx.o
+                0x08008384                RTC_Alarm_IRQHandler
+                0x08008384                EXTI2_IRQHandler
+                0x08008384                DebugMon_Handler
+                0x08008384                TIM1_CC_IRQHandler
+                0x08008384                HardFault_Handler
+                0x08008384                SysTick_Handler
+                0x08008384                PVD_IRQHandler
+                0x08008384                PendSV_Handler
+                0x08008384                NMI_Handler
+                0x08008384                EXTI3_IRQHandler
+                0x08008384                EXTI0_IRQHandler
+                0x08008384                I2C2_EV_IRQHandler
+                0x08008384                UsageFault_Handler
+                0x08008384                ADC1_2_IRQHandler
+                0x08008384                SPI1_IRQHandler
+                0x08008384                TAMPER_IRQHandler
+                0x08008384                DMA1_Channel4_IRQHandler
+                0x08008384                USART3_IRQHandler
+                0x08008384                RTC_IRQHandler
+                0x08008384                DMA1_Channel7_IRQHandler
+                0x08008384                CAN1_RX1_IRQHandler
+                0x08008384                TIM4_IRQHandler
+                0x08008384                I2C1_EV_IRQHandler
+                0x08008384                DMA1_Channel6_IRQHandler
+                0x08008384                TIM3_IRQHandler
+                0x08008384                RCC_IRQHandler
+                0x08008384                TIM1_TRG_COM_IRQHandler
+                0x08008384                DMA1_Channel1_IRQHandler
+                0x08008384                Default_Handler
+                0x08008384                EXTI15_10_IRQHandler
+                0x08008384                EXTI9_5_IRQHandler
+                0x08008384                SPI2_IRQHandler
+                0x08008384                MemManage_Handler
+                0x08008384                SVC_Handler
+                0x08008384                DMA1_Channel5_IRQHandler
+                0x08008384                EXTI4_IRQHandler
+                0x08008384                USB_LP_CAN1_RX0_IRQHandler
+                0x08008384                USB_HP_CAN1_TX_IRQHandler
+                0x08008384                DMA1_Channel3_IRQHandler
+                0x08008384                TIM1_UP_IRQHandler
+                0x08008384                WWDG_IRQHandler
+                0x08008384                TIM1_BRK_IRQHandler
+                0x08008384                EXTI1_IRQHandler
+                0x08008384                USART2_IRQHandler
+                0x08008384                I2C2_ER_IRQHandler
+                0x08008384                DMA1_Channel2_IRQHandler
+                0x08008384                CAN1_SCE_IRQHandler
+                0x08008384                FLASH_IRQHandler
+                0x08008384                BusFault_Handler
+                0x08008384                USART1_IRQHandler
+                0x08008384                I2C1_ER_IRQHandler
+                0x08008384                USBWakeUp_IRQHandler
+ .text          0x08008386        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
+ *fill*         0x08008386        0x2 
+ .text.__errno  0x08008388        0xc D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
+                0x08008388                __errno
+ .text          0x08008394        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .text.__libc_init_array
-                0x08008864       0x48 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
-                0x08008864                __libc_init_array
- .text          0x080088ac        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
+                0x08008394       0x48 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+                0x08008394                __libc_init_array
+ .text          0x080083dc        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
  *(.rodata*)
- .rodata        0x080088ac       0x10 Object/platform/system_stm32f10x.o
-                0x080088ac                AHBPrescTable
- .rodata        0x080088bc      0x152 Object/platform/Testcase_Types.o
-                0x080089f0                PortParamCfg
- *fill*         0x08008a0e        0x2 
- .rodata        0x08008a10       0x28 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
-                0x08008a30                Gpt_Config
- .rodata        0x08008a38       0x10 Object/Bsw/Mcal/Port/Port_Cfg.o
-                0x08008a40                Port_Config
- .rodata        0x08008a48       0x28 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
-                0x08008a68                Pwm_Config
- .rodata        0x08008a70       0x14 Object/lib/SPL/src/stm32f10x_rcc.o
+ .rodata        0x080083dc       0x10 Object/platform/system_stm32f10x.o
+                0x080083dc                AHBPrescTable
+ .rodata        0x080083ec       0x1c Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+                0x08008400                Gpt_Config
+ .rodata        0x08008408       0x10 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+                0x08008410                Port_Config
+ .rodata        0x08008418        0x1 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+                0x08008418                Mcu_IrqTable
+ *fill*         0x08008419        0x3 
+ .rodata        0x0800841c       0x14 Object/lib/SPL/src/stm32f10x_rcc.o
  *(.eh_frame)
  *(.ARM.exidx*)
  *(.init)
  *(.fini)
 
-.glue_7         0x08008a84        0x0
- .glue_7        0x08008a84        0x0 linker stubs
+.glue_7         0x08008430        0x0
+ .glue_7        0x08008430        0x0 linker stubs
 
-.glue_7t        0x08008a84        0x0
- .glue_7t       0x08008a84        0x0 linker stubs
+.glue_7t        0x08008430        0x0
+ .glue_7t       0x08008430        0x0 linker stubs
 
-.vfp11_veneer   0x08008a84        0x0
- .vfp11_veneer  0x08008a84        0x0 linker stubs
+.vfp11_veneer   0x08008430        0x0
+ .vfp11_veneer  0x08008430        0x0 linker stubs
 
-.v4_bx          0x08008a84        0x0
- .v4_bx         0x08008a84        0x0 linker stubs
+.v4_bx          0x08008430        0x0
+ .v4_bx         0x08008430        0x0 linker stubs
 
-.iplt           0x08008a84        0x0
- .iplt          0x08008a84        0x0 Object/App/main.o
+.iplt           0x08008430        0x0
+ .iplt          0x08008430        0x0 Object/App/main.o
 
-.rel.dyn        0x08008a84        0x0
- .rel.iplt      0x08008a84        0x0 Object/App/main.o
+.rel.dyn        0x08008430        0x0
+ .rel.iplt      0x08008430        0x0 Object/App/main.o
 
-.data           0x20000000       0xa0 load address 0x08008a84
+.data           0x20000000       0x54 load address 0x08008430
                 0x20000000                        _sdata = .
  *(.data*)
- .data          0x20000000        0x1 Object/App/main.o
-                0x20000000                ty
- .data          0x20000001        0x0 Object/platform/Board_Clock.o
- .data          0x20000001        0x0 Object/platform/syscalls.o
- *fill*         0x20000001        0x3 
- .data          0x20000004        0x4 Object/platform/system_stm32f10x.o
-                0x20000004                SystemCoreClock
- .data          0x20000008       0x48 Object/platform/Testcase_Types.o
-                0x20000030                TC_KeyMappedList
-                0x20000048                PortCfg
- .data          0x20000050        0x0 Object/Bsw/Mcal/Dio/Dio.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Gpt/Gpt.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Port/Port.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Port/Port_Cfg.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Port/Port_Mapping.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Pwm/Pwm.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .data          0x20000050        0x0 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .data          0x20000050        0x0 Object/Bsw/Services/Delay/Bsw_Delay.o
- .data          0x20000050        0x0 Object/lib/SPL/src/misc.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_adc.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_can.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_dma.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_exti.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_flash.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_gpio.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_i2c.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_pwr.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_rcc.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_sdio.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_spi.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_tim.o
- .data          0x20000050        0x0 Object/lib/SPL/src/stm32f10x_usart.o
- .data          0x20000050        0x0 Object/startup/startup_stm32f103c8tx.o
- .data          0x20000050        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
- .data          0x20000050        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .data          0x20000050        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
+ .data          0x20000000        0x0 Object/App/main.o
+ .data          0x20000000        0x0 Object/platform/Board_Clock.o
+ .data          0x20000000        0x0 Object/platform/syscalls.o
+ .data          0x20000000        0x4 Object/platform/system_stm32f10x.o
+                0x20000000                SystemCoreClock
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Dio/src/Dio.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Port/src/Port.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .data          0x20000004        0x0 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .data          0x20000004        0x0 Object/Bsw/Services/Callback/CallbackM.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/misc.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_adc.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_can.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_dma.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_exti.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_flash.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_gpio.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_i2c.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_pwr.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_rcc.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_sdio.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_spi.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_tim.o
+ .data          0x20000004        0x0 Object/lib/SPL/src/stm32f10x_usart.o
+ .data          0x20000004        0x0 Object/startup/startup_stm32f103c8tx.o
+ .data          0x20000004        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
+ .data          0x20000004        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .data          0x20000004        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
  .data._impure_ptr
-                0x20000050        0x4 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
-                0x20000050                _impure_ptr
+                0x20000004        0x4 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
+                0x20000004                _impure_ptr
  .data._impure_data
-                0x20000054       0x4c D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
-                0x20000054                _impure_data
-                0x200000a0                        _edata = .
+                0x20000008       0x4c D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
+                0x20000008                _impure_data
+                0x20000054                        _edata = .
 
-.igot.plt       0x200000a0        0x0 load address 0x08008b24
- .igot.plt      0x200000a0        0x0 Object/App/main.o
+.igot.plt       0x20000054        0x0 load address 0x08008484
+ .igot.plt      0x20000054        0x0 Object/App/main.o
 
-.bss            0x200000a0       0x15 load address 0x08008b24
-                0x200000a0                        _sbss = .
+.bss            0x20000054       0x14 load address 0x08008484
+                0x20000054                        _sbss = .
  *(.bss*)
- .bss           0x200000a0        0x0 Object/App/main.o
- .bss           0x200000a0        0x0 Object/platform/Board_Clock.o
- .bss           0x200000a0        0x4 Object/platform/syscalls.o
- .bss           0x200000a4        0x0 Object/platform/system_stm32f10x.o
- .bss           0x200000a4        0x1 Object/platform/Testcase_Types.o
- .bss           0x200000a5        0x0 Object/Bsw/Mcal/Dio/Dio.o
- *fill*         0x200000a5        0x3 
- .bss           0x200000a8        0x4 Object/Bsw/Mcal/Gpt/Gpt.o
- .bss           0x200000ac        0x0 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .bss           0x200000ac        0x0 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .bss           0x200000ac        0x4 Object/Bsw/Mcal/Port/Port.o
- .bss           0x200000b0        0x0 Object/Bsw/Mcal/Port/Port_Cfg.o
- .bss           0x200000b0        0x0 Object/Bsw/Mcal/Port/Port_Mapping.o
- .bss           0x200000b0        0x5 Object/Bsw/Mcal/Pwm/Pwm.o
- .bss           0x200000b5        0x0 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .bss           0x200000b5        0x0 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .bss           0x200000b5        0x0 Object/Bsw/Services/Delay/Bsw_Delay.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/misc.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_adc.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_can.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_dma.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_exti.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_flash.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_gpio.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_i2c.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_pwr.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_rcc.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_sdio.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_spi.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_tim.o
- .bss           0x200000b5        0x0 Object/lib/SPL/src/stm32f10x_usart.o
- .bss           0x200000b5        0x0 Object/startup/startup_stm32f103c8tx.o
- .bss           0x200000b5        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
- .bss           0x200000b5        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .bss           0x200000b5        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
+ .bss           0x20000054        0x0 Object/App/main.o
+ .bss           0x20000054        0x0 Object/platform/Board_Clock.o
+ .bss           0x20000054        0x4 Object/platform/syscalls.o
+ .bss           0x20000058        0x0 Object/platform/system_stm32f10x.o
+ .bss           0x20000058        0x0 Object/Bsw/Mcal/Dio/src/Dio.o
+ .bss           0x20000058        0x4 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .bss           0x2000005c        0x0 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .bss           0x2000005c        0x4 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .bss           0x20000060        0x0 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .bss           0x20000060        0x4 Object/Bsw/Mcal/Port/src/Port.o
+ .bss           0x20000064        0x0 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .bss           0x20000064        0x0 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .bss           0x20000064        0x4 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .bss           0x20000068        0x0 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .bss           0x20000068        0x0 Object/Bsw/Services/Callback/CallbackM.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/misc.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_adc.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_can.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_dma.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_exti.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_flash.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_gpio.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_i2c.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_pwr.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_rcc.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_sdio.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_spi.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_tim.o
+ .bss           0x20000068        0x0 Object/lib/SPL/src/stm32f10x_usart.o
+ .bss           0x20000068        0x0 Object/startup/startup_stm32f103c8tx.o
+ .bss           0x20000068        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
+ .bss           0x20000068        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
+ .bss           0x20000068        0x0 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
  *(COMMON)
-                0x200000b5                        _ebss = .
+                0x20000068                        _ebss = .
                 0x20005000                        _estack = (ORIGIN (RAM) + LENGTH (RAM))
-                0x08008a84                        _sidata = LOADADDR (.data)
-                0x200000b5                        _end = .
-                0x08008a84                        PROVIDE (_sidata = LOADADDR (.data))
+                0x08008430                        _sidata = LOADADDR (.data)
+                0x20000068                        _end = .
+                0x08008430                        PROVIDE (_sidata = LOADADDR (.data))
                 [!provide]                        PROVIDE (_sdata = ADDR (.data))
                 [!provide]                        PROVIDE (_edata = (ADDR (.data) + SIZEOF (.data)))
                 [!provide]                        PROVIDE (_sbss = ADDR (.bss))
@@ -727,73 +705,71 @@ END GROUP
 OUTPUT(build/main.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x00000000     0xc1e8
- .debug_info    0x00000000      0x746 Object/App/main.o
- .debug_info    0x00000746       0xfe Object/platform/Board_Clock.o
- .debug_info    0x00000844      0x53a Object/platform/syscalls.o
- .debug_info    0x00000d7e      0x4ad Object/platform/system_stm32f10x.o
- .debug_info    0x0000122b      0x399 Object/platform/Testcase_Types.o
- .debug_info    0x000015c4      0x4ca Object/Bsw/Mcal/Dio/Dio.o
- .debug_info    0x00001a8e      0x6f4 Object/Bsw/Mcal/Gpt/Gpt.o
- .debug_info    0x00002182      0x2a3 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .debug_info    0x00002425      0x3df Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .debug_info    0x00002804      0x428 Object/Bsw/Mcal/Port/Port.o
- .debug_info    0x00002c2c      0x239 Object/Bsw/Mcal/Port/Port_Cfg.o
- .debug_info    0x00002e65      0x2ab Object/Bsw/Mcal/Port/Port_Mapping.o
- .debug_info    0x00003110      0x89b Object/Bsw/Mcal/Pwm/Pwm.o
- .debug_info    0x000039ab      0x29b Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .debug_info    0x00003c46      0x318 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .debug_info    0x00003f5e      0x2e1 Object/Bsw/Services/Delay/Bsw_Delay.o
- .debug_info    0x0000423f      0x4f6 Object/lib/SPL/src/misc.o
- .debug_info    0x00004735      0xb3e Object/lib/SPL/src/stm32f10x_adc.o
- .debug_info    0x00005273      0xb73 Object/lib/SPL/src/stm32f10x_can.o
- .debug_info    0x00005de6      0x436 Object/lib/SPL/src/stm32f10x_dma.o
- .debug_info    0x0000621c      0x31e Object/lib/SPL/src/stm32f10x_exti.o
- .debug_info    0x0000653a      0x76f Object/lib/SPL/src/stm32f10x_flash.o
- .debug_info    0x00006ca9      0x6d6 Object/lib/SPL/src/stm32f10x_gpio.o
- .debug_info    0x0000737f      0xaf1 Object/lib/SPL/src/stm32f10x_i2c.o
- .debug_info    0x00007e70      0x447 Object/lib/SPL/src/stm32f10x_pwr.o
- .debug_info    0x000082b7      0x854 Object/lib/SPL/src/stm32f10x_rcc.o
- .debug_info    0x00008b0b      0x7b6 Object/lib/SPL/src/stm32f10x_sdio.o
- .debug_info    0x000092c1      0x904 Object/lib/SPL/src/stm32f10x_spi.o
- .debug_info    0x00009bc5     0x1c06 Object/lib/SPL/src/stm32f10x_tim.o
- .debug_info    0x0000b7cb      0x9ed Object/lib/SPL/src/stm32f10x_usart.o
- .debug_info    0x0000c1b8       0x30 Object/startup/startup_stm32f103c8tx.o
+.debug_info     0x00000000     0xb73f
+ .debug_info    0x00000000      0x485 Object/App/main.o
+ .debug_info    0x00000485      0x110 Object/platform/Board_Clock.o
+ .debug_info    0x00000595      0x53a Object/platform/syscalls.o
+ .debug_info    0x00000acf      0x4ad Object/platform/system_stm32f10x.o
+ .debug_info    0x00000f7c      0x4ca Object/Bsw/Mcal/Dio/src/Dio.o
+ .debug_info    0x00001446      0x7b6 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .debug_info    0x00001bfc      0x31e Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .debug_info    0x00001f1a      0x3f1 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .debug_info    0x0000230b      0x3eb Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .debug_info    0x000026f6      0x428 Object/Bsw/Mcal/Port/src/Port.o
+ .debug_info    0x00002b1e      0x239 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .debug_info    0x00002d57      0x2ab Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .debug_info    0x00003002      0x38e Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .debug_info    0x00003390      0x2ae Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .debug_info    0x0000363e      0x158 Object/Bsw/Services/Callback/CallbackM.o
+ .debug_info    0x00003796      0x4f6 Object/lib/SPL/src/misc.o
+ .debug_info    0x00003c8c      0xb3e Object/lib/SPL/src/stm32f10x_adc.o
+ .debug_info    0x000047ca      0xb73 Object/lib/SPL/src/stm32f10x_can.o
+ .debug_info    0x0000533d      0x436 Object/lib/SPL/src/stm32f10x_dma.o
+ .debug_info    0x00005773      0x31e Object/lib/SPL/src/stm32f10x_exti.o
+ .debug_info    0x00005a91      0x76f Object/lib/SPL/src/stm32f10x_flash.o
+ .debug_info    0x00006200      0x6d6 Object/lib/SPL/src/stm32f10x_gpio.o
+ .debug_info    0x000068d6      0xaf1 Object/lib/SPL/src/stm32f10x_i2c.o
+ .debug_info    0x000073c7      0x447 Object/lib/SPL/src/stm32f10x_pwr.o
+ .debug_info    0x0000780e      0x854 Object/lib/SPL/src/stm32f10x_rcc.o
+ .debug_info    0x00008062      0x7b6 Object/lib/SPL/src/stm32f10x_sdio.o
+ .debug_info    0x00008818      0x904 Object/lib/SPL/src/stm32f10x_spi.o
+ .debug_info    0x0000911c     0x1c06 Object/lib/SPL/src/stm32f10x_tim.o
+ .debug_info    0x0000ad22      0x9ed Object/lib/SPL/src/stm32f10x_usart.o
+ .debug_info    0x0000b70f       0x30 Object/startup/startup_stm32f103c8tx.o
 
-.debug_abbrev   0x00000000     0x2d13
- .debug_abbrev  0x00000000      0x160 Object/App/main.o
- .debug_abbrev  0x00000160       0xb4 Object/platform/Board_Clock.o
- .debug_abbrev  0x00000214      0x189 Object/platform/syscalls.o
- .debug_abbrev  0x0000039d      0x17c Object/platform/system_stm32f10x.o
- .debug_abbrev  0x00000519      0x170 Object/platform/Testcase_Types.o
- .debug_abbrev  0x00000689      0x180 Object/Bsw/Mcal/Dio/Dio.o
- .debug_abbrev  0x00000809      0x1d2 Object/Bsw/Mcal/Gpt/Gpt.o
- .debug_abbrev  0x000009db      0x116 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .debug_abbrev  0x00000af1       0xde Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .debug_abbrev  0x00000bcf      0x18d Object/Bsw/Mcal/Port/Port.o
- .debug_abbrev  0x00000d5c       0xe1 Object/Bsw/Mcal/Port/Port_Cfg.o
- .debug_abbrev  0x00000e3d       0xf6 Object/Bsw/Mcal/Port/Port_Mapping.o
- .debug_abbrev  0x00000f33      0x1c3 Object/Bsw/Mcal/Pwm/Pwm.o
- .debug_abbrev  0x000010f6       0xe2 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .debug_abbrev  0x000011d8       0xa7 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .debug_abbrev  0x0000127f      0x13e Object/Bsw/Services/Delay/Bsw_Delay.o
- .debug_abbrev  0x000013bd      0x17d Object/lib/SPL/src/misc.o
- .debug_abbrev  0x0000153a      0x1da Object/lib/SPL/src/stm32f10x_adc.o
- .debug_abbrev  0x00001714      0x240 Object/lib/SPL/src/stm32f10x_can.o
- .debug_abbrev  0x00001954      0x193 Object/lib/SPL/src/stm32f10x_dma.o
- .debug_abbrev  0x00001ae7      0x178 Object/lib/SPL/src/stm32f10x_exti.o
- .debug_abbrev  0x00001c5f      0x1c5 Object/lib/SPL/src/stm32f10x_flash.o
- .debug_abbrev  0x00001e24      0x215 Object/lib/SPL/src/stm32f10x_gpio.o
- .debug_abbrev  0x00002039      0x1bf Object/lib/SPL/src/stm32f10x_i2c.o
- .debug_abbrev  0x000021f8      0x1b0 Object/lib/SPL/src/stm32f10x_pwr.o
- .debug_abbrev  0x000023a8      0x1e1 Object/lib/SPL/src/stm32f10x_rcc.o
- .debug_abbrev  0x00002589      0x1d7 Object/lib/SPL/src/stm32f10x_sdio.o
- .debug_abbrev  0x00002760      0x1da Object/lib/SPL/src/stm32f10x_spi.o
- .debug_abbrev  0x0000293a      0x1f8 Object/lib/SPL/src/stm32f10x_tim.o
- .debug_abbrev  0x00002b32      0x1bd Object/lib/SPL/src/stm32f10x_usart.o
- .debug_abbrev  0x00002cef       0x24 Object/startup/startup_stm32f103c8tx.o
+.debug_abbrev   0x00000000     0x2b09
+ .debug_abbrev  0x00000000      0x126 Object/App/main.o
+ .debug_abbrev  0x00000126       0xc9 Object/platform/Board_Clock.o
+ .debug_abbrev  0x000001ef      0x189 Object/platform/syscalls.o
+ .debug_abbrev  0x00000378      0x17c Object/platform/system_stm32f10x.o
+ .debug_abbrev  0x000004f4      0x180 Object/Bsw/Mcal/Dio/src/Dio.o
+ .debug_abbrev  0x00000674      0x1c9 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .debug_abbrev  0x0000083d       0xf2 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .debug_abbrev  0x0000092f      0x17b Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .debug_abbrev  0x00000aaa       0xde Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .debug_abbrev  0x00000b88      0x18d Object/Bsw/Mcal/Port/src/Port.o
+ .debug_abbrev  0x00000d15       0xe1 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .debug_abbrev  0x00000df6       0xf6 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .debug_abbrev  0x00000eec      0x13a Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .debug_abbrev  0x00001026       0xd8 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .debug_abbrev  0x000010fe       0xb5 Object/Bsw/Services/Callback/CallbackM.o
+ .debug_abbrev  0x000011b3      0x17d Object/lib/SPL/src/misc.o
+ .debug_abbrev  0x00001330      0x1da Object/lib/SPL/src/stm32f10x_adc.o
+ .debug_abbrev  0x0000150a      0x240 Object/lib/SPL/src/stm32f10x_can.o
+ .debug_abbrev  0x0000174a      0x193 Object/lib/SPL/src/stm32f10x_dma.o
+ .debug_abbrev  0x000018dd      0x178 Object/lib/SPL/src/stm32f10x_exti.o
+ .debug_abbrev  0x00001a55      0x1c5 Object/lib/SPL/src/stm32f10x_flash.o
+ .debug_abbrev  0x00001c1a      0x215 Object/lib/SPL/src/stm32f10x_gpio.o
+ .debug_abbrev  0x00001e2f      0x1bf Object/lib/SPL/src/stm32f10x_i2c.o
+ .debug_abbrev  0x00001fee      0x1b0 Object/lib/SPL/src/stm32f10x_pwr.o
+ .debug_abbrev  0x0000219e      0x1e1 Object/lib/SPL/src/stm32f10x_rcc.o
+ .debug_abbrev  0x0000237f      0x1d7 Object/lib/SPL/src/stm32f10x_sdio.o
+ .debug_abbrev  0x00002556      0x1da Object/lib/SPL/src/stm32f10x_spi.o
+ .debug_abbrev  0x00002730      0x1f8 Object/lib/SPL/src/stm32f10x_tim.o
+ .debug_abbrev  0x00002928      0x1bd Object/lib/SPL/src/stm32f10x_usart.o
+ .debug_abbrev  0x00002ae5       0x24 Object/startup/startup_stm32f103c8tx.o
 
-.debug_aranges  0x00000000      0x3d8
+.debug_aranges  0x00000000      0x3b8
  .debug_aranges
                 0x00000000       0x20 Object/App/main.o
  .debug_aranges
@@ -803,126 +779,122 @@ LOAD linker stubs
  .debug_aranges
                 0x00000060       0x20 Object/platform/system_stm32f10x.o
  .debug_aranges
-                0x00000080       0x20 Object/platform/Testcase_Types.o
+                0x00000080       0x20 Object/Bsw/Mcal/Dio/src/Dio.o
  .debug_aranges
-                0x000000a0       0x20 Object/Bsw/Mcal/Dio/Dio.o
+                0x000000a0       0x20 Object/Bsw/Mcal/Gpt/src/Gpt.o
  .debug_aranges
-                0x000000c0       0x20 Object/Bsw/Mcal/Gpt/Gpt.o
+                0x000000c0       0x18 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
  .debug_aranges
-                0x000000e0       0x20 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
+                0x000000d8       0x20 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
  .debug_aranges
-                0x00000100       0x20 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
+                0x000000f8       0x20 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
  .debug_aranges
-                0x00000120       0x20 Object/Bsw/Mcal/Port/Port.o
+                0x00000118       0x20 Object/Bsw/Mcal/Port/src/Port.o
  .debug_aranges
-                0x00000140       0x18 Object/Bsw/Mcal/Port/Port_Cfg.o
+                0x00000138       0x18 Object/Bsw/Mcal/Port/src/Port_Cfg.o
  .debug_aranges
-                0x00000158       0x20 Object/Bsw/Mcal/Port/Port_Mapping.o
+                0x00000150       0x20 Object/Bsw/Mcal/Port/src/Port_Mapping.o
  .debug_aranges
-                0x00000178       0x20 Object/Bsw/Mcal/Pwm/Pwm.o
+                0x00000170       0x20 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
  .debug_aranges
-                0x00000198       0x18 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
+                0x00000190       0x20 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
  .debug_aranges
-                0x000001b0       0x20 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
+                0x000001b0       0x20 Object/Bsw/Services/Callback/CallbackM.o
  .debug_aranges
-                0x000001d0       0x20 Object/Bsw/Services/Delay/Bsw_Delay.o
+                0x000001d0       0x20 Object/lib/SPL/src/misc.o
  .debug_aranges
-                0x000001f0       0x20 Object/lib/SPL/src/misc.o
+                0x000001f0       0x20 Object/lib/SPL/src/stm32f10x_adc.o
  .debug_aranges
-                0x00000210       0x20 Object/lib/SPL/src/stm32f10x_adc.o
+                0x00000210       0x20 Object/lib/SPL/src/stm32f10x_can.o
  .debug_aranges
-                0x00000230       0x20 Object/lib/SPL/src/stm32f10x_can.o
+                0x00000230       0x20 Object/lib/SPL/src/stm32f10x_dma.o
  .debug_aranges
-                0x00000250       0x20 Object/lib/SPL/src/stm32f10x_dma.o
+                0x00000250       0x20 Object/lib/SPL/src/stm32f10x_exti.o
  .debug_aranges
-                0x00000270       0x20 Object/lib/SPL/src/stm32f10x_exti.o
+                0x00000270       0x20 Object/lib/SPL/src/stm32f10x_flash.o
  .debug_aranges
-                0x00000290       0x20 Object/lib/SPL/src/stm32f10x_flash.o
+                0x00000290       0x20 Object/lib/SPL/src/stm32f10x_gpio.o
  .debug_aranges
-                0x000002b0       0x20 Object/lib/SPL/src/stm32f10x_gpio.o
+                0x000002b0       0x20 Object/lib/SPL/src/stm32f10x_i2c.o
  .debug_aranges
-                0x000002d0       0x20 Object/lib/SPL/src/stm32f10x_i2c.o
+                0x000002d0       0x20 Object/lib/SPL/src/stm32f10x_pwr.o
  .debug_aranges
-                0x000002f0       0x20 Object/lib/SPL/src/stm32f10x_pwr.o
+                0x000002f0       0x20 Object/lib/SPL/src/stm32f10x_rcc.o
  .debug_aranges
-                0x00000310       0x20 Object/lib/SPL/src/stm32f10x_rcc.o
+                0x00000310       0x20 Object/lib/SPL/src/stm32f10x_sdio.o
  .debug_aranges
-                0x00000330       0x20 Object/lib/SPL/src/stm32f10x_sdio.o
+                0x00000330       0x20 Object/lib/SPL/src/stm32f10x_spi.o
  .debug_aranges
-                0x00000350       0x20 Object/lib/SPL/src/stm32f10x_spi.o
+                0x00000350       0x20 Object/lib/SPL/src/stm32f10x_tim.o
  .debug_aranges
-                0x00000370       0x20 Object/lib/SPL/src/stm32f10x_tim.o
+                0x00000370       0x20 Object/lib/SPL/src/stm32f10x_usart.o
  .debug_aranges
-                0x00000390       0x20 Object/lib/SPL/src/stm32f10x_usart.o
- .debug_aranges
-                0x000003b0       0x28 Object/startup/startup_stm32f103c8tx.o
+                0x00000390       0x28 Object/startup/startup_stm32f103c8tx.o
 
-.debug_line     0x00000000     0x5e80
- .debug_line    0x00000000      0x1a4 Object/App/main.o
- .debug_line    0x000001a4      0x130 Object/platform/Board_Clock.o
- .debug_line    0x000002d4      0x19d Object/platform/syscalls.o
- .debug_line    0x00000471      0x2b9 Object/platform/system_stm32f10x.o
- .debug_line    0x0000072a       0xed Object/platform/Testcase_Types.o
- .debug_line    0x00000817      0x20c Object/Bsw/Mcal/Dio/Dio.o
- .debug_line    0x00000a23      0x212 Object/Bsw/Mcal/Gpt/Gpt.o
- .debug_line    0x00000c35       0x7e Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .debug_line    0x00000cb3      0x157 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .debug_line    0x00000e0a      0x1d3 Object/Bsw/Mcal/Port/Port.o
- .debug_line    0x00000fdd       0x70 Object/Bsw/Mcal/Port/Port_Cfg.o
- .debug_line    0x0000104d      0x16a Object/Bsw/Mcal/Port/Port_Mapping.o
- .debug_line    0x000011b7      0x353 Object/Bsw/Mcal/Pwm/Pwm.o
- .debug_line    0x0000150a       0x8a Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .debug_line    0x00001594      0x179 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .debug_line    0x0000170d       0xce Object/Bsw/Services/Delay/Bsw_Delay.o
- .debug_line    0x000017db      0x200 Object/lib/SPL/src/misc.o
- .debug_line    0x000019db      0x5c9 Object/lib/SPL/src/stm32f10x_adc.o
- .debug_line    0x00001fa4      0x92a Object/lib/SPL/src/stm32f10x_can.o
- .debug_line    0x000028ce      0x34a Object/lib/SPL/src/stm32f10x_dma.o
- .debug_line    0x00002c18      0x276 Object/lib/SPL/src/stm32f10x_exti.o
- .debug_line    0x00002e8e      0x5b3 Object/lib/SPL/src/stm32f10x_flash.o
- .debug_line    0x00003441      0x42a Object/lib/SPL/src/stm32f10x_gpio.o
- .debug_line    0x0000386b      0x505 Object/lib/SPL/src/stm32f10x_i2c.o
- .debug_line    0x00003d70      0x1f8 Object/lib/SPL/src/stm32f10x_pwr.o
- .debug_line    0x00003f68      0x514 Object/lib/SPL/src/stm32f10x_rcc.o
- .debug_line    0x0000447c      0x3aa Object/lib/SPL/src/stm32f10x_sdio.o
- .debug_line    0x00004826      0x43f Object/lib/SPL/src/stm32f10x_spi.o
- .debug_line    0x00004c65      0xc8d Object/lib/SPL/src/stm32f10x_tim.o
- .debug_line    0x000058f2      0x516 Object/lib/SPL/src/stm32f10x_usart.o
- .debug_line    0x00005e08       0x78 Object/startup/startup_stm32f103c8tx.o
+.debug_line     0x00000000     0x5d9c
+ .debug_line    0x00000000      0x143 Object/App/main.o
+ .debug_line    0x00000143      0x13b Object/platform/Board_Clock.o
+ .debug_line    0x0000027e      0x19d Object/platform/syscalls.o
+ .debug_line    0x0000041b      0x2b9 Object/platform/system_stm32f10x.o
+ .debug_line    0x000006d4      0x221 Object/Bsw/Mcal/Dio/src/Dio.o
+ .debug_line    0x000008f5      0x27a Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .debug_line    0x00000b6f       0xb4 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .debug_line    0x00000c23      0x18e Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .debug_line    0x00000db1      0x16c Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .debug_line    0x00000f1d      0x1e9 Object/Bsw/Mcal/Port/src/Port.o
+ .debug_line    0x00001106       0x86 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .debug_line    0x0000118c      0x180 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .debug_line    0x0000130c      0x1c8 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .debug_line    0x000014d4      0x166 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .debug_line    0x0000163a       0xbd Object/Bsw/Services/Callback/CallbackM.o
+ .debug_line    0x000016f7      0x200 Object/lib/SPL/src/misc.o
+ .debug_line    0x000018f7      0x5c9 Object/lib/SPL/src/stm32f10x_adc.o
+ .debug_line    0x00001ec0      0x92a Object/lib/SPL/src/stm32f10x_can.o
+ .debug_line    0x000027ea      0x34a Object/lib/SPL/src/stm32f10x_dma.o
+ .debug_line    0x00002b34      0x276 Object/lib/SPL/src/stm32f10x_exti.o
+ .debug_line    0x00002daa      0x5b3 Object/lib/SPL/src/stm32f10x_flash.o
+ .debug_line    0x0000335d      0x42a Object/lib/SPL/src/stm32f10x_gpio.o
+ .debug_line    0x00003787      0x505 Object/lib/SPL/src/stm32f10x_i2c.o
+ .debug_line    0x00003c8c      0x1f8 Object/lib/SPL/src/stm32f10x_pwr.o
+ .debug_line    0x00003e84      0x514 Object/lib/SPL/src/stm32f10x_rcc.o
+ .debug_line    0x00004398      0x3aa Object/lib/SPL/src/stm32f10x_sdio.o
+ .debug_line    0x00004742      0x43f Object/lib/SPL/src/stm32f10x_spi.o
+ .debug_line    0x00004b81      0xc8d Object/lib/SPL/src/stm32f10x_tim.o
+ .debug_line    0x0000580e      0x516 Object/lib/SPL/src/stm32f10x_usart.o
+ .debug_line    0x00005d24       0x78 Object/startup/startup_stm32f103c8tx.o
 
-.debug_str      0x00000000     0x4886
- .debug_str     0x00000000     0x4886 Object/App/main.o
-                                0x800 (size before relaxing)
- .debug_str     0x00004886      0x1d1 Object/platform/Board_Clock.o
- .debug_str     0x00004886      0x35c Object/platform/syscalls.o
- .debug_str     0x00004886      0x2d4 Object/platform/system_stm32f10x.o
- .debug_str     0x00004886      0x422 Object/platform/Testcase_Types.o
- .debug_str     0x00004886      0x35f Object/Bsw/Mcal/Dio/Dio.o
- .debug_str     0x00004886      0x5f4 Object/Bsw/Mcal/Gpt/Gpt.o
- .debug_str     0x00004886      0x377 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .debug_str     0x00004886      0x3a8 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .debug_str     0x00004886      0x4ff Object/Bsw/Mcal/Port/Port.o
- .debug_str     0x00004886      0x375 Object/Bsw/Mcal/Port/Port_Cfg.o
- .debug_str     0x00004886      0x3f7 Object/Bsw/Mcal/Port/Port_Mapping.o
- .debug_str     0x00004886      0x818 Object/Bsw/Mcal/Pwm/Pwm.o
- .debug_str     0x00004886      0x3c6 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .debug_str     0x00004886      0x42b Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .debug_str     0x00004886      0x3b3 Object/Bsw/Services/Delay/Bsw_Delay.o
- .debug_str     0x00004886      0x3a6 Object/lib/SPL/src/misc.o
- .debug_str     0x00004886      0x6f9 Object/lib/SPL/src/stm32f10x_adc.o
- .debug_str     0x00004886      0x72c Object/lib/SPL/src/stm32f10x_can.o
- .debug_str     0x00004886      0x39e Object/lib/SPL/src/stm32f10x_dma.o
- .debug_str     0x00004886      0x330 Object/lib/SPL/src/stm32f10x_exti.o
- .debug_str     0x00004886      0x5cf Object/lib/SPL/src/stm32f10x_flash.o
- .debug_str     0x00004886      0x517 Object/lib/SPL/src/stm32f10x_gpio.o
- .debug_str     0x00004886      0x676 Object/lib/SPL/src/stm32f10x_i2c.o
- .debug_str     0x00004886      0x314 Object/lib/SPL/src/stm32f10x_pwr.o
- .debug_str     0x00004886      0x601 Object/lib/SPL/src/stm32f10x_rcc.o
- .debug_str     0x00004886      0x617 Object/lib/SPL/src/stm32f10x_sdio.o
- .debug_str     0x00004886      0x624 Object/lib/SPL/src/stm32f10x_spi.o
- .debug_str     0x00004886      0xdf2 Object/lib/SPL/src/stm32f10x_tim.o
- .debug_str     0x00004886      0x6b7 Object/lib/SPL/src/stm32f10x_usart.o
- .debug_str     0x00004886       0x84 Object/startup/startup_stm32f103c8tx.o
+.debug_str      0x00000000     0x46f0
+ .debug_str     0x00000000     0x46f0 Object/App/main.o
+                                0x596 (size before relaxing)
+ .debug_str     0x000046f0      0x1ea Object/platform/Board_Clock.o
+ .debug_str     0x000046f0      0x35c Object/platform/syscalls.o
+ .debug_str     0x000046f0      0x2d4 Object/platform/system_stm32f10x.o
+ .debug_str     0x000046f0      0x363 Object/Bsw/Mcal/Dio/src/Dio.o
+ .debug_str     0x000046f0      0x692 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .debug_str     0x000046f0      0x3d7 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .debug_str     0x000046f0      0x378 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .debug_str     0x000046f0      0x3c6 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .debug_str     0x000046f0      0x503 Object/Bsw/Mcal/Port/src/Port.o
+ .debug_str     0x000046f0      0x379 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .debug_str     0x000046f0      0x3fb Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .debug_str     0x000046f0      0x5a9 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .debug_str     0x000046f0      0x513 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .debug_str     0x000046f0      0x238 Object/Bsw/Services/Callback/CallbackM.o
+ .debug_str     0x000046f0      0x3a6 Object/lib/SPL/src/misc.o
+ .debug_str     0x000046f0      0x6f9 Object/lib/SPL/src/stm32f10x_adc.o
+ .debug_str     0x000046f0      0x72c Object/lib/SPL/src/stm32f10x_can.o
+ .debug_str     0x000046f0      0x39e Object/lib/SPL/src/stm32f10x_dma.o
+ .debug_str     0x000046f0      0x330 Object/lib/SPL/src/stm32f10x_exti.o
+ .debug_str     0x000046f0      0x5cf Object/lib/SPL/src/stm32f10x_flash.o
+ .debug_str     0x000046f0      0x517 Object/lib/SPL/src/stm32f10x_gpio.o
+ .debug_str     0x000046f0      0x676 Object/lib/SPL/src/stm32f10x_i2c.o
+ .debug_str     0x000046f0      0x314 Object/lib/SPL/src/stm32f10x_pwr.o
+ .debug_str     0x000046f0      0x601 Object/lib/SPL/src/stm32f10x_rcc.o
+ .debug_str     0x000046f0      0x617 Object/lib/SPL/src/stm32f10x_sdio.o
+ .debug_str     0x000046f0      0x624 Object/lib/SPL/src/stm32f10x_spi.o
+ .debug_str     0x000046f0      0xdf2 Object/lib/SPL/src/stm32f10x_tim.o
+ .debug_str     0x000046f0      0x6b7 Object/lib/SPL/src/stm32f10x_usart.o
+ .debug_str     0x000046f0       0x84 Object/startup/startup_stm32f103c8tx.o
 
 .comment        0x00000000       0x45
  .comment       0x00000000       0x45 Object/App/main.o
@@ -930,18 +902,17 @@ LOAD linker stubs
  .comment       0x00000045       0x46 Object/platform/Board_Clock.o
  .comment       0x00000045       0x46 Object/platform/syscalls.o
  .comment       0x00000045       0x46 Object/platform/system_stm32f10x.o
- .comment       0x00000045       0x46 Object/platform/Testcase_Types.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Dio/Dio.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/Gpt.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Port/Port.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Port/Port_Cfg.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Port/Port_Mapping.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Pwm/Pwm.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
- .comment       0x00000045       0x46 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .comment       0x00000045       0x46 Object/Bsw/Services/Delay/Bsw_Delay.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Dio/src/Dio.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Port/src/Port.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Port/src/Port_Cfg.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .comment       0x00000045       0x46 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .comment       0x00000045       0x46 Object/Bsw/Services/Callback/CallbackM.o
  .comment       0x00000045       0x46 Object/lib/SPL/src/misc.o
  .comment       0x00000045       0x46 Object/lib/SPL/src/stm32f10x_adc.o
  .comment       0x00000045       0x46 Object/lib/SPL/src/stm32f10x_can.o
@@ -968,106 +939,101 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000087       0x2d Object/platform/system_stm32f10x.o
  .ARM.attributes
-                0x000000b4       0x2d Object/platform/Testcase_Types.o
+                0x000000b4       0x2d Object/Bsw/Mcal/Dio/src/Dio.o
  .ARM.attributes
-                0x000000e1       0x2d Object/Bsw/Mcal/Dio/Dio.o
+                0x000000e1       0x2d Object/Bsw/Mcal/Gpt/src/Gpt.o
  .ARM.attributes
-                0x0000010e       0x2d Object/Bsw/Mcal/Gpt/Gpt.o
+                0x0000010e       0x2d Object/Bsw/Mcal/Gpt/src/Gpt_Cfg.o
  .ARM.attributes
-                0x0000013b       0x2d Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
+                0x0000013b       0x2d Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
  .ARM.attributes
-                0x00000168       0x2d Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
+                0x00000168       0x2d Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
  .ARM.attributes
-                0x00000195       0x2d Object/Bsw/Mcal/Port/Port.o
+                0x00000195       0x2d Object/Bsw/Mcal/Port/src/Port.o
  .ARM.attributes
-                0x000001c2       0x2d Object/Bsw/Mcal/Port/Port_Cfg.o
+                0x000001c2       0x2d Object/Bsw/Mcal/Port/src/Port_Cfg.o
  .ARM.attributes
-                0x000001ef       0x2d Object/Bsw/Mcal/Port/Port_Mapping.o
+                0x000001ef       0x2d Object/Bsw/Mcal/Port/src/Port_Mapping.o
  .ARM.attributes
-                0x0000021c       0x2d Object/Bsw/Mcal/Pwm/Pwm.o
+                0x0000021c       0x2d Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
  .ARM.attributes
-                0x00000249       0x2d Object/Bsw/Mcal/Pwm/Pwm_Cfg.o
+                0x00000249       0x2d Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
  .ARM.attributes
-                0x00000276       0x2d Object/Bsw/Mcal/Pwm/Pwm_mapping.o
+                0x00000276       0x2d Object/Bsw/Services/Callback/CallbackM.o
  .ARM.attributes
-                0x000002a3       0x2d Object/Bsw/Services/Delay/Bsw_Delay.o
+                0x000002a3       0x2d Object/lib/SPL/src/misc.o
  .ARM.attributes
-                0x000002d0       0x2d Object/lib/SPL/src/misc.o
+                0x000002d0       0x2d Object/lib/SPL/src/stm32f10x_adc.o
  .ARM.attributes
-                0x000002fd       0x2d Object/lib/SPL/src/stm32f10x_adc.o
+                0x000002fd       0x2d Object/lib/SPL/src/stm32f10x_can.o
  .ARM.attributes
-                0x0000032a       0x2d Object/lib/SPL/src/stm32f10x_can.o
+                0x0000032a       0x2d Object/lib/SPL/src/stm32f10x_dma.o
  .ARM.attributes
-                0x00000357       0x2d Object/lib/SPL/src/stm32f10x_dma.o
+                0x00000357       0x2d Object/lib/SPL/src/stm32f10x_exti.o
  .ARM.attributes
-                0x00000384       0x2d Object/lib/SPL/src/stm32f10x_exti.o
+                0x00000384       0x2d Object/lib/SPL/src/stm32f10x_flash.o
  .ARM.attributes
-                0x000003b1       0x2d Object/lib/SPL/src/stm32f10x_flash.o
+                0x000003b1       0x2d Object/lib/SPL/src/stm32f10x_gpio.o
  .ARM.attributes
-                0x000003de       0x2d Object/lib/SPL/src/stm32f10x_gpio.o
+                0x000003de       0x2d Object/lib/SPL/src/stm32f10x_i2c.o
  .ARM.attributes
-                0x0000040b       0x2d Object/lib/SPL/src/stm32f10x_i2c.o
+                0x0000040b       0x2d Object/lib/SPL/src/stm32f10x_pwr.o
  .ARM.attributes
-                0x00000438       0x2d Object/lib/SPL/src/stm32f10x_pwr.o
+                0x00000438       0x2d Object/lib/SPL/src/stm32f10x_rcc.o
  .ARM.attributes
-                0x00000465       0x2d Object/lib/SPL/src/stm32f10x_rcc.o
+                0x00000465       0x2d Object/lib/SPL/src/stm32f10x_sdio.o
  .ARM.attributes
-                0x00000492       0x2d Object/lib/SPL/src/stm32f10x_sdio.o
+                0x00000492       0x2d Object/lib/SPL/src/stm32f10x_spi.o
  .ARM.attributes
-                0x000004bf       0x2d Object/lib/SPL/src/stm32f10x_spi.o
+                0x000004bf       0x2d Object/lib/SPL/src/stm32f10x_tim.o
  .ARM.attributes
-                0x000004ec       0x2d Object/lib/SPL/src/stm32f10x_tim.o
+                0x000004ec       0x2d Object/lib/SPL/src/stm32f10x_usart.o
  .ARM.attributes
-                0x00000519       0x2d Object/lib/SPL/src/stm32f10x_usart.o
+                0x00000519       0x21 Object/startup/startup_stm32f103c8tx.o
  .ARM.attributes
-                0x00000546       0x21 Object/startup/startup_stm32f103c8tx.o
+                0x0000053a       0x2d D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
  .ARM.attributes
-                0x00000567       0x2d D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
+                0x00000567       0x2d D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
  .ARM.attributes
-                0x00000594       0x2d D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
- .ARM.attributes
-                0x000005c1       0x2d D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
+                0x00000594       0x2d D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-impure.o)
 
-.debug_frame    0x00000000     0x441c
- .debug_frame   0x00000000       0x38 Object/App/main.o
- .debug_frame   0x00000038       0x4c Object/platform/Board_Clock.o
- .debug_frame   0x00000084      0x1ec Object/platform/syscalls.o
- .debug_frame   0x00000270       0x98 Object/platform/system_stm32f10x.o
- .debug_frame   0x00000308       0x60 Object/platform/Testcase_Types.o
- .debug_frame   0x00000368      0x134 Object/Bsw/Mcal/Dio/Dio.o
- .debug_frame   0x0000049c       0xa0 Object/Bsw/Mcal/Gpt/Gpt.o
- .debug_frame   0x0000053c       0x30 Object/Bsw/Mcal/Gpt/Gpt_Cfg.o
- .debug_frame   0x0000056c       0x88 Object/Bsw/Mcal/Gpt/Gpt_Mapping.o
- .debug_frame   0x000005f4       0x34 Object/Bsw/Mcal/Port/Port.o
- .debug_frame   0x00000628       0x88 Object/Bsw/Mcal/Port/Port_Mapping.o
- .debug_frame   0x000006b0       0xc4 Object/Bsw/Mcal/Pwm/Pwm.o
- .debug_frame   0x00000774      0x150 Object/Bsw/Mcal/Pwm/Pwm_mapping.o
- .debug_frame   0x000008c4       0x34 Object/Bsw/Services/Delay/Bsw_Delay.o
- .debug_frame   0x000008f8       0xd8 Object/lib/SPL/src/misc.o
- .debug_frame   0x000009d0      0x5a4 Object/lib/SPL/src/stm32f10x_adc.o
- .debug_frame   0x00000f74      0x3f8 Object/lib/SPL/src/stm32f10x_can.o
- .debug_frame   0x0000136c      0x1c8 Object/lib/SPL/src/stm32f10x_dma.o
- .debug_frame   0x00001534      0x148 Object/lib/SPL/src/stm32f10x_exti.o
- .debug_frame   0x0000167c      0x410 Object/lib/SPL/src/stm32f10x_flash.o
- .debug_frame   0x00001a8c      0x2d0 Object/lib/SPL/src/stm32f10x_gpio.o
- .debug_frame   0x00001d5c      0x530 Object/lib/SPL/src/stm32f10x_i2c.o
- .debug_frame   0x0000228c      0x164 Object/lib/SPL/src/stm32f10x_pwr.o
- .debug_frame   0x000023f0      0x4f4 Object/lib/SPL/src/stm32f10x_rcc.o
- .debug_frame   0x000028e4      0x490 Object/lib/SPL/src/stm32f10x_sdio.o
- .debug_frame   0x00002d74      0x3a0 Object/lib/SPL/src/stm32f10x_spi.o
- .debug_frame   0x00003114      0xe2c Object/lib/SPL/src/stm32f10x_tim.o
- .debug_frame   0x00003f40      0x490 Object/lib/SPL/src/stm32f10x_usart.o
- .debug_frame   0x000043d0       0x20 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
- .debug_frame   0x000043f0       0x2c D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
-
-.debug_rnglists
-                0x00000000       0x30
- .debug_rnglists
-                0x00000000       0x17 Object/Bsw/Mcal/Pwm/Pwm.o
- .debug_rnglists
-                0x00000017       0x19 Object/startup/startup_stm32f103c8tx.o
+.debug_frame    0x00000000     0x4240
+ .debug_frame   0x00000000       0x2c Object/App/main.o
+ .debug_frame   0x0000002c       0x4c Object/platform/Board_Clock.o
+ .debug_frame   0x00000078      0x1ec Object/platform/syscalls.o
+ .debug_frame   0x00000264       0x98 Object/platform/system_stm32f10x.o
+ .debug_frame   0x000002fc      0x134 Object/Bsw/Mcal/Dio/src/Dio.o
+ .debug_frame   0x00000430       0xa0 Object/Bsw/Mcal/Gpt/src/Gpt.o
+ .debug_frame   0x000004d0       0x54 Object/Bsw/Mcal/Gpt/src/Gpt_Irq.o
+ .debug_frame   0x00000524       0x88 Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o
+ .debug_frame   0x000005ac       0x34 Object/Bsw/Mcal/Port/src/Port.o
+ .debug_frame   0x000005e0       0x88 Object/Bsw/Mcal/Port/src/Port_Mapping.o
+ .debug_frame   0x00000668       0x34 Object/Bsw/Mcal/Mcu/src/Mcu_Irq.o
+ .debug_frame   0x0000069c       0x38 Object/Bsw/Mcal/Mcu/src/Mcu_IrqMap.o
+ .debug_frame   0x000006d4       0x48 Object/Bsw/Services/Callback/CallbackM.o
+ .debug_frame   0x0000071c       0xd8 Object/lib/SPL/src/misc.o
+ .debug_frame   0x000007f4      0x5a4 Object/lib/SPL/src/stm32f10x_adc.o
+ .debug_frame   0x00000d98      0x3f8 Object/lib/SPL/src/stm32f10x_can.o
+ .debug_frame   0x00001190      0x1c8 Object/lib/SPL/src/stm32f10x_dma.o
+ .debug_frame   0x00001358      0x148 Object/lib/SPL/src/stm32f10x_exti.o
+ .debug_frame   0x000014a0      0x410 Object/lib/SPL/src/stm32f10x_flash.o
+ .debug_frame   0x000018b0      0x2d0 Object/lib/SPL/src/stm32f10x_gpio.o
+ .debug_frame   0x00001b80      0x530 Object/lib/SPL/src/stm32f10x_i2c.o
+ .debug_frame   0x000020b0      0x164 Object/lib/SPL/src/stm32f10x_pwr.o
+ .debug_frame   0x00002214      0x4f4 Object/lib/SPL/src/stm32f10x_rcc.o
+ .debug_frame   0x00002708      0x490 Object/lib/SPL/src/stm32f10x_sdio.o
+ .debug_frame   0x00002b98      0x3a0 Object/lib/SPL/src/stm32f10x_spi.o
+ .debug_frame   0x00002f38      0xe2c Object/lib/SPL/src/stm32f10x_tim.o
+ .debug_frame   0x00003d64      0x490 Object/lib/SPL/src/stm32f10x_usart.o
+ .debug_frame   0x000041f4       0x20 D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-errno.o)
+ .debug_frame   0x00004214       0x2c D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7-m/nofp\libg_nano.a(libc_a-init.o)
 
 .debug_line_str
                 0x00000000       0x68
  .debug_line_str
                 0x00000000       0x68 Object/startup/startup_stm32f103c8tx.o
+
+.debug_rnglists
+                0x00000000       0x19
+ .debug_rnglists
+                0x00000000       0x19 Object/startup/startup_stm32f103c8tx.o

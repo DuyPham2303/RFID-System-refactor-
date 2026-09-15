@@ -7,6 +7,7 @@
  */
 #ifndef SV_MANAGER_H
 #define SV_MANAGER_H
-void Serice_Callback_Init(void);
+
+void CallbackM_Init();
 
 #endif

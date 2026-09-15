@@ -1,23 +1,8 @@
-/**
- * @file Gpt.c
- * @brief Phần triển khai trình điều khiển TIM của MCAL.
- *
- * @section gpt_implementation_guidance Hướng dẫn triển khai
- *
- * - Trong Gpt_Init(), duyệt qua bảng cấu hình, cấu hình tần số cơ sở cho
- *   timer vật lý tương ứng (HwTimerId), sau đó lưu con trỏ hàm callback
- *   (Notification) vào một mảng tĩnh bên trong file này.
- *
- * - Khi phần cứng STM32 phát sinh ngắt tràn (Update Interrupt) của TIMx,
- *   trong hàm ISR (Interrupt Service Routine) tương ứng, gọi con trỏ hàm
- *   callback nếu notification đã được kích hoạt qua Gpt_EnableNotification.
- *   Nhờ đó, logic xử lý ngắt có thể được truyền ra tầng bên ngoài linh hoạt
- *   mà không bị gắn cứng vào phần driver phần cứng.
- */
 #include "Gpt.h"
 #include "Gpt_Mapping.h"
+#include "Mcu_Irq.h"
 
-/*Biến tĩnh lưu trữ cấu hình cục bộ hàm*/
+/*biến tĩnh lưu cấu hình nội bộ cho toàn bộ nhóm Gpt */
 static const Gpt_ConfigType_s *Gpt_GroupConfig_s;
 
 Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr)
@@ -30,21 +15,28 @@ Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr)
     for (uint8 index = 0U; index < ConfigPtr->GptCount; index++)
     {
 
-        /*khai báo cấu hình lưu trữ xuống thanh ghi thực tế*/
+        /*khai báo cấu hình lưu trữ xuống thanh ghi thực tế cho nhóm Gpt hiện tại*/
         TIM_TimeBaseInitTypeDef Gpt_TimbaseCfg_s;
 
         /* Lấy cấu hình kênh GPT hiện tại từ mảng cấu hình */
         const Gpt_ChannelConfigType_s *ChannelConfig = &ConfigPtr->ChannelConfigPtr[index];
 
+        /*truy cập cấu hình NVIC*/
+        const Mcu_IrqConfigType *IrqConfig_s = ConfigPtr->ChannelConfigPtr[index].IrqCfgPtr;
+
+        /*truyền con trỏ cấu hình xuống tầng thanh ghi*/
+        Mcu_IrqInit(IrqConfig_s);
+
         /* Lấy nhóm timer từ ID timer phần cứng */
         TIM_TypeDef *Gpt_Group = GetTimerGroup(ChannelConfig->HwTimerId);
 
-        /*xác nhận địa chỉ timer hợp lệ truy xuất qua ID enum*/
+        /*xác nhận địa chỉ timer hợp lệ*/
         if (Gpt_Group == NULL_PTR)
         {
             return E_NOT_OK;
         }
 
+        /*Lưu trữ cấu hình cục bộ cho toàn bộ nhóm Gpt*/
         Gpt_TimbaseCfg_s.TIM_ClockDivision = GetClockDivider(ChannelConfig->ClkDiv);
         Gpt_TimbaseCfg_s.TIM_CounterMode = GetCounterMode(ChannelConfig->ModeCntType);
         Gpt_TimbaseCfg_s.TIM_Period = ChannelConfig->PeriodVal;
@@ -53,9 +45,16 @@ Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr)
         /*ánh xạ cấu hình lưu trữ xuống thanh ghi cứng*/
         TIM_TimeBaseInit(Gpt_Group, &Gpt_TimbaseCfg_s);
 
+        /*kích hoạt ngoại vi timer*/
         if (ChannelConfig->Cmd == GPT_ENABLE)
         {
             TIM_Cmd(Gpt_Group, ENABLE);
+        }
+
+        /*kích hoạt ngắt */
+        if (IrqConfig_s->Enable)
+        {
+            TIM_ITConfig(Gpt_Group, TIM_IT_Update, ENABLE);
         }
     }
     /*copy cấu hình lưu trữ sang biến tĩnh sử dụng cục bộ*/

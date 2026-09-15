@@ -20,12 +20,12 @@ CFLAGS = --specs=nano.specs \
           -IApp \
           -Iplatform \
           -IBsw/Mcal \
-          -IBsw/Mcal/Dio \
-          -IBsw/Mcal/Gpt \
-          -IBsw/Mcal/Port \
-          -IBsw/Mcal/Pwm \
-          -IBsw/Services/Delay \
-          -IBsw/Services \
+          -IBsw/Mcal/Dio/inc \
+          -IBsw/Mcal/Gpt/inc \
+          -IBsw/Mcal/Port/inc \
+          -IBsw/Mcal/Mcu/inc \
+          -IBsw/Services\
+          -IBsw/Services/CallbackM\
           -Ilib/CMSIS \
           -Ilib/SPL/inc \
           -Istartup \
@@ -38,11 +38,11 @@ LDFLAGS = -T linker.ld -Wl,-Map=$(BUILDDIR)/main.map -nostartfiles
 # -----------------------
 SRC = $(wildcard App/main.c) \
       $(wildcard platform/*.c) \
-      $(wildcard Bsw/Mcal/Dio/*.c) \
-      $(wildcard Bsw/Mcal/Gpt/*.c) \
-      $(wildcard Bsw/Mcal/Port/*.c) \
-      $(wildcard Bsw/Mcal/Pwm/*.c) \
-      $(wildcard Bsw/Services/Delay/*.c) \
+      $(wildcard Bsw/Mcal/Dio/src/*.c) \
+      $(wildcard Bsw/Mcal/Gpt/src/*.c) \
+      $(wildcard Bsw/Mcal/Port/src/*.c) \
+      $(wildcard Bsw/Mcal/Mcu/src/*.c) \
+      $(wildcard Bsw/Services/Callback/*.c) \
       $(wildcard lib/SPL/src/*.c) \
 
 STARTUP = startup/startup_stm32f103c8tx.s

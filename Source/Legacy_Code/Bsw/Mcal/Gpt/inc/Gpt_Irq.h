@@ -6,24 +6,40 @@
  */
 #ifndef GPT_IRQ_H
 #define GPT_IRQ_H
+#include "Std_Types.h"
+typedef enum Gpt_CbServiceType
+{
+    GPT_BLINKLED_GROUP1 = 0U,
+    GPT_MAX_GROUP
+} Gpt_CbServiceType;
+// Định nghĩa kiểu cho hàm callback của GPT
+typedef void (*Gpt_ApiCallbackPtr)(void);
 
-#include "Gpt_Cfg.h"
-#include "../Common/Mcal_IrqTypes.h"
+/**
+ * @brief Đăng ký callback cho một ID GPT logic.
+ * @param ServiceId ID cấu hình GPT.
+ * @param Cb Con trỏ đến hàm callback.
+ * @return Kết quả thực hiện.
+ */
+Std_ReturnType Gpt_RegisterApiCallback(
+    Gpt_CbServiceType ServiceId,
+    Gpt_ApiCallbackPtr Cb);
 
-/** Cấu hình NVIC cho các nguồn ngắt GPT đã được cấu hình. */
-Std_ReturnType Gpt_IrqInit(const Mcal_IrqConfigType *ConfigPtr);
-
-/** Đăng ký callback cho một ID GPT logic. */
-Std_ReturnType Gpt_RegisterNotification(
-    Gpt_ConfigIdType ConfigId,
-    Mcal_IrqCallbackType Callback);
-
-/** Cho phép hoặc vô hiệu hóa notification của một ID GPT logic. */
-Std_ReturnType Gpt_SetNotificationEnable(
-    Gpt_ConfigIdType ConfigId,
+/**
+ * @brief Cho phép hoặc vô hiệu hóa notification của một ID GPT logic.
+ * @param ServiceId ID cấu hình GPT.
+ * @param Enable Trạng thái cho phép.
+ * @return Kết quả thực hiện.
+ */
+Std_ReturnType Gpt_SetCallbackEnable(
+    Gpt_CbServiceType ServiceId,
     bool Enable);
 
-/** Trả về callback đã đăng ký của một ID GPT logic. */
-Mcal_IrqCallbackType Gpt_GetNotification(Gpt_ConfigIdType ConfigId);
+/**
+ * @brief Trả về callback đã đăng ký của một ID GPT logic.
+ * @param ServiceId ID cấu hình GPT.
+ * @return Con trỏ đến hàm callback.
+ */
+Gpt_ApiCallbackPtr Gpt_GetCallback(Gpt_CbServiceType ServiceId);
 
 #endif /* GPT_IRQ_H */

@@ -15,7 +15,9 @@ typedef enum Gpt_GroupType
 {
     GPT_GROUP_1 = 0U,
     GPT_GROUP_2,
-    GPT_GROUP_3
+    GPT_GROUP_3,
+    GPT_GROUP_4,
+    GPT_MAX_GROUP
 } Gpt_GroupType;
 
 typedef enum Gpt_Cmd

@@ -37,17 +37,4 @@ void Gpt_StopTimer(Gpt_GroupType HwTimerId);
  */
 
 Gpt_PeriodValue Gpt_GetTimeElapsed(Gpt_GroupType HwTimerId);
-/**
- * @brief  Kích hoạt cơ chế ngắt thông báo (Notification) cho kênh Timer.
- * @param  HwTimerId: Kênh Timer tương ứng.
- */
-
-void Gpt_EnableNotification(Gpt_GroupType HwTimerId);
-
-/**
- * @brief  Vô hiệu hóa ngắt thông báo cho kênh Timer.
- * @param  HwTimerId: Kênh Timer tương ứng.
- */
-void Gpt_DisableNotification(Gpt_GroupType HwTimerId);
-
 #endif /* GPT_H */

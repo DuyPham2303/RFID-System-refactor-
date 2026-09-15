@@ -106,4 +106,5 @@ typedef struct
 
 #define STD_ON 0x01U  // trang thai ON
 #define STD_OFF 0X00U // tran thai OFF
+
 #endif

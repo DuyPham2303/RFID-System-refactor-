@@ -26,4 +26,6 @@ void Board_PeripheralsClock_Init(void)
     RCC_APB2PeriphClockCmd(PORT_A_RCC | PORT_B_RCC | PORT_C_RCC, ENABLE);
     // RCC_APB2PeriphClockCmd(APB2_PERIPHERAL_RCC, ENABLE);
     RCC_APB1PeriphClockCmd(APB1_PERIPHERAL_RCC, ENABLE);
+
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
 }

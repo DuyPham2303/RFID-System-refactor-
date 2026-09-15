@@ -1,13 +1,13 @@
-#include "Dio/Dio.h"
-#include "Port/Port.h"
-#include "Pwm/Pwm.h"
-#include "Gpt/Gpt.h"
-#include "Delay/Bsw_Delay.h"
+#include "Dio/inc/Dio.h"
+#include "Port/inc/Port.h"
+#include "Gpt/inc/Gpt.h"
 #include "platform/Board_Clock.h"
-#include "Testcase_Types.h"
+#include "Callback/CallbackM.h"
+
+// #include "Testcase_Types.h"
 
 /*chọn id của loại ngoại vi cần demo testcase*/
-TC_IdType_e ty = TC_PWM_ID;
+// TC_IdType_e ty = TC_PWM_ID;
 
 #define F_PWM_4HZ PERIOD_UPDATE_250MS
 
@@ -19,10 +19,15 @@ TC_IdType_e ty = TC_PWM_ID;
 int main()
 {
 	Board_PeripheralsClock_Init();
-	Port_Init(&PortCfg);
-	Pwm_Init(&Pwm_Config);
+	Port_Init(&Port_Config);
 	Gpt_Init(&Gpt_Config);
+	CallbackM_Init();
 
+	while (1)
+	{
+	};
+
+#ifdef TESTCASE_TYPES_H
 	/*đếm số lượng test case để khởi tạo bảng giám sát trạng thái xử lý*/
 	uint8 keycnt = TestCaseTotalCount(ty);
 
@@ -124,8 +129,7 @@ int main()
 		// 	Pwm_SetDutyCycle(PWM_CHANNEL_4, DUTY_100_PERCENT);
 		// }
 #endif
-		Dio_FlipChannel(DIO_CHANNEL_C13);
-		Bsw_DelayMs(250);
 	}
+#endif
 	return 0;
 }

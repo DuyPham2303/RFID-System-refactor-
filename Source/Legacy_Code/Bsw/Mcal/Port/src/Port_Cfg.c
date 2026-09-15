@@ -1,5 +1,4 @@
 #include "Port_Cfg.h"
-#include "../../IoHwAb/Cfg/PinCfg.h"
 
 static const Port_ConfigType Port_PinCfgGroup[PORT_CFG_COUNT] = {
     /*
