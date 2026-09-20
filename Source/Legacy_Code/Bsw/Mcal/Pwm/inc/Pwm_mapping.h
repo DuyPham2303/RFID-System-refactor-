@@ -12,7 +12,6 @@
 #define PWM_MAPPING_H
 
 #include "Pwm_Types.h"
-#include "./Gpt/Gpt_Mapping.h"
 /********************************************************
  * @brief Lấy chế độ Output Compare cho PWM
  * @param ocMode: Chế độ OC từ cấu hình (Pwm_OcModeType)

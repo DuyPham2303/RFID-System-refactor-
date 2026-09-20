@@ -7,24 +7,17 @@
  */
 #ifndef GPT_DTYPES_H
 #define GPT_DTYPES_H
-
-#include "Std_Types.h"
+#include "./Bsw/Services/Common/Std_Types.h"
 
 /* Kiểu định danh cho nhóm general purpose timer được ánh xạ tới phần cứng */
-typedef enum Gpt_GroupType
+typedef enum Gpt_GroupId
 {
     GPT_GROUP_1 = 0U,
     GPT_GROUP_2,
     GPT_GROUP_3,
     GPT_GROUP_4,
     GPT_MAX_GROUP
-} Gpt_GroupType;
-
-typedef enum Gpt_Cmd
-{
-    GPT_ENABLE = 0U,
-    GPT_DISABLE
-} Gpt_Cmd;
+} Gpt_GroupId_Type;
 
 /********************************************************
  * @brief kiểu dữ liệu mô tả giá trị tần số chia timer
@@ -74,7 +67,37 @@ typedef enum Gpt_ClockDivType
  *****************/
 typedef uint16 Gpt_RepetitionCnt;
 
-/* Định nghĩa kiểu con trỏ hàm Callback khi ngắt Timer xảy ra (Notification) */
-typedef void (*Gpt_NotificationType)(void);
+/**
+ * @brief danh sách Id ánh xạ tới loại Callback API, được tầng service sử dụng
+ *
+ */
+typedef enum Gpt_Idnoti
+{
+    GPT_UPDATE_1S = 0U,
+    GPT_MAX_NOTI
+} Gpt_IdnotiType;
+
+/*Định nghĩa kiểu cho hàm callback của GPT*/
+typedef void (*Gpt_notificationPtr)(void);
+
+/**
+ * @brief Enum định danh các nguồn ngắt logic cho module GPT (TIM2 -> TIM5)
+ */
+typedef enum
+{
+    GPT_IRQ_SOURCE_UPDATE = 0U, // Ngắt tràn định kỳ (Update)
+    GPT_IRQ_SOURCE_CC1,         // Ngắt Capture/Compare kênh 1
+    GPT_IRQ_SOURCE_CC2,         // Ngắt Capture/Compare kênh 2
+    GPT_IRQ_SOURCE_CC3,         // Ngắt Capture/Compare kênh 3
+    GPT_IRQ_SOURCE_CC4,         // Ngắt Capture/Compare kênh 4
+    GPT_IRQ_SOURCE_MAX
+} Gpt_IrqSourceType;
+
+/*kiểu dữ liệu cấu hình con trỏ callback và eventflag*/
+typedef struct
+{
+    Gpt_notificationPtr cb; /*callback function*/
+    Gpt_IrqSourceType flag; /*cờ chỉ định nguồn xử lý ngắt*/
+} Gpt_IrqConfigNotiType;
 
 #endif /* GPT_DTYPES_H */

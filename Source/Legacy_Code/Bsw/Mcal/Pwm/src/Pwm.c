@@ -1,78 +1,14 @@
 #include "Pwm.h"
 #include "Pwm_mapping.h"
 #include "stm32f10x_tim.h"
-
 /*biến lưu trữ nội bộ cấu hình pwm*/
 static const Pwm_ConfigType_s *Pwm_ConfigPtr_s;
-static Pwm_ErrorType Pwm_LastError_s = PWM_ERROR_NONE;
 
-static Std_ReturnType Pwm_SetError(Pwm_ErrorType error)
-{
-    Pwm_LastError_s = error;
-    return E_NOT_OK;
-}
-
-Pwm_ErrorType Pwm_GetLastError(void)
-{
-    return Pwm_LastError_s;
-}
-
-Std_ReturnType Pwm_ValidateConfig(const Pwm_ConfigType_s *ConfigPtr)
-{
-    uint8 index;
-    uint8 otherIndex;
-
-    if (ConfigPtr == NULL_PTR)
-    {
-        return Pwm_SetError(PWM_ERROR_NULL_CONFIG);
-    }
-    if (ConfigPtr->CfgID_Count == 0U)
-    {
-        return Pwm_SetError(PWM_ERROR_EMPTY_CONFIG);
-    }
-    if (ConfigPtr->CfgID_Count > PWM_CFG_COUNT)
-    {
-        return Pwm_SetError(PWM_ERROR_CONFIG_COUNT);
-    }
-
-    for (index = 0U; index < ConfigPtr->CfgID_Count; index++)
-    {
-        const Pwm_ChannelConfigType_s *config = &ConfigPtr->ChannelConfig[index];
-
-        if (config->HwTimerId > GPT_GROUP_3)
-        {
-            return Pwm_SetError(PWM_ERROR_INVALID_TIMER);
-        }
-        if (config->ChannelId < PWM_CHANNEL_1 || config->ChannelId > PWM_CHANNEL_4)
-        {
-            return Pwm_SetError(PWM_ERROR_INVALID_CHANNEL);
-        }
-        if (config->OcMode > PWM_OC_MODE_PWM2 ||
-            config->OutputState > PWM_OUTPUT_ENABLED ||
-            config->Polarity > PWM_POLARITY_LOW)
-        {
-            return Pwm_SetError(PWM_ERROR_INVALID_OPTION);
-        }
-
-        for (otherIndex = 0U; otherIndex < index; otherIndex++)
-        {
-            const Pwm_ChannelConfigType_s *other = &ConfigPtr->ChannelConfig[otherIndex];
-            if (other->HwTimerId == config->HwTimerId &&
-                other->ChannelId == config->ChannelId)
-            {
-                return Pwm_SetError(PWM_ERROR_DUPLICATE_CHANNEL);
-            }
-        }
-    }
-
-    Pwm_LastError_s = PWM_ERROR_NONE;
-    return E_OK;
-}
 Std_ReturnType Pwm_Init(const Pwm_ConfigType_s *ConfigPtr)
 {
     uint8 index;
 
-    if (Pwm_ValidateConfig(ConfigPtr) != E_OK)
+    if (ConfigPtr == NULL_PTR)
     {
         return E_NOT_OK;
     }
@@ -88,16 +24,16 @@ Std_ReturnType Pwm_Init(const Pwm_ConfigType_s *ConfigPtr)
         /*truy xuát địa chỉ cứng của timer*/
         TIM_TypeDef *timer = GetTimerGroup(config->HwTimerId);
 
+        if (timer == NULL_PTR)
+        {
+            return E_NOT_OK;
+        }
+
         /*ánh xạ cấu hình từ lớp trên sang biến cục bộ */
         channelConfig.TIM_OCMode = GetPwmOcMode(config->OcMode);
         channelConfig.TIM_OutputState = GetPwmOutputState(config->OutputState);
         channelConfig.TIM_Pulse = GetPwmPulseValue(config->PulseValue);
         channelConfig.TIM_OCPolarity = GetPwmOcPolarity(config->Polarity);
-
-        if (timer == NULL_PTR)
-        {
-            return Pwm_SetError(PWM_ERROR_INVALID_TIMER);
-        }
 
         /*cài đặt cổng xuất pwm cho kênh timer tương ứng*/
         switch (config->ChannelId)
@@ -119,13 +55,12 @@ Std_ReturnType Pwm_Init(const Pwm_ConfigType_s *ConfigPtr)
             TIM_OC4PreloadConfig(timer, TIM_OCPreload_Enable);
             break;
         default:
-            return Pwm_SetError(PWM_ERROR_INVALID_CHANNEL);
+            return E_NOT_OK;
         }
     }
 
     /*lưu trữ toàn bộ cấu hình vào biến tĩnh để sử dụng nội bộ file*/
     Pwm_ConfigPtr_s = ConfigPtr;
-    Pwm_LastError_s = PWM_ERROR_NONE;
     return E_OK;
 }
 void Pwm_SetDutyCycle(Pwm_ChannelType ChannelNumber, Pwm_DutyCycleType DutyCycle)

@@ -9,7 +9,7 @@
  */
 #ifndef PORT_DTYPES_H
 #define PORT_DTYPES_H
-#include "Std_Types.h"
+#include "./Bsw/Services/Common/Std_Types.h"
 typedef enum Port_PortType
 {
     PORT_A = 0U,

@@ -14,10 +14,10 @@
 
 /********************************************************
  * @brief Lấy con trỏ đếnTimer Group
- * @param groupType: ID nhóm GPT (Gpt_GroupType)
+ * @param groupType: ID nhóm GPT (Gpt_GroupId_Type)
  * @return Con trỏ đến cấu trúc TIM_TypeDef tương ứng
  ********************************************************/
-TIM_TypeDef *GetTimerGroup(Gpt_GroupType groupType);
+TIM_TypeDef *GetTimerGroup(Gpt_GroupId_Type groupType);
 
 /********************************************************
  * @brief Lấy chế độ đếm của Timer (Up/Down)
@@ -32,5 +32,10 @@ uint16 GetCounterMode(Gpt_CounterModeType counterMode);
  * @return Giá trị CKD cho Timer
  ********************************************************/
 uint16 GetClockDivider(Gpt_ClockDivType clockDiv);
+
+/**
+ * @brief Hàm ánh xạ logic nguồn ngắt GPT sang cờ phần cứng TIM_IT của thư viện
+ */
+uint16_t Gpt_MapToHardwareItFlag(Gpt_IrqSourceType Source);
 
 #endif /* GPT_MAPPING_H */

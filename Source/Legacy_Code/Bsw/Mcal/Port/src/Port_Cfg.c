@@ -58,12 +58,18 @@ static const Port_ConfigType Port_PinCfgGroup[PORT_CFG_COUNT] = {
             .SpeedType = PORT_SPEED_10MHZ,
             .ModeType = PORT_MODE_ALTERNATE_PUSH_PULL},
     */
-    [LED_CFG_GENERAL_PIN] =
+    [LED_CFG_C13_PIN] =
         {
             .pin = PORT_PIN_C13,
             .ModeType = PORT_MODE_OUTPUT_PUSH_PULL,
             .SpeedType = PORT_SPEED_10MHZ,
-            .HwPortId = PORT_C}};
+            .HwPortId = PORT_C},
+    [LED_CFG_A0_PIN] =
+        {
+            .pin = PORT_PIN_A0,
+            .ModeType = PORT_MODE_OUTPUT_PUSH_PULL,
+            .SpeedType = PORT_SPEED_10MHZ,
+            .HwPortId = PORT_A}};
 
 const Port_ConfigSetType Port_Config = {
     .PinCfgGroup = Port_PinCfgGroup,                                      /* con trỏ đến mảng cấu hình pin */

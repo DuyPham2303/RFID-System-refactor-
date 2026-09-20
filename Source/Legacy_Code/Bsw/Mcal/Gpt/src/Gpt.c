@@ -1,9 +1,10 @@
 #include "Gpt.h"
 #include "Gpt_Mapping.h"
+#include "Gpt_Irq.h"
 #include "Mcu_Irq.h"
 
 /*biến tĩnh lưu cấu hình nội bộ cho toàn bộ nhóm Gpt */
-static const Gpt_ConfigType_s *Gpt_GroupConfig_s;
+static const Gpt_ConfigType_s *Gpt_Config_s;
 
 Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr)
 {
@@ -21,19 +22,31 @@ Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr)
         /* Lấy cấu hình kênh GPT hiện tại từ mảng cấu hình */
         const Gpt_ChannelConfigType_s *ChannelConfig = &ConfigPtr->ChannelConfigPtr[index];
 
-        /*truy cập cấu hình NVIC*/
-        const Mcu_IrqConfigType *IrqConfig_s = ConfigPtr->ChannelConfigPtr[index].IrqCfgPtr;
-
-        /*truyền con trỏ cấu hình xuống tầng thanh ghi*/
-        Mcu_IrqInit(IrqConfig_s);
-
         /* Lấy nhóm timer từ ID timer phần cứng */
-        TIM_TypeDef *Gpt_Group = GetTimerGroup(ChannelConfig->HwTimerId);
+        TIM_TypeDef *Gptx = GetTimerGroup(ChannelConfig->HwTimerId);
 
         /*xác nhận địa chỉ timer hợp lệ*/
-        if (Gpt_Group == NULL_PTR)
+        if (Gptx == NULL_PTR)
         {
             return E_NOT_OK;
+        }
+
+        const Mcu_IrqConfigType *IrqConfig_s = NULL_PTR;
+        const Gpt_IrqConfigNotiType *IrqConfigNoti_s = NULL_PTR;
+
+        /*cấu hình NVIC*/
+        if (ChannelConfig->IrqCfgPtr != NULL_PTR && ChannelConfig->notiPtr != NULL_PTR)
+        {
+            /*đọc cấu hình NVIC và ánh xạ xuống thanh ghi phần cứng*/
+            IrqConfig_s = ChannelConfig->IrqCfgPtr;
+            Mcu_IrqInit(IrqConfig_s);
+
+            /*truy cập đăng ký callback Api và cấu hình cờ ngắt*/
+            IrqConfigNoti_s = ChannelConfig->notiPtr;
+            Gpt_RegisterNotification(
+                ChannelConfig->HwTimerId,
+                (Gpt_IdnotiType)index,
+                IrqConfigNoti_s->cb);
         }
 
         /*Lưu trữ cấu hình cục bộ cho toàn bộ nhóm Gpt*/
@@ -43,26 +56,28 @@ Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr)
         Gpt_TimbaseCfg_s.TIM_Prescaler = ChannelConfig->PresVal;
 
         /*ánh xạ cấu hình lưu trữ xuống thanh ghi cứng*/
-        TIM_TimeBaseInit(Gpt_Group, &Gpt_TimbaseCfg_s);
+        TIM_TimeBaseInit(Gptx, &Gpt_TimbaseCfg_s);
 
-        /*kích hoạt ngoại vi timer*/
-        if (ChannelConfig->Cmd == GPT_ENABLE)
-        {
-            TIM_Cmd(Gpt_Group, ENABLE);
-        }
+        /*kích hoạt  timer*/
 
-        /*kích hoạt ngắt */
-        if (IrqConfig_s->Enable)
+        TIM_Cmd(Gptx, ChannelConfig->Cmd);
+
+        /*enable/disable ngắt và ánh xạ cờ sự kiện xử lý tương ứng*/
+
+        if (IrqConfig_s->cmd == ENABLE)
         {
-            TIM_ITConfig(Gpt_Group, TIM_IT_Update, ENABLE);
+            Gpt_SetNotificationEnable(
+                ChannelConfig->HwTimerId,
+                IrqConfigNoti_s->flag,
+                ChannelConfig->IrqCfgPtr->cmd);
         }
     }
     /*copy cấu hình lưu trữ sang biến tĩnh sử dụng cục bộ*/
-    Gpt_GroupConfig_s = ConfigPtr;
+    Gpt_Config_s = ConfigPtr;
     return E_OK;
 }
 
-void Gpt_StartTimer(Gpt_GroupType GroupID, Gpt_PeriodValue TargetTime)
+void Gpt_StartTimer(Gpt_GroupId_Type GroupID, Gpt_PeriodValue TargetTime)
 {
     /*lấy timer phần cứng*/
     TIM_TypeDef *Timer = GetTimerGroup(GroupID);
@@ -80,17 +95,7 @@ void Gpt_StartTimer(Gpt_GroupType GroupID, Gpt_PeriodValue TargetTime)
     TIM_Cmd(Timer, ENABLE);
 }
 
-Gpt_PeriodValue Gpt_GetTimeElapsed(Gpt_GroupType HwTimerId)
-{
-    TIM_TypeDef *Timer = GetTimerGroup(HwTimerId);
-    if (Timer == NULL_PTR)
-    {
-        return 0U;
-    }
-    return TIM_GetCounter(Timer);
-}
-
-void Gpt_StopTimer(Gpt_GroupType GroupID)
+void Gpt_StopTimer(Gpt_GroupId_Type GroupID)
 {
     TIM_TypeDef *Timer = GetTimerGroup(GroupID);
     if (Timer == NULL_PTR)
@@ -98,4 +103,14 @@ void Gpt_StopTimer(Gpt_GroupType GroupID)
         return;
     }
     TIM_Cmd(Timer, DISABLE);
+}
+
+Gpt_PeriodValue Gpt_GetTimeElapsed(Gpt_GroupId_Type HwTimerId)
+{
+    TIM_TypeDef *Timer = GetTimerGroup(HwTimerId);
+    if (Timer == NULL_PTR)
+    {
+        return 0U;
+    }
+    return TIM_GetCounter(Timer);
 }

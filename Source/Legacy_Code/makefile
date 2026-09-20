@@ -18,14 +18,16 @@ CFLAGS = --specs=nano.specs \
           -I. \
           -Iinclude \
           -IApp \
-          -Iplatform \
+          -ISystem \
           -IBsw/Mcal \
           -IBsw/Mcal/Dio/inc \
           -IBsw/Mcal/Gpt/inc \
           -IBsw/Mcal/Port/inc \
           -IBsw/Mcal/Mcu/inc \
+          -IBsw/Mcal/Spi/inc \
           -IBsw/Services\
-          -IBsw/Services/CallbackM\
+          -IBsw/Services/Common\
+          -IBsw/Services/Os\
           -Ilib/CMSIS \
           -Ilib/SPL/inc \
           -Istartup \
@@ -37,12 +39,13 @@ LDFLAGS = -T linker.ld -Wl,-Map=$(BUILDDIR)/main.map -nostartfiles
 # Sources and objects
 # -----------------------
 SRC = $(wildcard App/main.c) \
-      $(wildcard platform/*.c) \
+      $(wildcard System/*.c) \
       $(wildcard Bsw/Mcal/Dio/src/*.c) \
       $(wildcard Bsw/Mcal/Gpt/src/*.c) \
       $(wildcard Bsw/Mcal/Port/src/*.c) \
       $(wildcard Bsw/Mcal/Mcu/src/*.c) \
-      $(wildcard Bsw/Services/Callback/*.c) \
+      $(wildcard Bsw/Mcal/Spi/src/*.c) \
+      $(wildcard Bsw/Services/Os/*.c) \
       $(wildcard lib/SPL/src/*.c) \
 
 STARTUP = startup/startup_stm32f103c8tx.s

@@ -8,9 +8,8 @@
 #ifndef PWM_CFG_H
 #define PWM_CFG_H
 
-#include "Std_Types.h"
 #include "Pwm_Types.h"
-#include "./Gpt/Gpt_dtypes.h"
+#include "Gpt_dtypes.h"
 
 /**
  * @brief ID logic của các chức năng PWM được application sử dụng.
@@ -20,7 +19,6 @@
  */
 typedef enum
 {
-    // PWM_CFG_SERVO_ID = 0U,
     PWM_CFG_CH1_ID = 0u,
     PWM_CFG_CH2_ID,
     PWM_CFG_CH3_ID,
@@ -35,7 +33,7 @@ typedef struct
     Pwm_OutputStateType OutputState; /* Trạng thái ngõ ra chính */
     Pwm_Pulse PulseValue;            /* Giá trị Pulse (CCR) */
     Pwm_PolarityType Polarity;       /* Cực tính ngõ ra chính */
-    Gpt_GroupType HwTimerId;         /* ID timer phần cứng   */
+    Gpt_GroupId_Type HwTimerId;      /* ID timer phần cứng   */
     Pwm_ChannelType ChannelId;       /* ID kênh PWM           */
 
 } Pwm_ChannelConfigType_s;

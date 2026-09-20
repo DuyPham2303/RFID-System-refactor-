@@ -8,7 +8,8 @@ Object/Bsw/Mcal/Gpt/src/Gpt_Mapping.o: Bsw/Mcal/Gpt/src/Gpt_Mapping.c \
  lib/SPL/inc/stm32f10x_i2c.h lib/SPL/inc/stm32f10x_pwr.h \
  lib/SPL/inc/stm32f10x_rcc.h lib/SPL/inc/stm32f10x_sdio.h \
  lib/SPL/inc/stm32f10x_spi.h lib/SPL/inc/stm32f10x_usart.h \
- lib/SPL/inc/misc.h Bsw/Mcal/Gpt/inc/Gpt_dtypes.h platform/Std_Types.h
+ lib/SPL/inc/misc.h Bsw/Mcal/Gpt/inc/Gpt_dtypes.h \
+ Bsw/Services/Common/Std_Types.h Bsw/Services/Common/Platform_Types.h
 Bsw/Mcal/Gpt/inc/Gpt_Mapping.h:
 lib/SPL/inc/stm32f10x_tim.h:
 include/stm32f10x.h:
@@ -30,4 +31,5 @@ lib/SPL/inc/stm32f10x_spi.h:
 lib/SPL/inc/stm32f10x_usart.h:
 lib/SPL/inc/misc.h:
 Bsw/Mcal/Gpt/inc/Gpt_dtypes.h:
-platform/Std_Types.h:
+Bsw/Services/Common/Std_Types.h:
+Bsw/Services/Common/Platform_Types.h:

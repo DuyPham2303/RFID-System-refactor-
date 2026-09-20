@@ -10,7 +10,7 @@
 
 #ifndef PWM_TYPES_H
 #define PWM_TYPES_H
-#include "Std_Types.h"
+#include "./Bsw/Services/Common/Std_Types.h"
 
 /**
  * @brief Loại dữ liệu biểu diễn giá trị duty cycle được tầng phía trên truyền vào.

@@ -1,6 +1,6 @@
 #include "Gpt_Mapping.h"
 
-TIM_TypeDef *GetTimerGroup(Gpt_GroupType groupType)
+TIM_TypeDef *GetTimerGroup(Gpt_GroupId_Type groupType)
 {
     switch (groupType)
     {
@@ -40,5 +40,27 @@ uint16 GetClockDivider(Gpt_ClockDivType clockDiv)
         return TIM_CKD_DIV4;
     default:
         return NULL_PTR;
+    }
+}
+
+/**
+ * @brief Hàm ánh xạ logic nguồn ngắt GPT sang cờ phần cứng TIM_IT của thư viện
+ */
+uint16_t Gpt_MapToHardwareItFlag(Gpt_IrqSourceType Source)
+{
+    switch (Source)
+    {
+    case GPT_IRQ_SOURCE_UPDATE:
+        return TIM_IT_Update;
+    case GPT_IRQ_SOURCE_CC1:
+        return TIM_IT_CC1;
+    case GPT_IRQ_SOURCE_CC2:
+        return TIM_IT_CC2;
+    case GPT_IRQ_SOURCE_CC3:
+        return TIM_IT_CC3;
+    case GPT_IRQ_SOURCE_CC4:
+        return TIM_IT_CC4;
+    default:
+        return 0U;
     }
 }

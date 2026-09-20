@@ -17,16 +17,8 @@
  */
 typedef enum Port_ConfigIdType
 {
-    // SD_CARD_CFG_GENERAL_PIN = 0U,
-    // SD_CARD_CFG_CS_PIN,
-    // RC522_CFG_GENERAL_PIN,
-    // RC522_CFG_RST_PIN,
-    // RC522_CFG_CS_PIN,
-    // LCD_CFG_GENERAL_PIN,
-    // USBTTL_CFG_TX_PIN,
-    // USBTTL_CFG_RX_PIN,
-    // SERVO_CFG_GENERAL_PIN,
-    LED_CFG_GENERAL_PIN = 0U,
+    LED_CFG_C13_PIN = 0U,
+    LED_CFG_A0_PIN,
     PORT_CFG_COUNT
 } Port_ConfigIdType;
 /********************************************************

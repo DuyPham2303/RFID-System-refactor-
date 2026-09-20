@@ -2,14 +2,6 @@
 
 static const Pwm_ChannelConfigType_s Pwm_ChannelConfigs[PWM_CFG_COUNT] =
     {
-        // [PWM_CFG_SERVO_ID] =
-        //     {
-        //         .ChannelId = PWM_CHANNEL_1,
-        //         .HwTimerId = GPT_GROUP_2,
-        //         .OcMode = PWM_OC_MODE_PWM1,
-        //         .OutputState = PWM_OUTPUT_ENABLED,
-        //         .PulseValue = 1000,
-        //         .Polarity = PWM_POLARITY_HIGH},
         [PWM_CFG_CH1_ID] =
             {
                 .ChannelId = PWM_CHANNEL_1,

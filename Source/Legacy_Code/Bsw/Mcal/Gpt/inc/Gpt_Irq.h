@@ -6,40 +6,41 @@
  */
 #ifndef GPT_IRQ_H
 #define GPT_IRQ_H
-#include "Std_Types.h"
-typedef enum Gpt_CbServiceType
-{
-    GPT_BLINKLED_GROUP1 = 0U,
-    GPT_MAX_GROUP
-} Gpt_CbServiceType;
-// Định nghĩa kiểu cho hàm callback của GPT
-typedef void (*Gpt_ApiCallbackPtr)(void);
+#include "./Bsw/Services/Common/Std_Types.h"
+#include "Gpt_dtypes.h"
 
 /**
  * @brief Đăng ký callback cho một ID GPT logic.
- * @param ServiceId ID cấu hình GPT.
+ * @param HwId ID cấu hình phần cứng GPT.
+ * @param NotiId Id cấu hình đình danh hàm callback
  * @param Cb Con trỏ đến hàm callback.
  * @return Kết quả thực hiện.
  */
-Std_ReturnType Gpt_RegisterApiCallback(
-    Gpt_CbServiceType ServiceId,
-    Gpt_ApiCallbackPtr Cb);
+Std_ReturnType Gpt_RegisterNotification(
+    Gpt_GroupId_Type HwId,
+    Gpt_IdnotiType NotiId,
+    Gpt_notificationPtr Cb);
 
 /**
  * @brief Cho phép hoặc vô hiệu hóa notification của một ID GPT logic.
- * @param ServiceId ID cấu hình GPT.
- * @param Enable Trạng thái cho phép.
+ * @param HwId ID cấu hình phần cứng GPT.
+ * @param cmd Trạng thái enable/disable.
  * @return Kết quả thực hiện.
  */
-Std_ReturnType Gpt_SetCallbackEnable(
-    Gpt_CbServiceType ServiceId,
-    bool Enable);
+
+Std_ReturnType Gpt_SetNotificationEnable(
+    Gpt_GroupId_Type HwId,
+    Gpt_IrqSourceType Flag,
+    bool cmd);
 
 /**
  * @brief Trả về callback đã đăng ký của một ID GPT logic.
- * @param ServiceId ID cấu hình GPT.
+ * @param HwId ID cấu hình phần cứng GPT.
+ * @param NotiId Id cấu hình đình danh hàm callback
  * @return Con trỏ đến hàm callback.
  */
-Gpt_ApiCallbackPtr Gpt_GetCallback(Gpt_CbServiceType ServiceId);
+Gpt_notificationPtr Gpt_GetNotification(
+    Gpt_GroupId_Type HwId,
+    Gpt_IdnotiType NotiId);
 
 #endif /* GPT_IRQ_H */

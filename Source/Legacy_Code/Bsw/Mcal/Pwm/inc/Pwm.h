@@ -11,35 +11,12 @@
 #define PWM_H
 
 #include "Pwm_Cfg.h"
-#include "Pwm_Types.h"
-
-typedef enum
-{
-    PWM_ERROR_NONE = 0U,
-    PWM_ERROR_NULL_CONFIG,
-    PWM_ERROR_EMPTY_CONFIG,
-    PWM_ERROR_CONFIG_COUNT,
-    PWM_ERROR_INVALID_TIMER,
-    PWM_ERROR_INVALID_CHANNEL,
-    PWM_ERROR_DUPLICATE_CHANNEL,
-    PWM_ERROR_INVALID_OPTION
-} Pwm_ErrorType;
 
 /**
  * @brief  Khởi tạo module PWM.
  * @param  ConfigPtr: Con trỏ trỏ tới bảng cấu hình phần cứng.
  */
 Std_ReturnType Pwm_Init(const Pwm_ConfigType_s *ConfigPtr);
-
-/**
- * @brief Kiểm tra bảng cấu hình PWM mà không ghi vào phần cứng.
- */
-Std_ReturnType Pwm_ValidateConfig(const Pwm_ConfigType_s *ConfigPtr);
-
-/**
- * @brief Lấy mã lỗi validation hoặc khởi tạo gần nhất của PWM.
- */
-Pwm_ErrorType Pwm_GetLastError(void);
 
 /**
  * @brief  Thiết lập độ rộng xung (Duty Cycle) cho kênh PWM tương ứng (Dùng để điều khiển góc Servo).

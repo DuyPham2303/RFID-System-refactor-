@@ -10,8 +10,7 @@
 #ifndef DIO_TYPES_H
 #define DIO_TYPES_H
 
-#include "Std_Types.h"
-
+#include "./Bsw/Services/Common/Std_Types.h"
 /********************************************************
  * @typedef Dio_ChannelType
  * @brief kieu du lieu danh so thu tu cho cac chan DIO channel
