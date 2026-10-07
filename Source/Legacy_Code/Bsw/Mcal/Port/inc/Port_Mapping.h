@@ -10,7 +10,7 @@
 #ifndef PORT_MAPPING_H
 #define PORT_MAPPING_H
 
-#include "Port_dtypes.h"
+#include "Port_Types.h"
 #include "stm32f10x_gpio.h"
 
 GPIO_TypeDef *GetPortGroup(Port_PortType port);

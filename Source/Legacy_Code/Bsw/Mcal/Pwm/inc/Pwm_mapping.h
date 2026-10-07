@@ -12,6 +12,7 @@
 #define PWM_MAPPING_H
 
 #include "Pwm_Types.h"
+#include "stm32f10x_tim.h"
 /********************************************************
  * @brief Lấy chế độ Output Compare cho PWM
  * @param ocMode: Chế độ OC từ cấu hình (Pwm_OcModeType)
@@ -25,13 +26,6 @@ uint16 GetPwmOcMode(Pwm_OcModeType ocMode);
  * @return Giá trị trạng thái cho thanh ghi CCER của Timer
  ********************************************************/
 uint16 GetPwmOutputState(Pwm_OutputStateType outputState);
-
-/********************************************************
- * @brief Lấy giá trị xung (Pulse) cho PWM
- * @param pulse: Giá trị Pulse từ cấu hình (Pwm_Pulse)
- * @return Giá trị Pulse cho thanh ghi CCR tương ứng
- ********************************************************/
-uint16 GetPwmPulseValue(Pwm_Pulse pulse);
 
 /********************************************************
  * @brief Lấy cực tính ngõ ra chính cho PWM
@@ -67,5 +61,26 @@ uint16 GetPwmOcIdleState(Pwm_IdleStateType idleState);
  * @return Giá trị trạng thái Idle bổ sung cho thanh ghi CR2 của Timer
  ********************************************************/
 uint16 GetPwmOcNIdleState(Pwm_IdleStateNType idleStateN);
+
+/********************************************************
+ * @brief Lấy con trỏ đếnTimer Group
+ * @param groupType: ID nhóm Pwm (Pwm_GroupId_Type)
+ * @return Con trỏ đến cấu trúc TIM_TypeDef tương ứng
+ ********************************************************/
+TIM_TypeDef *Pwm_GetTimerGroup(Hw_TimerGroupIdType groupType);
+
+/********************************************************
+ * @brief Lấy chế độ đếm của Timer (Up/Down)
+ * @param counterMode: Chế độ đếm từ cấu hình (Pwm_CounterModeType)
+ * @return Giá trị CR1 DIR bit cho Timer
+ ********************************************************/
+uint16 Pwm_GetCounterMode(Pwm_CounterModeType counterMode);
+
+/********************************************************
+ * @brief Lấy giá trị Clock Division (CKD)
+ * @param clockDiv: Giá trị chia clock từ cấu hình (Pwm_ClockDivType)
+ * @return Giá trị CKD cho Timer
+ ********************************************************/
+uint16 Pwm_GetClockDivider(Pwm_ClockDivType clockDiv);
 
 #endif /* PWM_MAPPING_H */

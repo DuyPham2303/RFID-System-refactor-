@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 /********************************************************
  * @brief dinh nghia cac kieu du lieu doc lap voi Autosar platform

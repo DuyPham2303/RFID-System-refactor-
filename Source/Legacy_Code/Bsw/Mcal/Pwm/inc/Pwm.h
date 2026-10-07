@@ -16,14 +16,14 @@
  * @brief  Khởi tạo module PWM.
  * @param  ConfigPtr: Con trỏ trỏ tới bảng cấu hình phần cứng.
  */
-Std_ReturnType Pwm_Init(const Pwm_ConfigType_s *ConfigPtr);
+Std_ReturnType Pwm_Init(const Pwm_TimerConfigType *ConfigPtr);
 
 /**
  * @brief  Thiết lập độ rộng xung (Duty Cycle) cho kênh PWM tương ứng (Dùng để điều khiển góc Servo).
  * @param  ChannelNumber: Kênh PWM (Ví dụ: PwmConf_PwmChannel_Servo).
- * @param  DutyCycle: Giá trị từ 0x0000 (0%) đến 0x8000 (100%).
+ * @param  Rawduty: Giá trị duty cycle thô (Raw Duty) trong khoảng từ 0 đến PeriodValue.
  */
-void Pwm_SetDutyCycle(Pwm_ChannelType ChannelNumber, Pwm_DutyCycleType DutyCycle);
+void Pwm_SetDutyCycle(Pwm_ChannelType ChannelNumber, Pwm_PeriodValue Rawduty);
 
 /**
  * @brief  Đưa ngõ ra PWM về trạng thái nghỉ (Idle - thường là mức 0).

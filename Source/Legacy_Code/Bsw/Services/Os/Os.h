@@ -5,5 +5,4 @@
 
 void Os_DelayMs(uint32 DelayMs);
 
-void Os_Init();
 #endif /* BSW_DELAY_H */

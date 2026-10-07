@@ -1,5 +1,5 @@
 #include "Pwm_mapping.h"
-#include "stm32f10x_tim.h"
+
 /********************************************************
  * @brief Lấy chế độ Output Compare cho PWM~
  ********************************************************/
@@ -38,14 +38,6 @@ uint16 GetPwmOutputState(Pwm_OutputStateType outputState)
     default:
         return TIM_OutputState_Disable;
     }
-}
-
-/********************************************************
- * @brief Lấy giá trị xung (Pulse) cho PWM
- ********************************************************/
-uint16 GetPwmPulseValue(Pwm_Pulse pulse)
-{
-    return pulse;
 }
 
 /********************************************************
@@ -125,5 +117,48 @@ uint16 GetPwmOcNIdleState(Pwm_IdleStateNType idleStateN)
         return TIM_OCNIdleState_Reset;
     default:
         return TIM_OCNIdleState_Reset;
+    }
+}
+
+TIM_TypeDef *Pwm_GetTimerGroup(Hw_TimerGroupIdType groupType)
+{
+    switch (groupType)
+    {
+    case HW_TIMER_GROUP_1:
+        return TIM1;
+    case HW_TIMER_GROUP_2:
+        return TIM2;
+    case HW_TIMER_GROUP_3:
+        return TIM3;
+    default:
+        return NULL_PTR;
+    }
+}
+
+uint16 Pwm_GetCounterMode(Pwm_CounterModeType counterMode)
+{
+    switch (counterMode)
+    {
+    case PWM_COUNTER_MODE_UP:
+        return TIM_CounterMode_Up;
+    case PWM_COUNTER_MODE_DOWN:
+        return TIM_CounterMode_Down;
+    default:
+        return 0U;
+    }
+}
+
+uint16 Pwm_GetClockDivider(Pwm_ClockDivType clockDiv)
+{
+    switch (clockDiv)
+    {
+    case PWM_CLOCK_DIV_1:
+        return TIM_CKD_DIV1;
+    case PWM_CLOCK_DIV_2:
+        return TIM_CKD_DIV2;
+    case PWM_CLOCK_DIV_4:
+        return TIM_CKD_DIV4;
+    default:
+        return 0U;
     }
 }

@@ -11,7 +11,6 @@
       "cwd": "${workspaceFolder}",
       "device": "STM32F103C8",
       "svdFile": "${workspaceFolder}/STM32F103xx.svd",
-      /* cau hinh cho phep xem live watch debug (OpenOCD khong support) */
       "serverpath": "C:/STM32CubeIDE_1.12.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.stlink-gdb-server.win32_2.0.500.202301161003/tools/bin/ST-LINK_gdbserver.exe",
       "gdbPath": "D:/arm-gnu-toolchain/arm-gnu-toolchain_/bin/arm-none-eabi-gdb.exe",
       "stm32cubeprogrammer": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin",
@@ -22,31 +21,6 @@
       },
       "postRestartCommands": [
         "monitor reset halt"
-      ]
-    },
-    {
-      "name": "Debug with GDB",
-      "type": "cppdbg",
-      "request": "launch",
-      //debug file có tên main.exe dựa trên vị trí thư mục của file bất kỳ đang mở, nếu muốn đổi tên file debug thì sửa lại phần này
-      "program": "${workspaceFolder}/build/demo.exe",
-      "stopAtEntry": true,
-      "preLaunchTask": "Build-C-program",
-      "cwd": "${workspaceFolder}",
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "C:\\MinGW\\msys64\\mingw64\\bin\\gdb.exe",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Sửa lỗi mã hóa ký tự UTF-8",
-          "text": "set charset UTF-8",
-          "ignoreFailures": true
-        }
       ]
     }
   ]

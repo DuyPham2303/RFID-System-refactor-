@@ -13,31 +13,25 @@
  * @brief enum định danh cho tầng logic sử dụng để lấy IRQn muốn ánh xạ cho ngoại vi ngắt tương ứng
  * @details mỗi IRQn được CPU tra cứu trong vector table để gọi hàm ISR cần thiết
  */
-typedef enum Mcu_IrqIdType
+typedef enum Mcu_IrqGroup
 {
-    MCU_GPT_CH1_IRQ = 0U,
-    MCU_GPT_CH2_IRQ,
-    MCU_GPT_CH3_IRQ,
-    MCU_SPI_CH1_IRQ,
-    MCU_SPI_CH2_IRQ,
+    MCU_GPT_GROUP1_IRQ = 0U,
+    MCU_GPT_GROUP2_IRQ,
+    MCU_GPT_GROUP3_IRQ,
+    MCU_SPI_GROUP1_IRQ,
+    MCU_SPI_GROUP2_IRQ,
     // ... các nguồn ngắt logic toàn cục
     MCU_IRQ_MAX
-} Mcu_IrqIdType;
+} Mcu_IrqGroupType;
 
 /**
  * @brief Cấu hình NVIC dùng chung cho các module mcal
  */
 typedef struct
 {
-    bool cmd;
-    Mcu_IrqIdType IrqChannel;
+    Mcu_IrqGroupType IrqChannel;
     uint8 PreemptionPriority;
     uint8 SubPriority;
-} Mcu_IrqConfigType;
-
-/**
- * @brief Định nghĩa kiểu con trỏ hàm cho các hàm cấu hình IT phần cứng (Driver-specific API mapping)
- */
-typedef void (*Mcal_ItConfigFuncType)(uint32_t Instance, uint16_t InterruptSource, boolean NewState);
+} Mcu_NvicConfigType_s;
 
 #endif /* MCU_IRQ_TYPES_H */

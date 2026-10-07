@@ -18,22 +18,22 @@ Std_ReturnType Gpt_Init(const Gpt_ConfigType_s *ConfigPtr);
 
 /**
  * @brief  Bắt đầu chạy Timer với chu kỳ đếm (tick) xác định.
- * @param  HwTimerId: Kênh Timer xử lý chức năng Gpt
+ * @param  HwId: Kênh Timer xử lý chức năng Gpt
  * @param  Value: giá trị đếm tràn trước khi phát sinh 1 update event.
  */
-void Gpt_StartTimer(Gpt_GroupId_Type HwTimerId, Gpt_PeriodValue Value);
+void Gpt_StartTimer(Gpt_GroupId_Type HwId, Gpt_PeriodValue Value);
 
 /**
  * @brief  Dừng hoạt động của Timer.
- * @param  HwTimerId: Kênh Timer cần dừng.
+ * @param  HwId: Kênh Timer cần dừng.
  */
-void Gpt_StopTimer(Gpt_GroupId_Type HwTimerId);
+void Gpt_StopTimer(Gpt_GroupId_Type HwId);
 
 /**
  * @brief Lấy giá trị thời gian đã trôi qua kể từ khi Timer bắt đầu chạy.
- * @param HwTimerId: Kênh Timer cần lấy giá trị.
+ * @param HwId: Kênh Timer cần lấy giá trị.
  * @return Giá trị thời gian đã trôi qua (tick count).s
  */
 
-Gpt_PeriodValue Gpt_GetTimeElapsed(Gpt_GroupId_Type HwTimerId);
+Gpt_PeriodValue Gpt_GetTimeElapsed(Gpt_GroupId_Type HwId);
 #endif /* GPT_H */

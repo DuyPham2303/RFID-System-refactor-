@@ -1,0 +1,22 @@
+Recommended demo startup order
+
+1. MCU / clock initialization
+2. Port_Init(&Port_Config)
+3. Pwm_Init(&Pwm_Config)
+4. Other BSW initialization
+5. RTE / application startup
+6. Application calls IoHwAb service
+
+Important distinction:
+
+Port_Init()
+    configures PA8 electrically for TIM1_CH1.
+
+Pwm_Init()
+    configures TIM1 peripheral/channel.
+
+IoHwAb_SetMotorPwm()
+    selects the logical channel and requests a duty cycle.
+
+App
+    never passes Port_ConfigType directly to Port_Init().

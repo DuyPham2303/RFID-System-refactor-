@@ -9,40 +9,31 @@
 #define PWM_CFG_H
 
 #include "Pwm_Types.h"
-#include "Gpt_dtypes.h"
 
-/**
- * @brief ID logic của các chức năng PWM được application sử dụng.
- * @details Application chỉ sử dụng các ID này. Ánh xạ tới timer và channel
- *          phần cứng được thực hiện trong bảng Pwm_Config của MCAL.
- * @note mỗi ID tượng trưng cho 1 kênh timer sử dụng
- */
-typedef enum
-{
-    PWM_CFG_CH1_ID = 0u,
-    PWM_CFG_CH2_ID,
-    PWM_CFG_CH3_ID,
-    PWM_CFG_CH4_ID,
-    PWM_CFG_COUNT
-} Pwm_ConfigIdType;
-
-/* Cấu trúc cấu hình tĩnh cho một kênh PWM */
+/* 1. Cấu hình phần NGỌN (Riêng cho từng Kênh) */
 typedef struct
 {
-    Pwm_OcModeType OcMode;           /* Trạng thái điện áp ngõ ra */
-    Pwm_OutputStateType OutputState; /* Trạng thái ngõ ra chính */
-    Pwm_Pulse PulseValue;            /* Giá trị Pulse (CCR) */
-    Pwm_PolarityType Polarity;       /* Cực tính ngõ ra chính */
-    Gpt_GroupId_Type HwTimerId;      /* ID timer phần cứng   */
-    Pwm_ChannelType ChannelId;       /* ID kênh PWM           */
+    Pwm_ChannelType ChannelId;       /* ID kênh (CH1, CH2...) */
+    Pwm_OcModeType OcMode;           /* Khác nhau giữa các kênh */
+    Pwm_OutputStateType OutputState; /* Khác nhau giữa các kênh */
+    Pwm_PolarityType Polarity;       /* Khác nhau giữa các kênh */
+    Pwm_PeriodValue DefaultDuty;     /* Giá trị xung CCRx ban đầu */
+} Pwm_ChannelConfigType;
 
-} Pwm_ChannelConfigType_s;
-
-/* Cấu trúc cấu hình tổng thể của module PWM */
+/* 2. Cấu hình phần NỀN (Chung cho cả bộ Timer) */
 typedef struct
 {
-    const Pwm_ChannelConfigType_s *ChannelConfig; /* con trỏ lưu trữ cấu hình kênh PWM */
-    uint8 CfgID_Count;                            /* Số lượng ID logic cấu hình cho các tác vụ */
-} Pwm_ConfigType_s;
-extern const Pwm_ConfigType_s Pwm_Config;
+    Hw_TimerGroupIdType HwTimerGroup; /* Định danh bộ Timer (TIM1, TIM2...) */
+    Pwm_PrescalerValue PresVal;       /* Chung cho các kênh */
+    Pwm_ClockDivType ClkDiv;          /* Chung cho các kênh */
+    Pwm_CounterModeType ModeCntType;  /* Chung cho các kênh */
+    Pwm_PeriodValue PeriodVal;        /* Chung cho các kênh */
+    Pwm_RepetitionCnt RepCntVal;      /* Chung cho các kênh */
+
+    /* Con trỏ trỏ tới danh sách các kênh thuộc bộ Timer này */
+    const Pwm_ChannelConfigType *ChannelsArray;
+    uint8 ChannelCount;
+} Pwm_TimerConfigType;
+
+extern const Pwm_TimerConfigType g_Pwm_Config;
 #endif /* PWM_CFG_H */

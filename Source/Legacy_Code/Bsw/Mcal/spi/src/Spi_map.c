@@ -130,18 +130,42 @@ uint16 Spi_Map_GetFirstBit(Spi_FirstBitType FirstBit)
     }
 }
 
-SPI_TypeDef *Spi_Map_GetHwInstance(Spi_GroupId_Type HwUnitId)
+SPI_TypeDef *Spi_Map_GetHwInstance(Spi_HwUnitType_e HwUnitId)
 {
     // Ánh xạ ID phần cứng logic sang địa chỉ base của các peripheral SPI trên STM32F103
     switch (HwUnitId)
     {
-    case SPI_GROUP_1:
+    case SPI_HW_UNIT_1:
         return SPI1;
-    case SPI_GROUP_2:
+    case SPI_HW_UNIT_2:
         return SPI2;
-    case SPI_GROUP_3:
-        return SPI3;
     default:
-        return SPI1;
+        return NULL_PTR;
     }
+}
+
+uint32_t Spi_MapIrqSourceToSplFlag(Spi_IrqSourceType IrqSource)
+{
+    uint32_t splFlag = 0U;
+
+    switch (IrqSource)
+    {
+    case Spi_IRQ_SOURCE_TXE:
+        splFlag = SPI_I2S_IT_TXE;
+        break;
+
+    case Spi_IRQ_SOURCE_RXNE:
+        splFlag = SPI_I2S_IT_RXNE;
+        break;
+
+    case Spi_IRQ_SOURCE_ERROR:
+        splFlag = SPI_I2S_IT_ERR; // Hoặc ánh xạ cụ thể các cờ lỗi OVR, MODF tuỳ chọn
+        break;
+
+    default:
+        splFlag = 0U;
+        break;
+    }
+
+    return splFlag;
 }

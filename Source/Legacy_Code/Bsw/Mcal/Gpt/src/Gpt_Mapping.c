@@ -5,11 +5,11 @@ TIM_TypeDef *GetTimerGroup(Gpt_GroupId_Type groupType)
     switch (groupType)
     {
     case GPT_GROUP_1:
-        return TIM2;
+        return TIM1;
     case GPT_GROUP_2:
-        return TIM3;
+        return TIM2;
     case GPT_GROUP_3:
-        return TIM4;
+        return TIM3;
     default:
         return NULL_PTR;
     }

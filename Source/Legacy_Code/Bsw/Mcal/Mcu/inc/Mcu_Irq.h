@@ -7,6 +7,6 @@
  * @param ConfigPtr Con trỏ đến cấu hình NVIC.
  * @return Kết quả thực hiện.
  */
-Std_ReturnType Mcu_IrqInit(const Mcu_IrqConfigType *ConfigPtr);
+Std_ReturnType Mcu_IrqInit(const Mcu_NvicConfigType_s *ConfigPtr);
 
 #endif /* MCU_IRQ_TYPES_H */

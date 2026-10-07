@@ -9,18 +9,8 @@
  */
 #ifndef PORT_CFG_H
 #define PORT_CFG_H
-#include "Port_dtypes.h"
-/**
- * @brief ID logic của các nhóm pin được application/IoHwAb sử dụng.
- * @details Các ID này không chứa thông tin phần cứng; ánh xạ port, pin và
- *          mode cụ thể được thực hiện trong bảng Port_Config của MCAL.
- */
-typedef enum Port_ConfigIdType
-{
-    LED_CFG_C13_PIN = 0U,
-    LED_CFG_A0_PIN,
-    PORT_CFG_COUNT
-} Port_ConfigIdType;
+#include "Port_Types.h"
+
 /********************************************************
  * @typedef Port_ConfigType
  * @brief kieu cau truc de cau hinh Port cho chan GPIO
@@ -40,6 +30,6 @@ typedef struct Port_ConfigSetType
     uint8 CfgID_Count;
 } Port_ConfigSetType;
 
-extern const Port_ConfigSetType Port_Config;
+extern const Port_ConfigSetType g_Port_ConfigGroup;
 
 #endif /* PORT_CFG_H */

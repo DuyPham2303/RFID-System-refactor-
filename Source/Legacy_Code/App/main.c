@@ -5,6 +5,7 @@ TC_IdType_e ty = TC_GPT_ID;
 
 int main()
 {
+
 	/*đếm số lượng test case để khởi tạo bảng giám sát trạng thái xử lý*/
 	uint8 total = TestCaseTotalCount(ty);
 

@@ -10,7 +10,7 @@
 #define GPT_MAPPING_H
 
 #include "stm32f10x_tim.h" // Keil::Device:StdPeriph Drivers:Timer
-#include "Gpt_dtypes.h"
+#include "Gpt_Types.h"
 
 /********************************************************
  * @brief Lấy con trỏ đếnTimer Group

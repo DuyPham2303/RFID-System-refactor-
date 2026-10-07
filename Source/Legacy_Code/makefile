@@ -19,10 +19,13 @@ CFLAGS = --specs=nano.specs \
           -Iinclude \
           -IApp \
           -ISystem \
+          -IBsw/IoHwAb \
+          -IBsw/IoHwAb/IoHwAb_Pwm/inc \
           -IBsw/Mcal \
           -IBsw/Mcal/Dio/inc \
           -IBsw/Mcal/Gpt/inc \
           -IBsw/Mcal/Port/inc \
+          -IBsw/Mcal/Pwm/inc \
           -IBsw/Mcal/Mcu/inc \
           -IBsw/Mcal/Spi/inc \
           -IBsw/Services\
@@ -38,12 +41,14 @@ LDFLAGS = -T linker.ld -Wl,-Map=$(BUILDDIR)/main.map -nostartfiles
 # -----------------------
 # Sources and objects
 # -----------------------
-SRC = $(wildcard App/main.c) \
+SRC = $(wildcard App/test_pwm.c) \
       $(wildcard System/*.c) \
+      $(wildcard Bsw/IoHwAb/IoHwAb_Pwm/*.c) \
       $(wildcard Bsw/Mcal/Dio/src/*.c) \
       $(wildcard Bsw/Mcal/Gpt/src/*.c) \
       $(wildcard Bsw/Mcal/Port/src/*.c) \
       $(wildcard Bsw/Mcal/Mcu/src/*.c) \
+      $(wildcard Bsw/Mcal/Pwm/src/*.c) \
       $(wildcard Bsw/Mcal/Spi/src/*.c) \
       $(wildcard Bsw/Services/Os/*.c) \
       $(wildcard lib/SPL/src/*.c) \

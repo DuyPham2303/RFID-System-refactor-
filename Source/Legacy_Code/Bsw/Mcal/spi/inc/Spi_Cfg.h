@@ -12,58 +12,21 @@
  */
 #ifndef __SPI_CFG_H
 #define __SPI_CFG_H
+
 #include "Spi_Types.h"
+#include "Spi_map.h"
 #include "Mcu_IrqTypes.h"
+#include "Dio.h"
 
-#define MAX_CHANS_PER_JOB 4 // số lượng channel tối đa mà 1 tác vu (job) có thể xử lý
-#define MAX_JOBS_PER_SEQ 4  //  số lượng channel tối đa mà 1 nghiệp vu (sequence)) có thể xử lý
+#define SPI_MAX_CH_PER_JOB 4   // số lượng channel tối đa mà 1 tác vu (job) có thể xử lý
+#define SPI_MAX_JOBS_PER_SEQ 4 //  số lượng channel tối đa mà 1 nghiệp vu (sequence)) có thể xử lý
 
-/**
- * @brief Cấu hình phần cứng của một SPI unit.
- * @details Chứa các tham số cần thiết để khởi tạo peripheral SPI. Bảng cấu
- *          hình được xem là tĩnh và không được thay đổi sau Spi_Init().
- * @note Spi_GroupId_Type và các giá trị tham số hiện vẫn phụ thuộc vào STM32 SPL;
- *       application nên truy cập thông qua lớp MCAL/IoHwAb.
- */
-typedef struct Spi_Config
+/*Cấu hình Channel (Thuần túy logic dữ liệu) */
+typedef struct
 {
-    Spi_GroupId_Type HwId;
-    Spi_BaudRateType BaudRatePrescaler;
-    Spi_DataSizeType DataSize;
-    Spi_CpolType CPOL;
-    Spi_CphaType CPHA;
-    Spi_FirstBitType FirstBit;
-    Spi_NssType Nss;
-    Spi_ModeType Mode;
-    Spi_DirectionType Dir;
-    const Mcu_IrqConfigType *IrqCfgPtr;
-} Spi_ConfigType;
-
-/**
- * @brief Trạng thái runtime của SPI driver.
- * @details Lưu trạng thái driver, Channel hiện tại và trạng thái truyền/nhận
- *          để phục vụ xử lý đồng bộ hoặc bất đồng bộ.
- */
-typedef struct Spi_Runtime
-{
-    Spi_StatusType Status;
-    boolean TxBusy;
-    boolean RxBusy;
-} Spi_RuntimeType;
-
-/**
- * @brief Cấu hình dữ liệu của một SPI Channel.
- * @details Mỗi Channel quản lý buffer truyền, buffer nhận và số byte cần
- *          truyền. Channel là đơn vị dữ liệu logic được một Job tham chiếu.
- * @note Chỉ cần biết đang trỏ vào buffer nào và truyền bao nhiêu byte:
- */
-typedef struct Spi_ChannelConfig
-{
-    uint16 *TxBuffer;
-    uint16 *RxBuffer;
-    uint16 dataWidthByte; /*số byte tôi đa được phép trao đổi trong 1 phiên truyền/nhận*/
-} Spi_ChannelConfigType;
-
+    uint16 DefaultLength;      /* Chiều dài dữ liệu mặc định */
+    Spi_BufferType BufferType; /* IB (Internal) hay EB (External) */
+} Spi_ChannelConfigType_s;
 /**
  * @brief Cấu hình của một SPI Job.
  * @details Job biểu diễn một giao dịch SPI hoàn chỉnh trên một hardware unit
@@ -75,11 +38,11 @@ typedef struct Spi_ChannelConfig
  */
 typedef struct Spi_JobConfig
 {
-    Spi_ChannelId_Type ChannelList[MAX_CHANS_PER_JOB]; // Mảng tĩnh chứa danh sách channel
-    uint8 ActiveChannelCount;                          // Số lượng channel thực tế đang dùng
-    uint16 CsPinId;
-} Spi_JobConfigType;
-
+    Spi_ChannelType_e ChannelList[SPI_MAX_CH_PER_JOB]; // Mảng tĩnh chứa danh sách channel
+    Dio_ChannelType CsPinId;
+    Spi_HwUnitType_e HwId;
+    uint8 ActiveTotalChIncurrentJob;
+} Spi_JobConfigType_s;
 /**
  * @brief Cấu hình của một SPI Sequence.
  * @details Sequence là một danh sách có thứ tự gồm một hoặc nhiều Job ID.
@@ -89,14 +52,49 @@ typedef struct Spi_JobConfig
  */
 typedef struct Spi_SequenceConfig
 {
-    Spi_JobId_Type JobList[MAX_JOBS_PER_SEQ]; // Mảng tĩnh chứa danh sách các Job thuộc Sequence này
-    uint8 ActiveJobCount;                     // Số lượng Job thực tế sẽ được thực thi tuần tự
-} Spi_SequenceConfigType;
+    Spi_JobType_e JobList[SPI_MAX_JOBS_PER_SEQ]; // Mảng tĩnh chứa danh sách các Job thuộc Sequence này
+    uint8 TotalJobIncurrentSequence;
+    Spi_notificationType SeqNoti;
+} Spi_SequenceConfigType_s;
+/**
+ * @brief Cấu hình phần cứng của một SPI unit.
+ * @details Chứa các tham số cần thiết để khởi tạo peripheral SPI. Bảng cấu
+ *          hình được xem là tĩnh và không được thay đổi sau Spi_Init().
+ * @note Spi_HwUnitType_e và các giá trị tham số hiện vẫn phụ thuộc vào STM32 SPL;
+ *       application nên truy cập thông qua lớp MCAL/IoHwAb.
+ */
+typedef struct Spi_ExternalDeviceConfig
+{
+    Spi_HwUnitType_e HwId;
+    Spi_BaudRateType BaudRatePrescaler;
+    Spi_DataSizeType DataSize;
+    Spi_CpolType CPOL;
+    Spi_CphaType CPHA;
+    Spi_FirstBitType FirstBit;
+    Spi_NssType Nss;
+    Spi_ModeType Mode;
+    Spi_DirectionType Dir;
+    const Mcu_NvicConfigType_s *NvicCfgPtr;
+} Spi_ExternalDeviceConfigType_s;
 
 /**
- * @brief Bảng cấu hình phần cứng SPI.
- * @details Mỗi phần tử mô tả một SPI hardware unit và các tham số khởi tạo
- *          được sử dụng bởi Spi_Init().
+ * @brief Kiểu dữ liệu cấu hình đầy đủ Spi
+ *
  */
-extern const Spi_ConfigType Spi_ConfigSet[SPI_CHANNEL_MAX];
+typedef struct
+{
+    const Spi_ExternalDeviceConfigType_s *DeviceConfigPtr;
+    uint8 DeviceCount;
+
+    const Spi_ChannelConfigType_s *ChannelConfigPtr;
+    uint8 ChannelCount;
+
+    const Spi_JobConfigType_s *JobConfigPtr;
+    uint8 JobCount;
+
+    const Spi_SequenceConfigType_s *SequenceConfigPtr;
+    uint8 SequenceCount;
+} Spi_ConfigType_s;
+
+extern const Spi_ConfigType_s g_Spi_ConfigSet;
 #endif

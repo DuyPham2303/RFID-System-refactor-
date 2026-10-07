@@ -12,20 +12,6 @@
 #define PWM_TYPES_H
 #include "./Bsw/Services/Common/Std_Types.h"
 
-/**
- * @brief Loại dữ liệu biểu diễn giá trị duty cycle được tầng phía trên truyền vào.
- * @details Giá trị này đại diện cho độ rộng xung của PWM, ví dụ 0x0000 = 0%,
- *          0x8000 = 100% theo kiểu biểu diễn nội bộ của driver.
- */
-typedef uint16 Pwm_DutyCycleType;
-
-/********************************************************
- * @brief Kiểu dữ liệu biểu diễn giá trị xung thô (Pulse Width Ticks)
- * @detail Dùng để thiết lập trực tiếp giá trị thanh ghi compare (CCR),
- *          giá trị hợp lệ từ 0x0000 - 0xffff
- ******************/
-typedef uint16 Pwm_Pulse;
-
 /********************************************************
  * @brief Kiểu dữ liệu định danh kênh PWM được tầng phía trên sử dụng.
  * @details Dùng để xác định kênh PWM cần thao tác trong các API của driver,
@@ -34,11 +20,19 @@ typedef uint16 Pwm_Pulse;
  ******************/
 typedef enum Pwm_ChannelType
 {
-    PWM_CHANNEL_1 = 1U,
-    PWM_CHANNEL_2,
-    PWM_CHANNEL_3,
-    PWM_CHANNEL_4
+    PWM_CHANNEL_CH1 = 1U,
+    PWM_CHANNEL_CH2,
+    PWM_CHANNEL_CH3,
+    PWM_CHANNEL_CH4,
+    PWM_MAX_CHANNELS
 } Pwm_ChannelType;
+
+typedef enum Hw_TimerGroupId
+{
+    HW_TIMER_GROUP_1 = 1U,
+    HW_TIMER_GROUP_2,
+    HW_TIMER_GROUP_3,
+} Hw_TimerGroupIdType;
 /********************************************************
  * @brief Kiểu dữ liệu xác định chế độ so sánh ngõ ra (Output Compare Mode)
  * @detail Quy định cách thức hoạt động của kênh khi bộ đếm khớp với giá trị so sánh
@@ -115,5 +109,53 @@ typedef enum Pwm_IdleStateNType
     PWM_IDLE_N_SET = 0U,
     PWM_IDLE_N_RESET
 } Pwm_IdleStateNType;
+
+/********************************************************
+ * @brief kiểu dữ liệu mô tả giá trị tần số chia timer
+ * @detail được sử dụng để xác định thời gian của 1 tick count, nhằm
+ *         chia nhỏ tần số Clock đầu vào của bộ APB timer, phù hợp với
+ *         nhu cầu xử lý của hệ thống. Giá trị nhập trong khoảng
+ *         0x0000 - 0xffff (16-bit timer)
+ *****************/
+typedef uint16 Pwm_PrescalerValue;
+
+/********************************************************
+ * @brief kiểu dữ liệu mô tả chế độ đếm của timer
+ * @detail được sử dụng để xác định cách thức mà timer sẽ đếm ra sao
+ *****************/
+typedef enum Pwm_CounterModeType
+{
+    PWM_COUNTER_MODE_UP = 0U,
+    PWM_COUNTER_MODE_DOWN
+} Pwm_CounterModeType;
+
+/********************************************************
+ * @brief kiểu dữ liệu mô tả giá trị đếm tràn của chu kỳ timer
+ * @detail được sử dụng để xác định thời điểm reset giá trị đếm trong thanh ghi ARR
+ *         giá trị nhập trong khoảng 0x0000 - 0xffff (16-bit timer)
+ *****************/
+typedef uint16 Pwm_PeriodValue;
+
+/********************************************************
+ * @brief kiểu dữ liệu mô tả giá trị clock chia nhỏ không ảnh hưởng hardware
+ * @details được sử dụng để kiểm tra giá trị clock gốc có đúng không dựa trên lý thuyết
+ *         ,có thể cấu hình mặc định là không chia
+ *****************/
+
+typedef enum Pwm_ClockDivType
+{
+    PWM_CLOCK_DIV_1 = 0U,
+    PWM_CLOCK_DIV_2,
+    PWM_CLOCK_DIV_4
+} Pwm_ClockDivType;
+
+/********************************************************
+ * @brief kiểu dữ liệu mô tả giá trị đếm lại của timer
+ * @details được sử dụng để xác định giá trị mốc trong khoảng từ 0x00 - 0xff
+ *         sẽ được bắt đầu đếm lại mỗi khi có 1 update event được kích hoạt
+ *         giá trị này chỉ có hiệu lực trên TIM1 và TIM8. Có thể được cài đặt
+ *         mặc định là 0 cho các timer còn lại
+ *****************/
+typedef uint16 Pwm_RepetitionCnt;
 
 #endif

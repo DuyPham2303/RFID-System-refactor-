@@ -5,9 +5,9 @@
       "includePath": [
         "${workspaceFolder}",
         "${workspaceFolder}/include",
-        "${workspaceFolder}/App",
         "${workspaceFolder}/System/",
         "${workspaceFolder}/Bsw/Mcal",
+        "${workspaceFolder}/Bsw/IoHwAb/IoHwAb_Pwm",
         "${workspaceFolder}/Bsw/Mcal/Spi/inc",
         "${workspaceFolder}/Bsw/Mcal/Dio/inc",
         "${workspaceFolder}/Bsw/Mcal/Port/inc",

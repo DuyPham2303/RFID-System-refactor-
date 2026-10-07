@@ -1,6 +1,6 @@
 Object/Bsw/Mcal/Port/src/Port.o: Bsw/Mcal/Port/src/Port.c \
  Bsw/Mcal/Port/inc/Port.h Bsw/Mcal/Port/inc/Port_Cfg.h \
- Bsw/Mcal/Port/inc/Port_dtypes.h Bsw/Services/Common/Std_Types.h \
+ Bsw/Mcal/Port/inc/Port_Types.h Bsw/Services/Common/Std_Types.h \
  Bsw/Services/Common/Platform_Types.h Bsw/Mcal/Port/inc/Port_Mapping.h \
  lib/SPL/inc/stm32f10x_gpio.h include/stm32f10x.h lib/CMSIS/core_cm3.h \
  lib/CMSIS/cmsis_version.h lib/CMSIS/cmsis_compiler.h \
@@ -13,7 +13,7 @@ Object/Bsw/Mcal/Port/src/Port.o: Bsw/Mcal/Port/src/Port.c \
  lib/SPL/inc/stm32f10x_usart.h lib/SPL/inc/misc.h
 Bsw/Mcal/Port/inc/Port.h:
 Bsw/Mcal/Port/inc/Port_Cfg.h:
-Bsw/Mcal/Port/inc/Port_dtypes.h:
+Bsw/Mcal/Port/inc/Port_Types.h:
 Bsw/Services/Common/Std_Types.h:
 Bsw/Services/Common/Platform_Types.h:
 Bsw/Mcal/Port/inc/Port_Mapping.h:

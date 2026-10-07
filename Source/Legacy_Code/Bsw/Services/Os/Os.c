@@ -4,6 +4,7 @@
 /** @brief Number of GPT ticks per millisecond */
 #define GPT_DELAY_TICKS_PER_MS 10U
 
+#ifdef OS_CFG
 /**
  * @brief Id định danh cho các Task sẽ xử lý tác vụ ỳ6u cấu
  * @details mỗi task sẽ gắn với 1 hàm callback được điều phối xử lý theo Priority
@@ -39,15 +40,6 @@ static Os_CfgTypedef OsTaskCfg_Table[TASK_OS_MAX] = {
     [TASK_PERIODIC] = {.Mask = 0, .func = NULL_PTR},
     [TASK_COM] = {.Mask = 0, .func = NULL_PTR}};
 
-void Os_Init()
-{
-}
-
-void Os_Run()
-{
-    /*Thực hiện cập nhật các cờ ngắt ở trạng thái runtime*/
-}
-
 static void SetFlagStatus(eventflag *reg, uint8 option)
 {
     *reg |= option;
@@ -60,7 +52,7 @@ static boolean ReadFlagStatus(eventflag reg, uint8 option)
 {
     return reg & option ? true : false;
 }
-
+#endif /* OS_CFG */
 void Os_DelayMs(uint32 DelayMs)
 {
     // Kiểm tra giá trị DelayMs có vượt quá giới hạn của bộ đếm 16-bit không
@@ -73,7 +65,27 @@ void Os_DelayMs(uint32 DelayMs)
     uint32 DelayTicks = DelayMs * GPT_DELAY_TICKS_PER_MS;
 
     // Lấy ID của Timer được cấu hình cho chức năng Delay
-    Gpt_GroupId_Type HwTimmerID = Gpt_Config.ChannelConfigPtr[GPT_CFG_TIM3_ID].HwTimerId;
+    for (uint8 index = 0; index < g_Gpt_ConfigGroup.GptCount; index++)
+    {
+        if (g_Gpt_ConfigGroup.ChannelConfigPtr[index].HwId == GPT_GROUP_3)
+        {
+            Gpt_GroupId_Type HwTimmerID = g_Gpt_ConfigGroup.ChannelConfigPtr[index].HwId;
+
+            // Kích hoạt bộ timer
+            Gpt_StartTimer(HwTimmerID, (Gpt_PeriodValue)DelayTicks);
+
+            // Mô phỏng delay
+            while (Gpt_GetTimeElapsed(HwTimmerID) < (Gpt_PeriodValue)DelayTicks)
+            {
+                /* Blocking demo delay */
+            }
+
+            // Vô hiệu hóa bộ timer
+            Gpt_StopTimer(HwTimmerID);
+            return;
+        }
+    }
+    Gpt_GroupId_Type HwTimmerID = g_Gpt_ConfigGroup.ChannelConfigPtr[GPT_GROUP_2].HwId;
 
     // kích hoạt bộ timer
     Gpt_StartTimer(HwTimmerID, (Gpt_PeriodValue)DelayTicks);

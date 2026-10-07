@@ -23,7 +23,6 @@
 #ifndef __SPI_H
 #define __SPI_H
 #include "Spi_Cfg.h"
-
 /**
  * @brief Khởi tạo SPI driver.
  * @details Kiểm tra cấu hình, khởi tạo SPI hardware và đưa các đối tượng
@@ -33,7 +32,7 @@
  * @return E_OK nếu khởi tạo thành công; E_NOT_OK nếu cấu hình không hợp lệ
  *         hoặc SPI hardware không thể khởi tạo.
  */
-Std_ReturnType Spi_Init(const Spi_ConfigType *ConfigPtr);
+Std_ReturnType Spi_Init(const Spi_ConfigType_s *ConfigPtr);
 
 /**
  * @brief Hủy khởi tạo SPI driver.
@@ -42,12 +41,6 @@ Std_ReturnType Spi_Init(const Spi_ConfigType *ConfigPtr);
  *          trước khi sử dụng driver.
  */
 void Spi_DeInit(void);
-
-/**
- * @brief Đọc trạng thái hiện tại của SPI driver.
- * @return SPI_UNINIT, SPI_IDLE hoặc SPI_BUSY.
- */
-Spi_StatusType Spi_GetStatus(void);
 
 /**
  * @brief Gán buffer bên ngoài cho một SPI Channel.
@@ -62,10 +55,10 @@ Spi_StatusType Spi_GetStatus(void);
  *         lệ hoặc Channel không tồn tại.
  */
 Std_ReturnType Spi_SetupEB(
-    Spi_ChannelId_Type Channel,
+    Spi_ChannelType_e Channel,
     uint16 *TxBuffer,
     uint16 *RxBuffer,
-    uint16 Length);
+    uint8 Length);
 
 /**
  * @brief Ghi dữ liệu vào buffer nội bộ của SPI Channel.
@@ -77,8 +70,9 @@ Std_ReturnType Spi_SetupEB(
  * @return E_OK nếu ghi thành công; E_NOT_OK nếu tham số hoặc Channel không hợp lệ.
  */
 Std_ReturnType Spi_WriteIB(
-    Spi_ChannelId_Type Channel,
-    const uint8 *DataBuffer);
+    Spi_ChannelType_e Channel,
+    const uint16 *DataBuffer,
+    uint8 Length);
 
 /**
  * @brief Đọc dữ liệu từ buffer nhận nội bộ của SPI Channel.
@@ -90,8 +84,9 @@ Std_ReturnType Spi_WriteIB(
  *         tham số không hợp lệ.
  */
 Std_ReturnType Spi_ReadIB(
-    Spi_ChannelId_Type Channel,
-    uint8 *DataBuffer);
+    Spi_ChannelType_e Channel,
+    uint16 *DataBuffer,
+    uint8 Length);
 
 /**
  * @brief Thực hiện truyền SPI đồng bộ.
@@ -101,8 +96,7 @@ Std_ReturnType Spi_ReadIB(
  * @return E_OK nếu truyền hoàn tất; E_NOT_OK nếu driver chưa khởi tạo,
  *         Sequence không hợp lệ hoặc giao dịch thất bại.
  */
-Std_ReturnType Spi_SyncTransmit(
-    Spi_SequenceId_Type Sequence);
+Std_ReturnType Spi_SyncTransmit(Spi_SequenceType_e Sequence);
 
 /**
  * @brief Bắt đầu truyền SPI bất đồng bộ.
@@ -112,8 +106,7 @@ Std_ReturnType Spi_SyncTransmit(
  * @return E_OK nếu giao dịch được bắt đầu; E_NOT_OK nếu driver đang bận,
  *         Sequence không hợp lệ hoặc không thể bắt đầu truyền.
  */
-Std_ReturnType Spi_AsyncTransmit(
-    Spi_SequenceId_Type Sequence);
+Std_ReturnType Spi_AsyncTransmit(Spi_SequenceType_e Sequence);
 
 /**
  * @brief Hủy một SPI Sequence đang thực thi.
@@ -123,7 +116,6 @@ Std_ReturnType Spi_AsyncTransmit(
  * @return E_OK nếu hủy thành công; E_NOT_OK nếu Sequence không chạy hoặc
  *         không thể hủy.
  */
-Std_ReturnType Spi_Cancel(
-    Spi_SequenceId_Type Sequence);
+Std_ReturnType Spi_Cancel(Spi_SequenceType_e Sequence);
 
 #endif
