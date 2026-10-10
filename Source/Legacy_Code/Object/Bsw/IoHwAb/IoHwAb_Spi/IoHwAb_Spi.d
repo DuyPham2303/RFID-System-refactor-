@@ -1,7 +1,8 @@
-Object/Bsw/Mcal/Spi/src/Spi.o: Bsw/Mcal/Spi/src/Spi.c \
+Object/Bsw/IoHwAb/IoHwAb_Spi/IoHwAb_Spi.o: \
+ Bsw/IoHwAb/IoHwAb_Spi/IoHwAb_Spi.c Bsw/IoHwAb/IoHwAb_Spi/IoHwAb_Spi.h \
+ Bsw/Services/Common/Std_Types.h Bsw/Services/Common/Platform_Types.h \
  Bsw/Mcal/Spi/inc/Spi.h Bsw/Mcal/Spi/inc/Spi_Cfg.h \
- Bsw/Mcal/Spi/inc/Spi_Types.h Bsw/Services/Common/Std_Types.h \
- Bsw/Services/Common/Platform_Types.h Bsw/Mcal/Spi/inc/Spi_map.h \
+ Bsw/Mcal/Spi/inc/Spi_Types.h Bsw/Mcal/Spi/inc/Spi_map.h \
  lib/SPL/inc/stm32f10x_spi.h include/stm32f10x.h lib/CMSIS/core_cm3.h \
  lib/CMSIS/cmsis_version.h lib/CMSIS/cmsis_compiler.h \
  lib/CMSIS/cmsis_gcc.h include/system_stm32f10x.h \
@@ -12,14 +13,13 @@ Object/Bsw/Mcal/Spi/src/Spi.o: Bsw/Mcal/Spi/src/Spi.c \
  lib/SPL/inc/stm32f10x_sdio.h lib/SPL/inc/stm32f10x_tim.h \
  lib/SPL/inc/stm32f10x_usart.h lib/SPL/inc/misc.h \
  Bsw/Mcal/Mcu/inc/Mcu_IrqTypes.h Bsw/Mcal/Dio/inc/Dio_PinMode_Cfg.h \
- Bsw/Mcal/Dio/inc/Dio_Types.h Bsw/Mcal/Mcu/inc/Mcu_Irq.h \
- Bsw/Mcal/Mcu/inc/Mcu_IrqTypes.h Bsw/Mcal/Spi/inc/Spi_Internal.h \
- Bsw/Mcal/Spi/inc/Spi_Runtime.h
+ Bsw/Mcal/Dio/inc/Dio_Types.h
+Bsw/IoHwAb/IoHwAb_Spi/IoHwAb_Spi.h:
+Bsw/Services/Common/Std_Types.h:
+Bsw/Services/Common/Platform_Types.h:
 Bsw/Mcal/Spi/inc/Spi.h:
 Bsw/Mcal/Spi/inc/Spi_Cfg.h:
 Bsw/Mcal/Spi/inc/Spi_Types.h:
-Bsw/Services/Common/Std_Types.h:
-Bsw/Services/Common/Platform_Types.h:
 Bsw/Mcal/Spi/inc/Spi_map.h:
 lib/SPL/inc/stm32f10x_spi.h:
 include/stm32f10x.h:
@@ -43,7 +43,3 @@ lib/SPL/inc/misc.h:
 Bsw/Mcal/Mcu/inc/Mcu_IrqTypes.h:
 Bsw/Mcal/Dio/inc/Dio_PinMode_Cfg.h:
 Bsw/Mcal/Dio/inc/Dio_Types.h:
-Bsw/Mcal/Mcu/inc/Mcu_Irq.h:
-Bsw/Mcal/Mcu/inc/Mcu_IrqTypes.h:
-Bsw/Mcal/Spi/inc/Spi_Internal.h:
-Bsw/Mcal/Spi/inc/Spi_Runtime.h:

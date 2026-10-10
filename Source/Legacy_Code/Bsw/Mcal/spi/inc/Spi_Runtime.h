@@ -1,8 +1,10 @@
 /**
  * @file Spi_Runtime.h
- * @brief Quản lý trạng thái thời gian thực (Runtime Status) của SPI Driver.
- * @details Đóng gói mảng trạng thái phần cứng, cung cấp các hàm an toàn
- *          để đọc/ghi trạng thái, tránh xung đột và sửa đổi dữ liệu tùy tiện.
+ * @brief Kiểu dữ liệu và API quản lý trạng thái runtime của SPI Driver.
+ * @details
+ * 1. Lưu trạng thái Hardware Unit, Channel, Job và Sequence khi driver chạy.
+ * 2. Quản lý vùng IB và các con trỏ buffer runtime cho từng Channel.
+ * 3. Đây là header nội bộ của SPI MCAL, không phải API ứng dụng.
  */
 
 #ifndef SPI_RUNTIME_H
@@ -10,14 +12,17 @@
 
 #include "Spi_Cfg.h"
 
-#define MAX_WIDTH_BYTE 32 // đối với mảng 16-bit thì số byte thực tế là 64
+/** @brief Giới hạn độ dài dữ liệu khai báo cho một buffer SPI. */
+#define MAX_WIDTH_BYTE 32
 
-/*Tổng số byte tối đa được phép truyền/nhận trong 1 data transaction*/
+/** @brief Số phần tử tối đa của một giao dịch dùng EB. */
 #define SPI_EB_MAX_LENGTH MAX_WIDTH_BYTE
+/** @brief Số phần tử tối đa của một giao dịch dùng IB. */
 #define SPI_IB_MAX_LENGTH MAX_WIDTH_BYTE
 
-/*số kênh Spi tối đa được cấu hình cho 2 cơ chế quản lý dữ liệu EB và IB*/
+/** @brief Số slot IB tối đa; một slot ứng với một SPI Channel. */
 #define SPI_MAX_IB_CHANNELS SPI_CH_MAX
+/** @brief Số slot EB tối đa; một slot ứng với một SPI Channel. */
 #define SPI_MAX_EB_CHANNELS SPI_CH_MAX
 
 /* ==========================================================
@@ -25,7 +30,8 @@
  * ========================================================== */
 
 /**
- * @brief Trạng thái hiện tại của SPI driver.
+ * @brief Trạng thái runtime của SPI Hardware Unit hoặc Sequence.
+ * @details SPI_UNINIT: chưa khởi tạo; SPI_IDLE: sẵn sàng; SPI_BUSY: đang xử lý.
  */
 typedef enum
 {
@@ -35,7 +41,9 @@ typedef enum
 } Spi_StatusType_e;
 
 /**
- * @brief Cấu trúc lưu trữ trạng thái hoạt động của từng SPI Group (HW Unit).
+ * @brief Trạng thái runtime của một SPI Hardware Unit.
+ * @details Status biểu thị trạng thái tổng thể; TxBusy và RxBusy biểu thị
+ *          riêng việc sử dụng từng chiều truyền/nhận.
  */
 typedef struct
 {
@@ -45,111 +53,114 @@ typedef struct
 } Spi_RuntimeType_s;
 
 /**
- * @brief Cấu hình dữ liệu của một SPI Channel.
- * @details Mỗi Channel quản lý buffer truyền, buffer nhận và số byte cần
- *          truyền. Channel là đơn vị dữ liệu logic được một Job tham chiếu.
- * @note Chỉ cần biết đang trỏ vào buffer nào và truyền bao nhiêu byte:
+ * @brief Trạng thái buffer và dữ liệu đang dùng của một Channel.
+ * @details Channel là đơn vị dữ liệu logic được Job tham chiếu.
  */
 typedef struct
 {
-    Spi_BufferType BufferType; /* Phân biệt loại buffer IB hay EB */
-    uint16 *ActiveTxPtr;       /* Con trỏ thực tế chứa dữ liệu truyền đi */
-    uint16 *ActiveRxPtr;       /* Con trỏ thực tế chứa dữ liệu nhận về */
-    uint16 DefaultLength;      /* Số lượng byte cần truyền/nhận trong channel này */
+    Spi_BufferType BufferType; /* Loại buffer được cấu hình: IB hoặc EB. */
+    uint16 *ActiveTxPtr;       /* Địa chỉ buffer Tx đang được sử dụng. */
+    uint16 *ActiveRxPtr;       /* Địa chỉ buffer Rx đang được sử dụng. */
+    uint16 DefaultLength;      /* Độ dài mặc định của Channel, tính theo phần tử. */
 } Spi_ChannelRuntimeType_s;
 
 /**
- * @brief là "bộ đếm tiến trình" trong quá trình truyền nhận một nhóm các channel. Nó
- *        quản lý xem Job đang đứng ở channel nào và đã truyền được bao nhiêu
- *        byte:
+ * @brief Tiến độ runtime của một Job.
+ * @details ChannelIndex xác định Channel hiện tại trong danh sách Job;
+ *          TotalBytesInCurrentChannel lưu độ dài Channel hiện tại.
  */
 typedef struct
 {
-    Spi_JobType_e CurrentActiveJobId;  /* ID của Job đang thực thi */
-    uint8 ChannelIndex;                /* Đang đứng ở Channel thứ mấy trong danh sách của Job */
-    uint16 TotalBytesInCurrentChannel; /* Tổng số byte của Channel hiện tại */
-    boolean IsBusy;                    /* Cờ đánh dấu Job này có đang bận không */
+    Spi_JobType_e CurrentActiveJobId;  /* ID Job hiện được runtime theo dõi. */
+    uint8 ChannelIndex;                /* Vị trí Channel hiện tại trong Job. */
+    uint16 TotalBytesInCurrentChannel; /* Số phần tử dữ liệu của Channel hiện tại. */
+    boolean IsBusy;                    /* TRUE khi Job đang được thực thi. */
 } Spi_JobRuntimeType_s;
 
 /**
- * @brief Quản lý tiến trình chạy của chuỗi nghiệp vụ (Sequence):
+ * @brief Tiến độ và trạng thái runtime của một Sequence.
  */
 typedef struct
 {
-    Spi_SequenceType_e CurrentSequenceId; /* ID của Sequence đang chạy */
-    uint8 CurrentJobIndex;                /* Đang thực thi Job thứ mấy trong Sequence */
-    Spi_TransferModeType Mode;            /* mode polling / Interrupt*/
-    Spi_StatusType_e Status;              /* Trạng thái tổng quan (IDLE, BUSY, COMPLETE) */
-    Dio_ChannelType ActiveCsPin;          /* chân Cs của job đang xủ lý*/
+    Spi_SequenceType_e CurrentSequenceId; /* ID Sequence đang được theo dõi. */
+    uint8 CurrentJobIndex;                /* Vị trí Job hiện tại trong Sequence. */
+    Spi_TransferModeType Mode;            /* Chế độ polling hoặc interrupt. */
+    Spi_StatusType_e Status;              /* Trạng thái runtime của Sequence. */
+    Dio_ChannelType ActiveCsPin;          /* CS đang được giữ cho giao dịch. */
 } Spi_SequenceRuntimeType_s;
 
 /**
- * @brief Cấu trúc quản lý Internal Buffer (IB) do Driver tự cấp phát vùng nhớ.
+ * @brief Vùng buffer nội bộ Tx/Rx và độ dài của một Channel dùng IB.
  */
 typedef struct
 {
     uint16 TxBuffer[SPI_IB_MAX_LENGTH];
     uint16 RxBuffer[SPI_IB_MAX_LENGTH];
-    uint8 Length;
+    uint8 Length; /* Số phần tử hợp lệ trong cả buffer Tx/Rx. */
 } Spi_IbChannelType_s;
 
 /**
- * @brief quản lý trạng thái theo từng Khối phần cứng (Hardware Unit Context)
- * @details tại một thời điểm, một bộ điều khiển SPI phần cứng (ví dụ: SPI0 hoặc SPI1)
- *          chỉ có thể phục vụ đúng một Job/Channel độc lập, nên ta sẽ lưu
- *         "dấu vết" này ở một biến toàn cục trong tầng Runtime hoặc Hardware.
+ * @brief Ngữ cảnh mà tầng hardware/ISR dùng để tiếp tục một Job bất đồng bộ.
+ * @details Ngữ cảnh chứa cấu hình Job, ID Job/Sequence, hướng truyền, kích
+ *          thước dữ liệu và chỉ số phần tử hiện tại.
+ * @note Triển khai hiện tại lưu một ngữ cảnh dùng chung; không hỗ trợ nhiều
+ *       giao dịch interrupt đồng thời trên các Hardware Unit khác nhau.
  */
 typedef struct
 {
-    const Spi_JobConfigType_s *JobCfg;
-    Spi_SequenceType_e ActiveSeqId; // sequence đang chạy trên phần cứng này
-    Spi_JobType_e ActiveJobId;      // Job đang chạy trên phần cứng này
-    Spi_DirectionType direction;
-    Spi_DataSizeType datasize;
-    uint16 ByteIndex; /* Đang truyền đến byte thứ mấy của Channel hiện tại */
+    const Spi_JobConfigType_s *JobCfg; /* Cấu hình Job đang được phục vụ. */
+    Spi_SequenceType_e ActiveSeqId;    /* Sequence chứa Job hiện tại. */
+    Spi_JobType_e ActiveJobId;         /* ID Job hiện tại. */
+    Spi_DirectionType direction;       /* Hướng truyền/nhận của Device. */
+    Spi_DataSizeType datasize;         /* Độ rộng dữ liệu 8-bit hoặc 16-bit. */
+    uint16 ByteIndex;                  /* Chỉ số phần tử đang xử lý trong Channel. */
 } Spi_HwUnitRuntimeType_s;
 
 /* ==========================================================
  * NHÓM API QUẢN LÝ HARDWARE GROUP RUNTIME
  * ========================================================== */
 /**
- * @brief Khởi tạo hoặc reset toàn bộ trạng thái runtime của các SPI Group/HwUnit.
+ * @brief Khởi tạo trạng thái runtime của các đối tượng SPI đã cấu hình.
+ * @details Đặt trạng thái phần cứng, Sequence và Job về giá trị ban đầu, đồng
+ *          thời thiết lập loại buffer và độ dài mặc định của các Channel.
  */
 void Spi_Runtime_Init();
 
 /**
- * @brief Lấy trạng thái hiện tại của một SPI Group/HwUnit.
- * @param GroupId ID của SPI Group cần kiểm tra.
- * @return Spi_StatusType_e Trạng thái hiện tại (UNINIT, IDLE, BUSY,...)
+ * @brief Đọc trạng thái runtime của một Hardware Unit.
+ * @param GroupId ID logic của Hardware Unit.
+ * @return Trạng thái hiện tại; SPI_UNINIT nếu ID nằm ngoài giới hạn.
  */
 Spi_StatusType_e Spi_Runtime_GetHwGroupStatus(Spi_HwUnitType_e GroupId);
 
 /**
- * @brief Cập nhật trạng thái cho một SPI Group/HwUnit.
- * @param GroupId ID của SPI Group.
- * @param Status Trạng thái mới cần gán.
+ * @brief Cập nhật trạng thái runtime của một Hardware Unit.
+ * @param GroupId ID logic của Hardware Unit.
+ * @param Status Trạng thái cần gán.
+ * @details Không thay đổi trạng thái nếu GroupId nằm ngoài giới hạn.
  */
 void Spi_Runtime_SetHwGroupStatus(Spi_HwUnitType_e GroupId, Spi_StatusType_e Status);
 
 /**
- * @brief Kiểm tra xem chiều truyền (Tx) hoặc nhận (Rx) có đang bận hay không.
- * @param GroupId ID của SPI Group.
- * @param TxBusy Con trỏ nhận trạng thái Tx bận (có thể là NULL nếu không muốn lấy).
- * @param RxBusy Con trỏ nhận trạng thái Rx bận (có thể là NULL nếu không muốn lấy).
+ * @brief Đọc trạng thái bận riêng của bus Tx và Rx.
+ * @param GroupId ID logic của Hardware Unit.
+ * @param TxBusy Con trỏ nhận trạng thái Tx; có thể NULL_PTR nếu không cần đọc.
+ * @param RxBusy Con trỏ nhận trạng thái Rx; có thể NULL_PTR nếu không cần đọc.
  */
 void Spi_Runtime_GetBusBusy(Spi_HwUnitType_e GroupId, boolean *TxBusy, boolean *RxBusy);
 
 /**
- * @brief Thiết lập trạng thái bận/rảnh cho chiều truyền và nhận.
- * @param GroupId ID của SPI Group.
- * @param TxBusy Trạng thái Tx bận (TRUE/FALSE).
- * @param RxBusy Trạng thái Rx bận (TRUE/FALSE).
+ * @brief Gán trạng thái bận/rảnh riêng cho bus Tx và Rx.
+ * @param GroupId ID logic của Hardware Unit.
+ * @param TxBusy Trạng thái bận của Tx.
+ * @param RxBusy Trạng thái bận của Rx.
  */
 void Spi_Runtime_SetBusBusy(Spi_HwUnitType_e GroupId, boolean TxBusy, boolean RxBusy);
 
 /**
- * @brief Lấy con trỏ quản lý runtime của một phần cứng Spi cụ thể
- * @return Spi_HwUnitRuntimeType_s* : địa chỉ trỏ tới 1 hardware duy nhất tại 1 thời điểm
+ * @brief Lấy ngữ cảnh runtime dùng bởi tầng xử lý SPI interrupt.
+ * @return Con trỏ tới context dùng chung; hiện tại không trả về context riêng
+ *         theo Hardware Unit.
  */
 Spi_HwUnitRuntimeType_s *Spi_Runtime_GetHwUnit();
 
@@ -158,18 +169,20 @@ Spi_HwUnitRuntimeType_s *Spi_Runtime_GetHwUnit();
  * ========================================================== */
 
 /**
- * @brief Lấy con trỏ quản lý runtime của một Channel cụ thể.
- * @param ChannelId ID của Channel cần lấy thông tin.
- * @return Spi_ChannelRuntimeType_s* Con trỏ tới cấu trúc runtime của Channel.
+ * @brief Lấy trạng thái runtime của một Channel.
+ * @param ChannelId ID logic của Channel.
+ * @return Con trỏ runtime của Channel hoặc NULL_PTR nếu ID ngoài giới hạn.
  */
 Spi_ChannelRuntimeType_s *Spi_Runtime_GetChannel(Spi_ChannelType_e ChannelId);
 
 /**
- * @brief Thiết lập con trỏ truyền/nhận và chiều dài cho Channel ở chế độ Runtime.
- * @param ChannelId ID của Channel.
- * @param TxPtr Con trỏ dữ liệu truyền đi.
- * @param RxPtr Con trỏ dữ liệu nhận về.
- * @param Length Số lượng byte cần truyền/nhận.
+ * @brief Gán buffer Tx/Rx và độ dài runtime cho Channel dùng EB.
+ * @param ChannelId ID logic của Channel.
+ * @param TxPtr Địa chỉ buffer Tx.
+ * @param RxPtr Địa chỉ buffer Rx.
+ * @param Length Số phần tử dữ liệu cần truyền/nhận.
+ * @return E_OK nếu cập nhật được; E_NOT_OK nếu cặp buffer không hợp lệ hoặc
+ *         độ dài vượt giới hạn.
  */
 Std_ReturnType Spi_Runtime_SetChannelBuffers(Spi_ChannelType_e ChannelId, uint16 *TxPtr, uint16 *RxPtr, uint16 Length);
 
@@ -178,23 +191,23 @@ Std_ReturnType Spi_Runtime_SetChannelBuffers(Spi_ChannelType_e ChannelId, uint16
  * ========================================================== */
 
 /**
- * @brief Lấy con trỏ quản lý runtime của một Job cụ thể.
- * @param JobId ID của Job cần truy xuất.
- * @return Spi_JobRuntimeType_s* Con trỏ tới cấu trúc runtime của Job.
+ * @brief Lấy trạng thái runtime của một Job.
+ * @param JobId ID logic của Job.
+ * @return Con trỏ runtime của Job hoặc NULL_PTR nếu ID ngoài giới hạn.
  */
 Spi_JobRuntimeType_s *Spi_Runtime_GetJob(Spi_JobType_e JobId);
 
 /**
- * @brief Kiểm tra xem một Job có đang trong trạng thái bận hay không.
- * @param JobId ID của Job.
- * @return boolean TRUE nếu đang bận, FALSE nếu rảnh.
+ * @brief Kiểm tra Job có đang bận hay không.
+ * @param JobId ID logic của Job.
+ * @return TRUE nếu Job hợp lệ và đang bận; FALSE nếu rảnh hoặc ID không hợp lệ.
  */
 boolean Spi_Runtime_IsJobBusy(Spi_JobType_e JobId);
 
 /**
- * @brief Cập nhật trạng thái bận cho một Job.
- * @param JobId ID của Job.
- * @param IsBusy Trạng thái bận cần gán (TRUE/FALSE).
+ * @brief Cập nhật cờ bận runtime của Job.
+ * @param JobId ID logic của Job.
+ * @param IsBusy Trạng thái bận cần gán.
  */
 void Spi_Runtime_SetJobBusy(Spi_JobType_e JobId, boolean IsBusy);
 
@@ -203,23 +216,23 @@ void Spi_Runtime_SetJobBusy(Spi_JobType_e JobId, boolean IsBusy);
  * ========================================================== */
 
 /**
- * @brief Lấy con trỏ quản lý runtime của một Sequence cụ thể.
- * @param SeqId ID của Sequence cần truy xuất.
- * @return Spi_SequenceRuntimeType_s* Con trỏ tới cấu trúc runtime của Sequence.
+ * @brief Lấy trạng thái runtime của một Sequence.
+ * @param SeqId ID logic của Sequence.
+ * @return Con trỏ runtime của Sequence hoặc NULL_PTR nếu ID ngoài giới hạn.
  */
 Spi_SequenceRuntimeType_s *Spi_Runtime_GetSequence(Spi_SequenceType_e SeqId);
 
 /**
- * @brief Lấy trạng thái hiện tại của một Sequence.
- * @param SeqId ID của Sequence.
- * @return Spi_StatusType_e Trạng thái hiện tại của Sequence.
+ * @brief Đọc trạng thái hiện tại của Sequence.
+ * @param SeqId ID logic của Sequence.
+ * @return Trạng thái Sequence; SPI_UNINIT nếu ID ngoài giới hạn.
  */
 Spi_StatusType_e Spi_Runtime_GetSequenceStatus(Spi_SequenceType_e SeqId);
 
 /**
- * @brief Cập nhật trạng thái cho một Sequence.
- * @param SeqId ID của Sequence.
- * @param Status Trạng thái mới cần gán.
+ * @brief Cập nhật trạng thái runtime của Sequence.
+ * @param SeqId ID logic của Sequence.
+ * @param Status Trạng thái cần gán.
  */
 void Spi_Runtime_SetSequenceStatus(Spi_SequenceType_e SeqId, Spi_StatusType_e Status);
 
@@ -228,22 +241,26 @@ void Spi_Runtime_SetSequenceStatus(Spi_SequenceType_e SeqId, Spi_StatusType_e St
  * ========================================================== */
 
 /**
- * @brief Lấy con trỏ tới vùng nhớ Internal Buffer của Channel tương ứng.
- * @param IbIndex Chỉ số định danh của Internal Buffer Channel.
- * @return Spi_IbChannelType_s* Con trỏ tới vùng nhớ buffer nội bộ.
+ * @brief Sao chép dữ liệu nhận từ IB của Channel vào buffer đích.
+ * @param Channel ID logic của Channel.
+ * @param Rxbuffer Buffer đích phải đủ chỗ chứa toàn bộ dữ liệu của IB.
+ * @return E_OK nếu sao chép thành công; E_NOT_OK nếu Rxbuffer là NULL_PTR.
  */
 Std_ReturnType Spi_Runtime_ReadBufer_IbChannel(Spi_ChannelType_e Channel, uint16 *Rxbuffer);
 
 /**
- * @brief copy từng phần tử của App buffer vào vùng nhớ do driver quản lý
- * @param txdata
+ * @brief Sao chép dữ liệu Tx vào IB của Channel và cập nhật độ dài.
+ * @param Channel ID logic của Channel.
+ * @param txbuffer Buffer dữ liệu nguồn hợp lệ khi length khác 0.
+ * @param length Số phần tử cần sao chép.
+ * @return E_OK nếu sao chép thành công; E_NOT_OK nếu độ dài vượt giới hạn.
  */
 Std_ReturnType Spi_Runtime_Writebuffer_IbChannel(Spi_ChannelType_e Channel, uint16 *txbuffer, uint8 length);
 
 /**
- * @brief Lấy con trỏ quản lý runtime của một IbPool cụ thể.
- * @param SeqId ID của IbPool cần truy xuất.
- * @return Spi_IbChannelType_s* Con trỏ tới cấu trúc IbPool của Channel.
+ * @brief Lấy vùng IB gắn với một Channel.
+ * @param IbChannel ID logic của Channel; phải nằm trong giới hạn.
+ * @return Con trỏ tới vùng IB của Channel.
  */
 Spi_IbChannelType_s *Spi_Runtime_GetIbPool(Spi_ChannelType_e IbChannel);
 

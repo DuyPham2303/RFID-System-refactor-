@@ -2,8 +2,13 @@
 #include "Spi_Runtime.h"
 #include "Spi_Internal.h"
 
-void SPI1_IRQHandler(void)
+static void Spi_Hw_IrqHandler(SPI_TypeDef *HwUnit)
 {
+    if (HwUnit == NULL_PTR)
+    {
+        return;
+    }
+
     // 1. Truy xuất thông tin ngữ cảnh phần cứng SPI
     Spi_HwUnitRuntimeType_s *ContextSavedPtr = Spi_Runtime_GetHwUnit();
     if (ContextSavedPtr == NULL_PTR)
@@ -14,20 +19,29 @@ void SPI1_IRQHandler(void)
     Spi_JobRuntimeType_s *JobRuntime = Spi_Runtime_GetJob(currentJobId);
     const Spi_JobConfigType_s *JobConfig = ContextSavedPtr->JobCfg;
 
-    if (JobRuntime == NULL_PTR || JobConfig == NULL_PTR)
+    if (JobConfig == NULL_PTR)
     {
-        SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
+        SPI_I2S_ITConfig(HwUnit, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
         return; // Lỗi an toàn
     }
 
-    /*Số channel của job và chỉ số của channel đang xử lý*/
-    uint8 TotalCh = JobConfig->ActiveTotalChIncurrentJob;
-    uint8 ActiveChIndex = JobRuntime->ChannelIndex;
+    if (Spi_Map_GetHwInstance(JobConfig->HwId) != HwUnit)
+    {
+        return;
+    }
+
+    if (JobRuntime == NULL_PTR)
+    {
+        SPI_I2S_ITConfig(HwUnit, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
+        return; // Lỗi an toàn
+    }
 
     // 2. Kiểm tra xem Job đã hoàn thành tất cả các Channel chưa
+    uint8 TotalCh = JobConfig->ActiveTotalChIncurrentJob;
+    uint8 ActiveChIndex = JobRuntime->ChannelIndex;
     if (ActiveChIndex >= TotalCh)
     {
-        SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
+        SPI_I2S_ITConfig(HwUnit, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
         Spi_InternalFinishJob(currentJobId, ContextSavedPtr->ActiveSeqId);
         return;
     }
@@ -37,7 +51,7 @@ void SPI1_IRQHandler(void)
     Spi_ChannelRuntimeType_s *chPtr = Spi_Runtime_GetChannel(chId);
     if (chPtr == NULL_PTR)
     {
-        SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
+        SPI_I2S_ITConfig(HwUnit, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
         return;
     }
 
@@ -54,7 +68,7 @@ void SPI1_IRQHandler(void)
             Spi_IbChannelType_s *currentIbPool = Spi_Runtime_GetIbPool(chId);
             if (currentIbPool == NULL_PTR)
             {
-                SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
+                SPI_I2S_ITConfig(HwUnit, SPI_I2S_IT_TXE | SPI_I2S_IT_RXNE, DISABLE);
                 return;
             }
             chPtr->ActiveTxPtr = currentIbPool->TxBuffer;
@@ -70,9 +84,9 @@ void SPI1_IRQHandler(void)
     Spi_DataSizeType datasize = ContextSavedPtr->datasize;
 
     // 5. Xử lý ngắt nhận dữ liệu (RXNE) trước để hứng dữ liệu đến
-    if (SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_RXNE) != RESET)
+    if (SPI_I2S_GetITStatus(HwUnit, SPI_I2S_IT_RXNE) != RESET)
     {
-        uint16 rxData = SPI_I2S_ReceiveData(SPI1);
+        uint16 rxData = SPI_I2S_ReceiveData(HwUnit);
         if (chPtr->ActiveRxPtr != NULL_PTR)
         {
             if (datasize == SPI_MR_DATASIZE_16B)
@@ -87,7 +101,7 @@ void SPI1_IRQHandler(void)
     }
 
     // 6. Xử lý ngắt truyền dữ liệu đi (TXE)
-    if (SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_TXE) != RESET)
+    if (SPI_I2S_GetITStatus(HwUnit, SPI_I2S_IT_TXE) != RESET)
     {
         if (byteIndex < length)
         {
@@ -107,11 +121,11 @@ void SPI1_IRQHandler(void)
             // Gửi dữ liệu qua phần cứng SPL
             if (datasize == SPI_MR_DATASIZE_16B)
             {
-                SPI_I2S_SendData(SPI1, txVal);
+                SPI_I2S_SendData(HwUnit, txVal);
             }
             else
             {
-                SPI_I2S_SendData(SPI1, (uint16_t)txVal);
+                SPI_I2S_SendData(HwUnit, (uint16_t)txVal);
             }
 
             // Tăng chỉ số byte
@@ -127,10 +141,21 @@ void SPI1_IRQHandler(void)
         else
         {
             // Tạm khóa ngắt TXE nếu channel này đã xong nhưng chưa kịp chuyển đổi
-            SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, DISABLE);
+            SPI_I2S_ITConfig(HwUnit, SPI_I2S_IT_TXE, DISABLE);
         }
     }
 }
+
+void SPI1_IRQHandler(void)
+{
+    Spi_Hw_IrqHandler(SPI1);
+}
+
+void SPI2_IRQHandler(void)
+{
+    Spi_Hw_IrqHandler(SPI2);
+}
+
 /* ==========================================================
  * PRIVATE API HỖ TRỢ TRUYỀN NHẬN THẤP CẤP (INLINE FUNCTIONS)
  * ========================================================== */

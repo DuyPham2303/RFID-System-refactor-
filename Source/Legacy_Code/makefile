@@ -21,6 +21,8 @@ CFLAGS = --specs=nano.specs \
           -ISystem \
           -IBsw/IoHwAb \
           -IBsw/IoHwAb/IoHwAb_Pwm/inc \
+          -IBsw/IoHwAb/IoHwAb_Port/inc \
+          -IBsw/IoHwAb/IoHwAb_Spi/inc \
           -IBsw/Mcal \
           -IBsw/Mcal/Dio/inc \
           -IBsw/Mcal/Gpt/inc \
@@ -31,6 +33,7 @@ CFLAGS = --specs=nano.specs \
           -IBsw/Services\
           -IBsw/Services/Common\
           -IBsw/Services/Os\
+          -IBsw/Services/EcuM\
           -Ilib/CMSIS \
           -Ilib/SPL/inc \
           -Istartup \
@@ -41,9 +44,11 @@ LDFLAGS = -T linker.ld -Wl,-Map=$(BUILDDIR)/main.map -nostartfiles
 # -----------------------
 # Sources and objects
 # -----------------------
-SRC = $(wildcard App/test_pwm.c) \
+SRC = $(wildcard App/test_spi.c) \
       $(wildcard System/*.c) \
       $(wildcard Bsw/IoHwAb/IoHwAb_Pwm/*.c) \
+      $(wildcard Bsw/IoHwAb/IoHwAb_Spi/*.c) \
+      $(wildcard Bsw/IoHwAb/IoHwAb_Port/*.c) \
       $(wildcard Bsw/Mcal/Dio/src/*.c) \
       $(wildcard Bsw/Mcal/Gpt/src/*.c) \
       $(wildcard Bsw/Mcal/Port/src/*.c) \
@@ -51,6 +56,7 @@ SRC = $(wildcard App/test_pwm.c) \
       $(wildcard Bsw/Mcal/Pwm/src/*.c) \
       $(wildcard Bsw/Mcal/Spi/src/*.c) \
       $(wildcard Bsw/Services/Os/*.c) \
+      $(wildcard Bsw/Services/EcuM/*.c) \
       $(wildcard lib/SPL/src/*.c) \
 
 STARTUP = startup/startup_stm32f103c8tx.s
@@ -82,7 +88,7 @@ $(OUT): $(OBJ)
 >@echo "==================================="
 >@echo "✓ Compilation SUCCESSFUL!"
 >@echo "Output: $(OUT)"
->@echo "==================================="
+>@echo "==================================="    
 
 clean:
 >rm -rf $(OBJDIR) $(BUILDDIR)/*.elf $(BUILDDIR)/*.map

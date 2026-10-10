@@ -17,10 +17,10 @@ Object/System/Testcase_Types.o: System/Testcase_Types.c \
  lib/SPL/inc/stm32f10x_gpio.h lib/SPL/inc/stm32f10x_i2c.h \
  lib/SPL/inc/stm32f10x_pwr.h lib/SPL/inc/stm32f10x_rcc.h \
  lib/SPL/inc/stm32f10x_sdio.h lib/SPL/inc/stm32f10x_tim.h \
- lib/SPL/inc/stm32f10x_usart.h lib/SPL/inc/misc.h Bsw/Mcal/Dio/inc/Dio.h \
- Bsw/Services/Os/Os.h Bsw/Services/./Common/Std_Types.h \
- System/Testcase_Types.h Bsw/Mcal/Spi/inc/Spi_Runtime.h \
- Bsw/Mcal/Spi/inc/Spi_Cfg.h
+ lib/SPL/inc/stm32f10x_usart.h lib/SPL/inc/misc.h \
+ Bsw/Mcal/Dio/inc/Dio_PinMode_Cfg.h Bsw/Services/Os/Os.h \
+ Bsw/Services/./Common/Std_Types.h System/Testcase_Types.h \
+ Bsw/Mcal/Spi/inc/Spi_Runtime.h Bsw/Mcal/Spi/inc/Spi_Cfg.h
 Bsw/Mcal/Dio/inc/Dio.h:
 Bsw/Mcal/Dio/inc/Dio_Cfg.h:
 Bsw/Mcal/Dio/inc/Dio_Types.h:
@@ -60,7 +60,7 @@ lib/SPL/inc/stm32f10x_sdio.h:
 lib/SPL/inc/stm32f10x_tim.h:
 lib/SPL/inc/stm32f10x_usart.h:
 lib/SPL/inc/misc.h:
-Bsw/Mcal/Dio/inc/Dio.h:
+Bsw/Mcal/Dio/inc/Dio_PinMode_Cfg.h:
 Bsw/Services/Os/Os.h:
 Bsw/Services/./Common/Std_Types.h:
 System/Testcase_Types.h:

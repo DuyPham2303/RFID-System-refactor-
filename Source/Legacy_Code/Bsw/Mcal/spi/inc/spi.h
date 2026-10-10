@@ -1,20 +1,19 @@
 /**
  * @file        Spi.h
- * @brief       AUTOSAR-inspired SPI MCAL Driver.
+ * @brief       API công khai của SPI MCAL Driver.
  * @details
- * This file provides the public API of the SPI MCAL driver.
+ * Header khai báo các API ứng dụng dùng để khởi tạo driver, chuẩn bị buffer
+ * và yêu cầu truyền một Sequence. Cấu hình Channel, Job, Sequence và phần cứng
+ * được cung cấp qua Spi_ConfigType_s.
  *
- * The SPI driver offers:
- * - Driver initialization
- * - Internal and External Buffer handling
- * - Synchronous transmission
- * - Asynchronous transmission
- * - Status monitoring
- * - Callback registration
+ * 1. Spi_Init() khởi tạo driver với bộ cấu hình.
+ * 2. Ứng dụng ghi/đọc dữ liệu qua API IB hoặc gán buffer qua API EB.
+ * 3. Spi_SyncTransmit() chạy theo kiểu polling; Spi_AsyncTransmit() chạy
+ *    theo kiểu interrupt.
+ * 4. Các API còn lại cung cấp thao tác hủy và giải phóng driver.
  *
- * The Application Layer may directly use this API for hardware testing.
- * In a complete AUTOSAR architecture, these APIs are intended to be
- * accessed through IoHwAb and RTE.
+ * Trong kiến trúc AUTOSAR đầy đủ, tầng ứng dụng thường truy cập SPI thông qua
+ * IoHwAb/RTE thay vì gọi trực tiếp các API MCAL.
  *
  * @version     1.0.0
  * @date        2026
@@ -24,35 +23,37 @@
 #define __SPI_H
 #include "Spi_Cfg.h"
 /**
- * @brief Khởi tạo SPI driver.
- * @details Kiểm tra cấu hình, khởi tạo SPI hardware và đưa các đối tượng
- *          runtime về trạng thái sẵn sàng. Hàm phải được gọi trước các API
- *          truyền dữ liệu khác.
- * @param[in] ConfigPtr Con trỏ tới bộ cấu hình SPI tĩnh.
- * @return E_OK nếu khởi tạo thành công; E_NOT_OK nếu cấu hình không hợp lệ
- *         hoặc SPI hardware không thể khởi tạo.
+ * @brief Khởi tạo SPI driver và các Hardware Unit được cấu hình.
+ * @param[in] ConfigPtr Con trỏ tới cấu hình gồm Device, Channel, Job và
+ *                      Sequence.
+ * @return E_OK nếu khởi tạo thành công; E_NOT_OK nếu không thể khởi tạo.
+ *
+ * @details
+ * 1. Phải gọi hàm này trước các API truyền/nhận dữ liệu.
+ * 2. Cấu hình phải còn hợp lệ trong thời gian driver sử dụng.
  */
 Std_ReturnType Spi_Init(const Spi_ConfigType_s *ConfigPtr);
 
 /**
- * @brief Hủy khởi tạo SPI driver.
- * @details Dừng các hoạt động SPI đang được quản lý và đưa driver về trạng
- *          thái SPI_UNINIT. Sau khi gọi hàm này, phải gọi lại Spi_Init()
- *          trước khi sử dụng driver.
+ * @brief Giải phóng trạng thái khởi tạo của SPI driver.
+ * @details Sau khi hủy khởi tạo, cần gọi Spi_Init() trước khi yêu cầu truyền
+ *          dữ liệu trở lại.
  */
 void Spi_DeInit(void);
 
 /**
- * @brief Gán buffer bên ngoài cho một SPI Channel.
- * @details Liên kết buffer truyền và nhận do application cung cấp với Channel
- *          logic. Driver sẽ sử dụng các buffer này khi thực thi Job chứa
- *          Channel tương ứng.
- * @param[in] Channel ID logic của Channel cần cấu hình.
- * @param[in] TxBuffer Buffer chứa dữ liệu cần truyền.
- * @param[out] RxBuffer Buffer nhận dữ liệu từ SPI.
- * @param[in] Length Số byte truyền/nhận.
- * @return E_OK nếu buffer hợp lệ và được gán; E_NOT_OK nếu tham số không hợp
- *         lệ hoặc Channel không tồn tại.
+ * @brief Gán buffer ngoài (EB) cho một Channel.
+ * @param[in] Channel ID logic của Channel cần thiết lập.
+ * @param[in] TxBuffer Buffer dữ liệu nguồn; có thể được dùng làm buffer Tx.
+ * @param[out] RxBuffer Buffer đích nhận dữ liệu.
+ * @param[in] Length Số phần tử dữ liệu cần truyền/nhận.
+ * @return E_OK nếu thiết lập buffer thành công; E_NOT_OK nếu Channel không
+ *         được cấu hình dùng EB hoặc runtime từ chối thiết lập.
+ *
+ * @details
+ * 1. Các buffer do bên gọi quản lý, vì vậy phải còn hợp lệ trong toàn bộ
+ *    thời gian giao dịch sử dụng Channel.
+ * 2. Kích thước phần tử thực tế phụ thuộc cấu hình DataSize 8-bit/16-bit.
  */
 Std_ReturnType Spi_SetupEB(
     Spi_ChannelType_e Channel,
@@ -61,13 +62,16 @@ Std_ReturnType Spi_SetupEB(
     uint8 Length);
 
 /**
- * @brief Ghi dữ liệu vào buffer nội bộ của SPI Channel.
- * @details Sao chép dữ liệu từ DataBuffer vào vùng nhớ truyền do driver
- *          quản lý. Cách này không yêu cầu application duy trì buffer trong
- *          suốt thời gian truyền.
- * @param[in] Channel ID logic của Channel cần ghi dữ liệu.
- * @param[in] DataBuffer Con trỏ tới dữ liệu nguồn.
- * @return E_OK nếu ghi thành công; E_NOT_OK nếu tham số hoặc Channel không hợp lệ.
+ * @brief Ghi dữ liệu truyền vào Internal Buffer (IB) của Channel.
+ * @param[in] Channel ID logic của Channel cần ghi.
+ * @param[in] DataBuffer Buffer nguồn do bên gọi cung cấp.
+ * @param[in] Length Số phần tử cần sao chép vào IB.
+ * @return E_OK nếu ghi thành công; E_NOT_OK nếu Channel không dùng IB hoặc
+ *         Length vượt sức chứa IB.
+ *
+ * @details Driver sao chép dữ liệu vào vùng nhớ nội bộ; bên gọi không cần giữ
+ *          DataBuffer còn sống sau khi hàm trả về. DataBuffer phải là con trỏ
+ *          hợp lệ khi Length khác 0.
  */
 Std_ReturnType Spi_WriteIB(
     Spi_ChannelType_e Channel,
@@ -75,13 +79,15 @@ Std_ReturnType Spi_WriteIB(
     uint8 Length);
 
 /**
- * @brief Đọc dữ liệu từ buffer nhận nội bộ của SPI Channel.
- * @details Sao chép dữ liệu đã nhận từ buffer nội bộ của driver sang vùng
- *          nhớ do application cung cấp.
- * @param[in] Channel ID logic của Channel cần đọc dữ liệu.
- * @param[out] DataBuffer Buffer đích do application cung cấp.
- * @return E_OK nếu đọc thành công; E_NOT_OK nếu dữ liệu chưa sẵn sàng hoặc
+ * @brief Sao chép dữ liệu nhận từ Internal Buffer (IB) ra buffer bên gọi.
+ * @param[in] Channel ID logic của Channel cần đọc.
+ * @param[out] DataBuffer Buffer đích do bên gọi cấp phát.
+ * @param[in] Length Tham số độ dài của API; implementation hiện sao chép theo
+ *                   độ dài IB đang lưu trong runtime.
+ * @return E_OK nếu đọc thành công; E_NOT_OK nếu Channel không dùng IB hoặc
  *         tham số không hợp lệ.
+ *
+ * @details Buffer đích cần đủ chỗ chứa độ dài dữ liệu đã lưu cho Channel.
  */
 Std_ReturnType Spi_ReadIB(
     Spi_ChannelType_e Channel,
@@ -89,32 +95,32 @@ Std_ReturnType Spi_ReadIB(
     uint8 Length);
 
 /**
- * @brief Thực hiện truyền SPI đồng bộ.
- * @details Driver lần lượt thực thi tất cả Job thuộc Sequence và chỉ trả về
- *          sau khi toàn bộ Sequence hoàn tất hoặc phát hiện lỗi.
- * @param[in] Sequence ID logic của Sequence cần thực thi.
- * @return E_OK nếu truyền hoàn tất; E_NOT_OK nếu driver chưa khởi tạo,
- *         Sequence không hợp lệ hoặc giao dịch thất bại.
+ * @brief Yêu cầu truyền một Sequence theo chế độ đồng bộ (polling).
+ * @param[in] Sequence ID logic của Sequence cần chạy.
+ * @return E_OK nếu yêu cầu và quá trình truyền thành công; E_NOT_OK nếu không
+ *         thể bắt đầu hoặc xử lý Sequence.
+ *
+ * @details
+ * 1. Các Job trong Sequence được thực thi theo thứ tự cấu hình.
+ * 2. Hàm chờ quá trình truyền/nhận của từng Job hoàn tất trước khi trả về.
  */
 Std_ReturnType Spi_SyncTransmit(Spi_SequenceType_e Sequence);
 
 /**
- * @brief Bắt đầu truyền SPI bất đồng bộ.
- * @details Driver bắt đầu thực thi Sequence rồi trả về ngay. Khi hoàn tất,
- *          callback của Job hoặc Sequence đã đăng ký sẽ được gọi.
- * @param[in] Sequence ID logic của Sequence cần thực thi.
- * @return E_OK nếu giao dịch được bắt đầu; E_NOT_OK nếu driver đang bận,
- *         Sequence không hợp lệ hoặc không thể bắt đầu truyền.
+ * @brief Bắt đầu truyền một Sequence theo chế độ bất đồng bộ (interrupt).
+ * @param[in] Sequence ID logic của Sequence cần chạy.
+ * @return E_OK nếu giao dịch được khởi chạy; E_NOT_OK nếu không thể bắt đầu.
+ *
+ * @details Hàm trả về sau khi khởi tạo giao dịch. Việc tiếp tục truyền/nhận
+ *          được xử lý qua ngắt; callback Sequence được gọi khi Sequence kết
+ *          thúc nếu callback đã được cấu hình.
  */
 Std_ReturnType Spi_AsyncTransmit(Spi_SequenceType_e Sequence);
 
 /**
- * @brief Hủy một SPI Sequence đang thực thi.
- * @details Dừng việc xử lý các Job còn lại thuộc Sequence nếu driver hỗ trợ
- *          hủy ở trạng thái hiện tại.
+ * @brief Yêu cầu hủy một Sequence.
  * @param[in] Sequence ID logic của Sequence cần hủy.
- * @return E_OK nếu hủy thành công; E_NOT_OK nếu Sequence không chạy hoặc
- *         không thể hủy.
+ * @return E_OK nếu hủy thành công; E_NOT_OK nếu Sequence không thể hủy.
  */
 Std_ReturnType Spi_Cancel(Spi_SequenceType_e Sequence);
 

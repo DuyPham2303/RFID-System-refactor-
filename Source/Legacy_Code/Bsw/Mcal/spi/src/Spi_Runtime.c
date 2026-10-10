@@ -212,6 +212,5 @@ Std_ReturnType Spi_Runtime_Writebuffer_IbChannel(Spi_ChannelType_e Channel, uint
 }
 Spi_IbChannelType_s *Spi_Runtime_GetIbPool(Spi_ChannelType_e IbChannel)
 {
-
     return &s_IbPool[IbChannel];
 }

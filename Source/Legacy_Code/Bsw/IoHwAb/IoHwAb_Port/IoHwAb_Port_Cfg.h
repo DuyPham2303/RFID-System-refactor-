@@ -1,14 +1,16 @@
 #ifndef IOHWAB_PORT_CFG_H
 #define IOHWAB_PORT_CFG_H
-#include "Port_Types.h"
-/* --- 1. THIẾT LẬP ÁNH XẠ LOGIC (MAPPING ID CHO TẦNG ỨNG DỤNG) --- */
 
-typedef uint16 IoHwAb_PortIdType;
+#include "Dio_PinMode_Cfg.h"
 
-#define IOHWAB_LED_BLINK ((IoHwAb_PortIdType)0U)
-#define IOHWAB_LED_RED_PIN ((IoHwAb_PortIdType)1U)
-#define IOHWAB_LED_GREEN_PIN ((IoHwAb_PortIdType)2U)
-#define IOHWAB_LED_BLUE_PIN ((IoHwAb_PortIdType)3U)
-#define IOHWAB_LED_YELLOW_PIN ((IoHwAb_PortIdType)4U)
+typedef Dio_ChannelType IoHwAb_PortChannelType;
+
+#define IOHWAB_PORT_SPI_MOSI_CHANNEL ((IoHwAb_PortChannelType)DIO_CHANNEL_SPI2_MOSI)
+#define IOHWAB_PORT_SPI_MISO_CHANNEL ((IoHwAb_PortChannelType)DIO_CHANNEL_SPI2_MISO)
+#define IOHWAB_PORT_SPI_SCK_CHANNEL ((IoHwAb_PortChannelType)DIO_CHANNEL_SPI2_SCK)
+#define IOHWAB_PORT_SPI_NSS_CHANNEL ((IoHwAb_PortChannelType)DIO_CHANNEL_SPI2_NSS)
+
+#define IOHWAB_PORT_LED_CHANNEL_C13 ((IoHwAb_PortChannelType)DIO_CHANNEL_C13)
+#define IOHWAB_PORT_SPI_NSS_INITIAL_LEVEL STD_HIGH
 
 #endif

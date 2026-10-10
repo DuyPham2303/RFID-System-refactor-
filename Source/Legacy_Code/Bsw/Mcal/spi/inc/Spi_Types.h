@@ -1,14 +1,10 @@
 /**
  * @file        Spi_Types.h
- * @brief       SPI Driver Type Definitions.
+ * @brief       Các kiểu dữ liệu logic dùng chung của SPI MCAL.
  * @details
- * This file contains all type definitions required by the SPI MCAL driver.
- *
- * The file defines:
- * - SPI Param configuration structures & enumeration
- * - Channel, Job and Sequence abstractions
- *
- * These definitions are shared between Spi.h, Spi.c and Spi_Cfg.c.
+ * 1. Khai báo ID logic cho Hardware Unit, Channel, Job và Sequence.
+ * 2. Khai báo chế độ truyền, loại buffer và kiểu callback thông báo.
+ * 3. Các kiểu cấu hình phần cứng SPI được khai báo trong Spi_map.h.
  *
  * @version     1.0.0
  * @date        2026
@@ -19,8 +15,9 @@
 
 #include "./Bsw/Services/Common/Std_Types.h"
 /**
- * @brief Id logic ánh xạ tới địa chỉ cứng của bộ SPI khi cấu hình
- *
+ * @brief ID logic ánh xạ tới peripheral SPI vật lý qua lớp mapping.
+ * @details Các giá trị hợp lệ tương ứng với SPI1 và SPI2 trên STM32F103C8T6;
+ *          SPI_HW_MAX_UNIT là số lượng Hardware Unit được khai báo.
  */
 typedef enum Spi_HwUnitType_e
 {
@@ -30,10 +27,10 @@ typedef enum Spi_HwUnitType_e
 } Spi_HwUnitType_e;
 /**
  * @brief ID logic của một SPI Channel.
- * @details Channel đại diện cho một luồng dữ liệu logic và không chứa
- *          thông tin phần cứng cụ thể của vi điều khiển.
- * @implements Cách đặt tên : SPI_CH_<Tên_Thiết_Bị>_<Chức_Năng>
- *                            (Ví dụ: SPI_CH_SENSOR_CMD)
+ * @details
+ * 1. Channel đại diện cho một luồng dữ liệu logic được Job tham chiếu.
+ * 2. ID này không chỉ định peripheral SPI, chân CS hay chế độ truyền.
+ * @implements Quy ước đặt tên: SPI_CH_<Tên_Thiết_Bị>_<Chức_Năng>.
  */
 typedef enum Spi_ChannelType
 {
@@ -46,10 +43,9 @@ typedef enum Spi_ChannelType
 } Spi_ChannelType_e;
 /**
  * @brief ID logic của một SPI Job.
- * @details Job là một giao dịch SPI hoàn chỉnh, có thể chứa một hoặc nhiều
- *          Channel và được tham chiếu bởi một Sequence.
- * @implements Cách đặt tên : SPI_JOB_<Tên_Thiết_Bị>_<Tác_Vụ>
- *                            (Ví dụ: SPI_JOB_READ_SENSOR)
+ * @details Job là đơn vị giao dịch chứa một hoặc nhiều Channel và được
+ *          Sequence tham chiếu theo thứ tự thực thi.
+ * @implements Quy ước đặt tên: SPI_JOB_<Tên_Thiết_Bị>_<Tác_Vụ>.
  */
 typedef enum Spi_JobType
 {
@@ -59,9 +55,8 @@ typedef enum Spi_JobType
 } Spi_JobType_e;
 /**
  * @brief ID logic của một SPI Sequence.
- * @details Sequence mô tả thứ tự thực thi của một hoặc nhiều Job.
- * @implements Cách đặt tên : SPI_SEQ_<Nghiệp_Vụ_Hệ_Thống>
- *             (Ví dụ: SPI_SEQ_UPDATE_SENSOR_DATA
+ * @details Sequence chứa danh sách có thứ tự các Job cần thực thi.
+ * @implements Quy ước đặt tên: SPI_SEQ_<Nghiệp_Vụ_Hệ_Thống>.
  */
 typedef enum Spi_SequenceType
 {
@@ -71,24 +66,31 @@ typedef enum Spi_SequenceType
 } Spi_SequenceType_e;
 
 /**
- * @brief Phương thức truyền dữ liệu của SPI driver.
+ * @brief Phương thức thực thi các Job thuộc Sequence.
+ * @details SPI_POLLING_MODE thực hiện truyền/nhận theo kiểu chờ;
+ *          SPI_INTERRUPT_MODE khởi chạy giao dịch để tiếp tục xử lý bằng ngắt.
  */
 typedef enum
 {
-    SPI_POLLING_MODE = 0U,
+    SPI_POLLING_MODE = 1U,
     SPI_INTERRUPT_MODE
 } Spi_TransferModeType;
 
+/**
+ * @brief Cơ chế lưu buffer dữ liệu của một Channel.
+ * @details IB dùng vùng nhớ do driver quản lý; EB tham chiếu vùng nhớ do bên
+ *          gọi cung cấp.
+ */
 typedef enum
 {
-    SPI_BUFFER_TYPE_IB = 0, // Internal Buffer
-    SPI_BUFFER_TYPE_EB      // External Buffer
+    SPI_BUFFER_TYPE_IB = 1U, /* Internal Buffer do driver quản lý. */
+    SPI_BUFFER_TYPE_EB       /* External Buffer do bên gọi cung cấp. */
 } Spi_BufferType;
 
 /**
- * @brief Kiểu callback thông báo hoàn thành SPI.
- * @details Callback do tầng trên đăng ký và được SPI driver gọi sau khi một
- *          Job hoặc Sequence hoàn tất.
+ * @brief Kiểu hàm callback thông báo kết thúc giao dịch SPI.
+ * @details Callback không nhận tham số; trong cấu hình hiện tại callback được
+ *          khai báo tại Sequence và gọi khi Sequence hoàn tất.
  */
 typedef void (*Spi_notificationType)(void);
 

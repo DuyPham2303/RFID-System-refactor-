@@ -8,7 +8,7 @@
 
 /* macro defined for Peripherals */
 #define APB2_PERIPHERAL_RCC (RCC_APB2Periph_SPI1 | RCC_APB2Periph_TIM1)
-#define APB1_PERIPHERAL_RCC (RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3)
+#define APB1_PERIPHERAL_RCC (RCC_APB1Periph_SPI2 | RCC_APB1Periph_TIM2 | RCC_APB1Periph_TIM3)
 
 /**
  * @brief  Cấp clock cho các ngoại vi phần cứng trên bus (GPIO, SPI, I2C, UART, TIM,...).

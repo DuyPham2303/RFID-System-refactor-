@@ -48,6 +48,12 @@ Std_ReturnType Spi_Init(const Spi_ConfigType_s *ConfigPtr)
 
         /*ánh xạ cấu hình lưu trữ xuống thanh ghi cứng*/
         SPI_Init(Spix, &Spi_HwInitGroup);
+
+        if (Spi_Map_GetNss(CurrentDeviceCfgPtr->Nss) == SPI_MR_NSS_SOFT)
+        {
+            SPI_NSSInternalSoftwareConfig(Spix, SPI_NSSInternalSoft_Set);
+        }
+
         /*kích hoạt phần cứng SPI*/
         SPI_Cmd(Spix, ENABLE);
 

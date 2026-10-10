@@ -12,8 +12,8 @@ Object/Bsw/Mcal/Spi/src/Spi_Internal.o: Bsw/Mcal/Spi/src/Spi_Internal.c \
  lib/SPL/inc/stm32f10x_rcc.h lib/SPL/inc/stm32f10x_sdio.h \
  lib/SPL/inc/stm32f10x_tim.h lib/SPL/inc/stm32f10x_usart.h \
  lib/SPL/inc/misc.h Bsw/Mcal/Mcu/inc/Mcu_IrqTypes.h \
- Bsw/Mcal/Dio/inc/Dio.h Bsw/Mcal/Dio/inc/Dio_Cfg.h \
- Bsw/Mcal/Dio/inc/Dio_Types.h Bsw/Mcal/Spi/inc/Spi_Hw.h
+ Bsw/Mcal/Dio/inc/Dio_PinMode_Cfg.h Bsw/Mcal/Dio/inc/Dio_Types.h \
+ Bsw/Mcal/Spi/inc/Spi_Hw.h
 Bsw/Mcal/Spi/inc/Spi_Internal.h:
 Bsw/Mcal/Spi/inc/Spi_Types.h:
 Bsw/Services/Common/Std_Types.h:
@@ -41,7 +41,6 @@ lib/SPL/inc/stm32f10x_tim.h:
 lib/SPL/inc/stm32f10x_usart.h:
 lib/SPL/inc/misc.h:
 Bsw/Mcal/Mcu/inc/Mcu_IrqTypes.h:
-Bsw/Mcal/Dio/inc/Dio.h:
-Bsw/Mcal/Dio/inc/Dio_Cfg.h:
+Bsw/Mcal/Dio/inc/Dio_PinMode_Cfg.h:
 Bsw/Mcal/Dio/inc/Dio_Types.h:
 Bsw/Mcal/Spi/inc/Spi_Hw.h:
